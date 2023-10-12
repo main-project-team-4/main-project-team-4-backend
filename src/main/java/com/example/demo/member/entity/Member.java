@@ -42,10 +42,10 @@ public class Member {
     private List<Follow> followList = new ArrayList<>();
 
     @OneToMany(mappedBy = "seller")
-    private List<Member> sellers = new ArrayList<>();
+    private List<ChatRoom> sellerChatRoomList = new ArrayList<>();
 
     @OneToMany(mappedBy = "consumer")
-    private List<Member> consumers = new ArrayList<>();
+    private List<ChatRoom> consumerChatRoomList = new ArrayList<>();
 
     public Member(String username, String password, String nickname, String phoneNum, List<Location> locations) {
         this.username = username;
