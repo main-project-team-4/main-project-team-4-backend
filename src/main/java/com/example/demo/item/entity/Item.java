@@ -60,8 +60,8 @@ public class Item extends TimeStamp {
     @JoinColumn(name = "category_mid_id")
     private CategoryM categoryMidId;
 
-//    @OneToMany(mappedBy = "item")
-//    private List<Item> items = new ArrayList<>();
+    @OneToMany(mappedBy = "item")
+    private List<ChatRoom> itemChatRoom = new ArrayList<>();
 
     public Item(String name, int price, String comment, URL main_image, List<URL> sub_images, Shop shop) {
         this.id = getId();
