@@ -1,13 +1,17 @@
 package com.example.demo.item.entity;
 
 import com.example.demo.category.entity.CategoryM;
+import com.example.demo.chat.entity.ChatMessage;
+import com.example.demo.chat.entity.ChatRoom;
 import com.example.demo.entity.TimeStamp;
+import com.example.demo.member.entity.Member;
 import com.example.demo.shop.entity.Shop;
 import com.example.demo.location.entity.Location;
 import com.example.demo.trade.type.State;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -16,7 +20,9 @@ import java.util.Locale;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
+@Table(name = "item")
 public class Item extends TimeStamp {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,6 +59,9 @@ public class Item extends TimeStamp {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_mid_id")
     private CategoryM categoryMidId;
+
+//    @OneToMany(mappedBy = "item")
+//    private List<Item> items = new ArrayList<>();
 
     public Item(String name, int price, String comment, URL main_image, List<URL> sub_images, Shop shop) {
         this.id = getId();

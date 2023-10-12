@@ -35,7 +35,6 @@ public class Review extends TimeStamp {
     @JoinColumn(name="member_id")
     private Member member;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="item_id")
     private Item item;

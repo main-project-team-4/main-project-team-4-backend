@@ -98,8 +98,10 @@ public class WebSecurityConfig {
                         .requestMatchers(antMatcher(HttpMethod.GET, "/api/mypages/followerlists")).authenticated()
 
                         // websocket
-                        .requestMatchers(HttpMethod.POST, "/chat").permitAll()
-                        .requestMatchers(webSocketRequestMatcher()).permitAll()
+                        .requestMatchers(antMatcher("/chat/**")).permitAll()
+                        .requestMatchers(antMatcher("/webjars/**")).permitAll()
+                        .requestMatchers(antMatcher("/ws-stomp/**")).permitAll()
+                        //.requestMatchers(antMatcher("/ws/chat")).permitAll()
 
                         .anyRequest().authenticated()
         );
@@ -108,9 +110,5 @@ public class WebSecurityConfig {
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-    }
-
-    private RequestMatcher webSocketRequestMatcher() {
-        return new AntPathRequestMatcher("/ws/chat");
     }
 }

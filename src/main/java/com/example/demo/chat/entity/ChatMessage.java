@@ -1,4 +1,4 @@
-package com.example.demo.websocket;
+package com.example.demo.chat.entity;
 
 import lombok.Getter;
 import lombok.Setter;
