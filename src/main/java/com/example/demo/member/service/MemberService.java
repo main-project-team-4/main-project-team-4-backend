@@ -1,18 +1,23 @@
 package com.example.demo.member.service;
 
 import com.example.demo.dto.MessageResponseDto;
+import com.example.demo.item.dto.ItemSearchResponseDto;
+import com.example.demo.item.entity.Item;
 import com.example.demo.location.entity.MemberLocation;
 import com.example.demo.member.dto.LocationRequestDto;
 import com.example.demo.member.dto.MemberInfoRequestDto;
 import com.example.demo.member.entity.Member;
 import com.example.demo.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
 import java.util.Optional;
 @Service
 @RequiredArgsConstructor

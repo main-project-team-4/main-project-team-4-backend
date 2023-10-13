@@ -84,6 +84,7 @@ public class WebSecurityConfig {
                         .requestMatchers(antMatcher(HttpMethod.GET, "/api/items")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/api/top-items")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/api/nearby-items")).authenticated()
+                        .requestMatchers(antMatcher(HttpMethod.GET, "/api/members/*/items")).permitAll()
 
                         // 찜 API
                         .requestMatchers(antMatcher(HttpMethod.POST, "/api/items/*/wishes")).authenticated()

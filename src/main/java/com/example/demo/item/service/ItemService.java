@@ -8,6 +8,7 @@ import com.example.demo.item.repository.ItemRepository;
 import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.location.entity.Location;
 import com.example.demo.member.entity.Member;
+import com.example.demo.member.repository.MemberRepository;
 import com.example.demo.shop.entity.Shop;
 import com.example.demo.shop.repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
     private final ShopRepository shopRepository;
+    private final MemberRepository memberRepository;
     private final S3Uploader s3Uploader;
 
     public ResponseEntity<MessageResponseDto> createItem(Member member, MultipartFile main_image, List<MultipartFile> sub_images, itemRequestDto requestDto) throws IOException {
@@ -158,6 +160,15 @@ public class ItemService {
 
     public ResponseEntity<Page<ItemSearchResponseDto>> readNearbyItems(Location location, Pageable pageable) {
         Page<ItemSearchResponseDto> dtoList = itemRepository.findNearbyItems(location, pageable)
+                .map(ItemSearchResponseDto::new);
+        return ResponseEntity.ok(dtoList);
+    }
+
+    public ResponseEntity<Page<ItemSearchResponseDto>> readItemsOfShop(Long memberId, Pageable pageable) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저는 존재하지 않습니다."));
+
+        Page<ItemSearchResponseDto> dtoList = itemRepository.findInShop(member, pageable)
                 .map(ItemSearchResponseDto::new);
         return ResponseEntity.ok(dtoList);
     }

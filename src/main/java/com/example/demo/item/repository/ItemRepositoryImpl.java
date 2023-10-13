@@ -3,10 +3,8 @@ package com.example.demo.item.repository;
 import com.example.demo.item.entity.Item;
 import com.example.demo.item.repository.mapper.ItemMapper;
 import com.example.demo.location.entity.Location;
-import com.example.demo.location.entity.QItemLocation;
-import com.example.demo.location.entity.QLocation;
+import com.example.demo.member.entity.Member;
 import com.querydsl.core.types.Predicate;
-import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,7 +21,7 @@ import static com.example.demo.wish.entity.QWish.wish;
 
 @Repository
 @RequiredArgsConstructor
-public class ItemRepositoryImpl implements SearchRepository, PopularRepository, DistanceRepository {
+public class ItemRepositoryImpl implements SearchRepository, PopularRepository, DistanceRepository, ShopDisplayRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
@@ -91,6 +89,29 @@ public class ItemRepositoryImpl implements SearchRepository, PopularRepository, 
                         QueryBuilder.radius(center, itemLocation._super).asc()
                 )
 
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        // Count Query
+        Long count = jpaQueryFactory
+                .select(item.count())
+                .from(item)
+                .fetchOne();
+
+        return new PageImpl<>(result, pageable, count);
+    }
+
+    @Override
+    public Page<Item> findInShop(Member member, Pageable pageable) {
+        List<Item> result = jpaQueryFactory
+                .select(item)
+                .from(item)
+                .where(item.shop.member.id.eq(member.getId()))
+
+                .orderBy(
+                        QueryBuilder.extractOrder(new ItemMapper(), pageable)
+                )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
