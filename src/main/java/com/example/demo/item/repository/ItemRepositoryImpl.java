@@ -1,6 +1,7 @@
 package com.example.demo.item.repository;
 
 import com.example.demo.item.entity.Item;
+import com.example.demo.item.repository.mapper.ItemMapper;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,8 @@ public class ItemRepositoryImpl implements SearchRepository, PopularRepository {
         List<Item> result = jpaQueryFactory.select(item)
                 .from(item)
                 .where(predicates)
+
+                .orderBy(QueryBuilder.extractOrder(new ItemMapper(), pageable))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
