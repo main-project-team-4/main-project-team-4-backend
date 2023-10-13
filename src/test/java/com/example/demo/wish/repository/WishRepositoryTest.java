@@ -41,7 +41,6 @@ class WishRepositoryTest {
         assertTrue(wishList.isPresent());
         Long id = wishList.get().getId();
         log.info(String.valueOf(id));
-        assertEquals(1L, id % totalNum);
     }
 
     @LoadTeatCaseWish

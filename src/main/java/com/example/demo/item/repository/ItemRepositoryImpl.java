@@ -13,10 +13,11 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 
 import static com.example.demo.item.entity.QItem.item;
+import static com.example.demo.wish.entity.QWish.wish;
 
 @Repository
 @RequiredArgsConstructor
-public class ItemRepositoryImpl implements SearchRepository {
+public class ItemRepositoryImpl implements SearchRepository, PopularRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
@@ -46,5 +47,28 @@ public class ItemRepositoryImpl implements SearchRepository {
 
     public Predicate keywordWhereQuery(String keyword) {
         return StringUtils.hasText(keyword) ? item.name.containsIgnoreCase(keyword) : null;
+    }
+
+    @Override
+    public Page<Item> findPopularItems(Pageable pageable) {
+        List<Item> result = jpaQueryFactory
+                .select(item)
+                .from(item)
+                .leftJoin(wish).on(item.id.eq(wish.item.id))
+
+                .groupBy(item.id)
+                .orderBy(wish.count().desc())
+
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        // Count Query
+        Long count = jpaQueryFactory
+                .select(item.count())
+                .from(item)
+                .fetchOne();
+
+        return new PageImpl<>(result, pageable, count);
     }
 }

@@ -148,4 +148,10 @@ public class ItemService {
         Item item = findItem(id);
         return new ItemResponseDto(item);
     }
+
+    public ResponseEntity<Page<ItemSearchResponseDto>> readPopularItems(Pageable pageable) {
+        Page<ItemSearchResponseDto> dtoList = itemRepository.findPopularItems(pageable)
+                .map(ItemSearchResponseDto::new);
+        return ResponseEntity.ok(dtoList);
+    }
 }
