@@ -2,8 +2,12 @@ package com.example.demo.item;
 
 import com.example.demo.item.entity.Item;
 import com.example.demo.item.repository.ItemRepositoryImpl;
+import com.example.demo.location.dto.CoordinateVo;
+import com.example.demo.location.entity.Location;
+import com.example.demo.location.entity.MemberLocation;
 import com.example.demo.utils.EnableQuerydslTest;
 import com.example.demo.utils.LoadTeatCaseCategory;
+import com.example.demo.utils.LoadTeatCaseLocation;
 import com.example.demo.utils.LoadTeatCasePopular;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
@@ -92,6 +96,25 @@ class ItemRepositoryImplTest {
 
         // then
         List<Long> expected = List.of(1L, 3L, 5L, 6L);
+        List<Long> answers = items.map(Item::getId).getContent();
+        assertThat(answers).isEqualTo(expected);
+    }
+
+    @LoadTeatCaseLocation
+    @Test
+    @DisplayName("[정상 작동] findNearbyItems 함수")
+    void findNearbyItems() {
+        // given
+        Pageable pageable = PageRequest.of(0, 8);
+        Location location = new MemberLocation();
+        location.setLatitude(0L);
+        location.setLongitude(0L);
+
+        // when
+        Page<Item> items = itemRepository.findNearbyItems(location, pageable);
+
+        // then
+        List<Long> expected = List.of(1L, 5L, 2L, 6L, 3L, 7L, 4L, 8L);
         List<Long> answers = items.map(Item::getId).getContent();
         assertThat(answers).isEqualTo(expected);
     }

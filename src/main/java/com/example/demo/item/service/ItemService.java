@@ -6,6 +6,7 @@ import com.example.demo.item.dto.itemRequestDto;
 import com.example.demo.item.entity.Item;
 import com.example.demo.item.repository.ItemRepository;
 import com.example.demo.item.dto.ItemSearchResponseDto;
+import com.example.demo.location.entity.Location;
 import com.example.demo.member.entity.Member;
 import com.example.demo.shop.entity.Shop;
 import com.example.demo.shop.repository.ShopRepository;
@@ -151,6 +152,12 @@ public class ItemService {
 
     public ResponseEntity<Page<ItemSearchResponseDto>> readPopularItems(Pageable pageable) {
         Page<ItemSearchResponseDto> dtoList = itemRepository.findPopularItems(pageable)
+                .map(ItemSearchResponseDto::new);
+        return ResponseEntity.ok(dtoList);
+    }
+
+    public ResponseEntity<Page<ItemSearchResponseDto>> readNearbyItems(Location location, Pageable pageable) {
+        Page<ItemSearchResponseDto> dtoList = itemRepository.findNearbyItems(location, pageable)
                 .map(ItemSearchResponseDto::new);
         return ResponseEntity.ok(dtoList);
     }

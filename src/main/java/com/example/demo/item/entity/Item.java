@@ -4,7 +4,6 @@ import com.example.demo.category.entity.CategoryM;
 import com.example.demo.chat.entity.ChatRoom;
 import com.example.demo.entity.TimeStamp;
 import com.example.demo.location.entity.ItemLocation;
-import com.example.demo.location.entity.MemberLocation;
 import com.example.demo.shop.entity.Shop;
 import com.example.demo.trade.type.State;
 import com.example.demo.wish.entity.Wish;
@@ -43,10 +42,6 @@ public class Item extends TimeStamp {
 
     @Column(name = "state")
     private State state;
-
-    @ManyToOne
-    @JoinColumn(name = "location_id")
-    private MemberLocation location;
 
     @ManyToOne
     @JoinColumn(name = "shop_id")
