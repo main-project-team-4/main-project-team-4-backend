@@ -1,5 +1,6 @@
 package com.example.demo.wish.controller;
 
+import com.example.demo.item.service.ItemService;
 import com.example.demo.utils.WithMockPrincipal;
 import com.example.demo.wish.service.WishService;
 import org.junit.jupiter.api.DisplayName;
@@ -22,6 +23,8 @@ class WishControllerTest {
     private MockMvc mvc;
     @MockBean
     private WishService wishService;
+    @MockBean
+    private ItemService itemService;
 
     @InjectMocks
     private WishController wishController;

@@ -1,9 +1,14 @@
 package com.example.demo.wish.controller;
 
+import com.example.demo.item.dto.ItemSearchResponseDto;
+import com.example.demo.item.service.ItemService;
 import com.example.demo.security.UserDetailsImpl;
 import com.example.demo.wish.dto.WishListResponseDto;
 import com.example.demo.wish.service.WishService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WishController implements WishDocs{
     private final WishService wishService;
+    private final ItemService itemService;
 
     @PostMapping("/api/items/{itemId}/wishes")
     public ResponseEntity<Void> toggleWish(
@@ -31,5 +37,12 @@ public class WishController implements WishDocs{
             @AuthenticationPrincipal UserDetailsImpl principal
     ) {
         return wishService.readMyWishLists(principal.getMember());
+    }
+
+    @GetMapping("/api/top-items")
+    public ResponseEntity<Page<ItemSearchResponseDto>> readPopularItems(
+            @PageableDefault Pageable pageable
+            ) {
+        return itemService.readPopularItems(pageable);
     }
 }
