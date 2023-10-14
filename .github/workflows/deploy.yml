@@ -1,48 +1,61 @@
-name: Deploy to cloudtype
+name: Deploy to Test Server
 on:
   push:
-    branches:
-      - main
+    tags:
+      - 'test/*'
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Connect deploy key
-        uses: cloudtype-github-actions/connect@v1
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
         with:
-          token: ${{ secrets.CLOUDTYPE_TOKEN }}
-          ghtoken: ${{ secrets.GHP_TOKEN }}
-      - name: Deploy
-        uses: cloudtype-github-actions/deploy@v1
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build Project With Gradle
+        run: |
+          chmod +x ./gradlew
+          ./gradlew clean bootJar
+
+      - name: Deploy Jar
+        uses: appleboy/scp-action@v0.1.4
         with:
-          token: ${{ secrets.CLOUDTYPE_TOKEN }}
-          project: chanyoungcplus/jobcat
-          stage: main
-          yaml: |
-            name: main-project-team-4-backend
-            app: java@17
-            options:
-              ports: 8080
-              env:
-                - name: H2_PASSWORD
-                  var: H2_PASSWORD
-                - name: H2_USERNAME
-                  var: H2_USERNAME
-                - name: JWT_SECRET_KEY
-                  var: JWT_SECRET_KEY
-                - name: PROFILE
-                  var: PROFILE
-                - name: S3_ACCESS_KEY
-                  var: S3_ACCESS_KEY
-                - name: S3_BUCKET_NAME
-                  var: S3_BUCKET_NAME
-                - name: S3_REGION_STATIC
-                  var: S3_REGION_STATIC
-                - name: S3_SECRET_KEY
-                  var: S3_SECRET_KEY
-            context:
-              git:
-                url: git@github.com:${{ github.repository }}.git
-                ref: ${{ github.ref }}
+          host: ${{ secrets.SSH_IP_ADDRESS }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: build/libs/demo-0.0.1-SNAPSHOT.jar
+          target: script
+
+      - name: Set Env Variables In Test Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_IP_ADDRESS }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            source script/set_env.sh
+            echo $PROFILE
+
+      - name: Kill Old Program
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_IP_ADDRESS }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            source script/kill_old_process.sh
+
+      - name: Run New Program
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_IP_ADDRESS }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            source script/set_env.sh
+            source script/run_new_process.sh
