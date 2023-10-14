@@ -31,25 +31,6 @@ jobs:
           source: build/libs/demo-0.0.1-SNAPSHOT.jar
           target: script
 
-      - name: Set Env Variables In Test Server
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_IP_ADDRESS }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            source script/set_env.sh
-            echo $PROFILE
-
-      - name: Kill Old Program
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_IP_ADDRESS }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            source script/kill_old_process.sh
-
       - name: Run New Program
         uses: appleboy/ssh-action@master
         with:
@@ -57,5 +38,6 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            source script/kill_old_process.sh
             source script/set_env.sh
             source script/run_new_process.sh
