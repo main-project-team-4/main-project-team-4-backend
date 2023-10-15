@@ -35,10 +35,10 @@ public class ItemResponseDto {
     @JsonProperty("large_category_name")
     private String largeCategoryName;
     @Schema(description = "중분류 카테고리 ID", example = "1")
-    @JsonProperty("large_category_id")
+    @JsonProperty("middle_category_id")
     private Long middleCategoryId;
     @Schema(description = "중분류 카테고리 이름", example = "아우터")
-    @JsonProperty("large_category_name")
+    @JsonProperty("middle_category_name")
     private String middleCategoryName;
 
     public ItemResponseDto(Item item) {
