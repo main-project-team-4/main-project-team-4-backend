@@ -12,7 +12,9 @@ import org.springframework.util.StringUtils;
 
 import java.security.Key;
 import java.util.Base64;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 @Slf4j(topic = "JwtUtil")
 @Component
@@ -43,6 +45,19 @@ public class JwtUtil {
                         .claim(AUTHORIZATION_KEY, role)
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME))
                         .setIssuedAt(date)
+                        .signWith(key, signatureAlgorithm)
+                        .compact();
+    }
+
+    public String createTestToken(String username) {
+        Calendar calendar = new GregorianCalendar(3000, Calendar.FEBRUARY, 1);
+
+        return BEARER_PREFIX +
+                Jwts.builder()
+                        .setSubject(username)
+                        .claim(AUTHORIZATION_KEY, UserRoleEnum.USER)
+                        .setExpiration(calendar.getTime())
+                        .setIssuedAt(new Date())
                         .signWith(key, signatureAlgorithm)
                         .compact();
     }
