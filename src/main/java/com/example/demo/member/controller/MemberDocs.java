@@ -2,7 +2,7 @@ package com.example.demo.member.controller;
 
 
 import com.example.demo.dto.MessageResponseDto;
-import com.example.demo.member.dto.LoginRequestDto;
+import com.example.demo.member.dto.LocationRequestDto;
 import com.example.demo.member.dto.MemberInfoRequestDto;
 import com.example.demo.security.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,12 +10,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponse;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 @Tag(
         name = "회원 API",
@@ -85,4 +82,18 @@ public interface MemberDocs {
     ResponseEntity<MessageResponseDto> deleteMember(UserDetailsImpl principal);
 
 
+    @Operation(
+            summary = "회원 위치 정보 수정 API",
+            description = """
+                    회원 위치 정보 수정 API.<br>
+                    """
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "정상 작동"
+    )
+    ResponseEntity<MessageResponseDto> updateMemberLocations(
+            LocationRequestDto request,
+            UserDetailsImpl principal
+    );
 }

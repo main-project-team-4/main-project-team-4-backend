@@ -29,8 +29,8 @@ public class Member {
     @Column(name = "phone_num")
     private String phoneNum;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MemberLocation> locations = new ArrayList<>();
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private MemberLocation location;
 
     @Column(name = "image", nullable = true)
     private URL image;
@@ -52,10 +52,4 @@ public class Member {
         this.nickname = nickname;
         this.shop = new Shop(this);
     }
-
-    public void addLocation(MemberLocation memberLocation) {
-        memberLocation.setMember(this);
-        this.locations.add(memberLocation);
-    }
-
 }

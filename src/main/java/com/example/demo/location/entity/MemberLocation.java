@@ -17,7 +17,7 @@ public class MemberLocation extends Location {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "member_id")
     private Member member;
 
@@ -25,9 +25,5 @@ public class MemberLocation extends Location {
         this.id = getId();
         this.name = requestDto.getName();
         this.member = member;
-    }
-
-    public MemberLocation(String address) {
-        this.name = address;
     }
 }

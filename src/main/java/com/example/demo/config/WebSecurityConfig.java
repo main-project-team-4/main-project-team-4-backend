@@ -66,7 +66,9 @@ public class WebSecurityConfig {
 
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
-                        .requestMatchers(antMatcher("/api/auth/**")).permitAll()
+                        .requestMatchers(antMatcher(HttpMethod.PUT, "/api/auth/members/me/**")).authenticated()
+                        .requestMatchers(antMatcher(HttpMethod.DELETE, "/api/auth/members/me/**")).authenticated()
+                        .requestMatchers(antMatcher(HttpMethod.GET, "/api/auth/**")).permitAll()
 
                         // 카테고리 API
                         .requestMatchers(antMatcher(HttpMethod.GET, "/api/categories")).permitAll()
