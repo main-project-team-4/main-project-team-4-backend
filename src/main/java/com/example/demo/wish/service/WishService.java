@@ -4,6 +4,7 @@ import com.example.demo.item.entity.Item;
 import com.example.demo.item.repository.ItemRepository;
 import com.example.demo.member.entity.Member;
 import com.example.demo.wish.dto.WishListResponseDto;
+import com.example.demo.wish.dto.WishReadResponseDto;
 import com.example.demo.wish.entity.Wish;
 import com.example.demo.wish.repository.WishRepository;
 import lombok.RequiredArgsConstructor;
@@ -43,5 +44,10 @@ public class WishService {
                 .map(WishListResponseDto::new)
                 .toList();
         return ResponseEntity.ok(dtoList);
+    }
+
+    public ResponseEntity<WishReadResponseDto> readWishRecord(Member member, Long itemId) {
+        boolean isWished = wishRepository.existsByMember_IdAndItem_Id(member.getId(), itemId);
+        return ResponseEntity.ok(new WishReadResponseDto(isWished));
     }
 }

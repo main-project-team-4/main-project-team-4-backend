@@ -11,4 +11,6 @@ public interface WishRepository extends JpaRepository<Wish,Long> {
     Optional<Wish> findByMember_IdAndItem_Id(Long memberId, Long itemId);
 
     List<Wish> findByMember(Member member);
+
+    boolean existsByMember_IdAndItem_Id(Long memberId, Long itemId);
 }

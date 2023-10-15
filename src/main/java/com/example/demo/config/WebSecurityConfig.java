@@ -90,6 +90,7 @@ public class WebSecurityConfig {
 
                         // 찜 API
                         .requestMatchers(antMatcher(HttpMethod.POST, "/api/items/*/wishes")).authenticated()
+                        .requestMatchers(antMatcher(HttpMethod.GET, "/api/items/*/wishes")).authenticated()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/api/mypages/wishlists")).authenticated()
 
                         // 팔로우 관련 API
