@@ -47,18 +47,6 @@ public class Member {
     @OneToMany(mappedBy = "consumer")
     private List<ChatRoom> consumerChatRoomList = new ArrayList<>();
 
-    public Member(String username, String password, String nickname, String phoneNum, List<MemberLocation> locations) {
-        this.username = username;
-        this.password = password;
-        this.nickname = nickname;
-        this.phoneNum = phoneNum;
-
-        for (MemberLocation location : locations) {
-            location.setMember(this);
-        }
-        this.locations.addAll(locations);
-    }
-
     public Member(String username, String nickname) {
         this.username = username;
         this.nickname = nickname;
