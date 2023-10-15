@@ -1,6 +1,7 @@
 package com.example.demo.member.service;
 
 import com.example.demo.dto.MessageResponseDto;
+import com.example.demo.item.service.S3Uploader;
 import com.example.demo.location.entity.MemberLocation;
 import com.example.demo.member.dto.LocationRequestDto;
 import com.example.demo.member.dto.MemberInfoRequestDto;
@@ -12,12 +13,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URL;
 import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final S3Uploader s3Uploader;
 
      public ResponseEntity<MessageResponseDto> deleteMember(Member member) {
         memberRepository.delete(member);
@@ -63,6 +67,16 @@ public class MemberService {
         memberLocation.setName(request.getLocation());
 
         MessageResponseDto msg = new MessageResponseDto("회원 위치 정보 수정에 성공하였습니다.", HttpStatus.OK.value());
+        return ResponseEntity.status(HttpStatus.OK).body(msg);
+    }
+
+    @Transactional
+    public ResponseEntity<MessageResponseDto> updateProfileImage(MultipartFile image, Member member) {
+        URL url = s3Uploader.getUrlFromMultipartFile(image);
+        member.setImage(url);
+
+        memberRepository.save(member);
+        MessageResponseDto msg = new MessageResponseDto("회원 프로필 사진 수정에 성공하였습니다.", HttpStatus.OK.value());
         return ResponseEntity.status(HttpStatus.OK).body(msg);
     }
 }

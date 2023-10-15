@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.UUID;
 @Slf4j
 @Service
 public class S3Uploader {
+    private static final String DIR_PROFILE_IMAGE = "profile_image";
 
     private final AmazonS3 amazonS3;
     private final String bucket;
@@ -119,5 +121,15 @@ public class S3Uploader {
         deleteFile(oldFileName);
         // 새 파일 업로드
         return upload(newFile, dirName);
+    }
+
+    public URL getUrlFromMultipartFile(MultipartFile multipartFile) {
+        try {
+            String profileImage = upload(multipartFile, DIR_PROFILE_IMAGE);
+            return new URL(profileImage);
+
+        } catch (IOException e) {
+            throw new RuntimeException("이미지 저장에 실패했습니다.");
+        }
     }
 }
