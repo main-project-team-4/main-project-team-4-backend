@@ -3,10 +3,14 @@ package com.example.demo.review.controller;
 
 import com.example.demo.dto.MessageResponseDto;
 import com.example.demo.review.dto.ReviewRequestDto;
+import com.example.demo.review.dto.ReviewResponseDto;
 import com.example.demo.review.service.ReviewService;
 import com.example.demo.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +27,13 @@ public class ReviewController implements ReviewDocs{
         return reviewService.createReview(requestDto, userDetails.getMember());
     }
 
-
+    @GetMapping("/member/{memberId}/reviews")
+    public ResponseEntity<Page<ReviewResponseDto>> readReviewList(
+            @PathVariable Long memberId,
+            @PageableDefault Pageable pageable
+            ) {
+        return reviewService.readReviewList(memberId, pageable);
+    }
 
 
     @PutMapping("/reviews/{review_id}")

@@ -4,11 +4,14 @@ package com.example.demo.review.service;
 import com.example.demo.dto.MessageResponseDto;
 import com.example.demo.member.entity.Member;
 import com.example.demo.review.dto.ReviewRequestDto;
+import com.example.demo.review.dto.ReviewResponseDto;
 import com.example.demo.review.entity.Review;
 import com.example.demo.review.repository.ReviewRepository;
 import com.example.demo.shop.entity.Shop;
 import com.example.demo.shop.repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,5 +62,9 @@ public class ReviewService {
         );
     }
 
-
+    public ResponseEntity<Page<ReviewResponseDto>> readReviewList(Long memberId, Pageable pageable) {
+        Page<ReviewResponseDto> dtoList = reviewRepository.findByMember_Id(memberId, pageable)
+                .map(ReviewResponseDto::new);
+        return ResponseEntity.ok(dtoList);
+    }
 }
