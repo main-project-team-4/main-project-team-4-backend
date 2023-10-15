@@ -17,11 +17,14 @@ import java.util.List;
 
 import static com.example.demo.item.entity.QItem.item;
 import static com.example.demo.location.entity.QItemLocation.itemLocation;
+import static com.example.demo.trade.entity.QTrade.trade;
 import static com.example.demo.wish.entity.QWish.wish;
 
 @Repository
 @RequiredArgsConstructor
-public class ItemRepositoryImpl implements SearchRepository, PopularRepository, DistanceRepository, ShopDisplayRepository {
+public class ItemRepositoryImpl implements
+        SearchRepository, PopularRepository, DistanceRepository, ShopDisplayRepository, TransactionRepository
+{
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
@@ -120,6 +123,62 @@ public class ItemRepositoryImpl implements SearchRepository, PopularRepository, 
         Long count = jpaQueryFactory
                 .select(item.count())
                 .from(item)
+                .fetchOne();
+
+        return new PageImpl<>(result, pageable, count);
+    }
+
+    @Override
+    public Page<Item> findPurchaseItemByMember_id(Long id, Pageable pageable) {
+        List<Item> result = jpaQueryFactory
+                .select(item)
+                .from(item)
+                .join(trade).on(trade.item.id.eq(item.id))
+
+                .where(trade.member.id.eq(id))
+
+                .orderBy(
+                        QueryBuilder.extractOrder(new ItemMapper(), pageable)
+                )
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        // Count Query
+        Long count = jpaQueryFactory
+                .select(item.count())
+                .from(item)
+                .join(trade).on(trade.item.id.eq(item.id))
+
+                .where(trade.member.id.eq(id))
+                .fetchOne();
+
+        return new PageImpl<>(result, pageable, count);
+    }
+
+    @Override
+    public Page<Item> findSellingItemByMember_id(Long id, Pageable pageable) {
+        List<Item> result = jpaQueryFactory
+                .select(item)
+                .from(item)
+                .join(trade).on(trade.item.id.eq(item.id))
+
+                .where(trade.sellerId.id.eq(id))
+
+                .orderBy(
+                        QueryBuilder.extractOrder(new ItemMapper(), pageable)
+                )
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        // Count Query
+        Long count = jpaQueryFactory
+                .select(item.count())
+                .from(item)
+                .join(trade).on(trade.item.id.eq(item.id))
+
+                .where(trade.member.id.eq(id))
                 .fetchOne();
 
         return new PageImpl<>(result, pageable, count);

@@ -105,6 +105,10 @@ public class WebSecurityConfig {
                         .requestMatchers(antMatcher(HttpMethod.PUT, "/api/reviews")).authenticated()
                         .requestMatchers(antMatcher(HttpMethod.DELETE, "/api/reviews")).authenticated()
 
+                        // 거래 관련 API
+                        .requestMatchers(antMatcher(HttpMethod.GET, "/api/mypages/orders")).permitAll()
+                        .requestMatchers(antMatcher(HttpMethod.GET, "/api/mypages/sales")).permitAll()
+
                         // websocket
                         .requestMatchers(antMatcher(HttpMethod.POST, "/chat/**")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/chat/**")).permitAll()
