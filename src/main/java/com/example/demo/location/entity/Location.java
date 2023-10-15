@@ -30,4 +30,10 @@ public abstract class Location {
     private static boolean hasValue(Long value) {
         return value != null && !value.equals(0L);
     }
+
+    public void setName(String name) {
+        this.name = name;
+        this.latitude = null;
+        this.longitude = null;
+    }
 }

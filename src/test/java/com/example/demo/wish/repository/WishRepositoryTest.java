@@ -14,8 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @DataJpaTest
@@ -65,5 +64,35 @@ class WishRepositoryTest {
             log.info(String.valueOf(id));
             assertTrue(answers.contains(id));
         }
+    }
+
+    @LoadTeatCaseWish
+    @Test
+    @DisplayName("[정상 작동] 찜 존재 확인")
+    void existsByMember_IdAndItem_IdReturnTrue() {
+        // given
+        Long itemId = 1L;
+        Long memberId = 1L;
+
+        // when
+        boolean isWished = wishRepository.existsByMember_IdAndItem_Id(memberId, itemId);
+
+        // then
+        assertTrue(isWished);
+    }
+
+    @LoadTeatCaseWish
+    @Test
+    @DisplayName("[정상 작동] 찜 존재하지 않음을 확인")
+    void existsByMember_IdAndItem_IdReturnFalse() {
+        // given
+        Long itemId = 8L;
+        Long memberId = 1L;
+
+        // when
+        boolean isWished = wishRepository.existsByMember_IdAndItem_Id(memberId, itemId);
+
+        // then
+        assertFalse(isWished);
     }
 }

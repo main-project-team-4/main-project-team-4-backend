@@ -29,8 +29,8 @@ public class Member {
     @Column(name = "phone_num")
     private String phoneNum;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MemberLocation> locations = new ArrayList<>();
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private MemberLocation location;
 
     @Column(name = "image", nullable = true)
     private URL image;
@@ -47,27 +47,9 @@ public class Member {
     @OneToMany(mappedBy = "consumer")
     private List<ChatRoom> consumerChatRoomList = new ArrayList<>();
 
-    public Member(String username, String password, String nickname, String phoneNum, List<MemberLocation> locations) {
-        this.username = username;
-        this.password = password;
-        this.nickname = nickname;
-        this.phoneNum = phoneNum;
-
-        for (MemberLocation location : locations) {
-            location.setMember(this);
-        }
-        this.locations.addAll(locations);
-    }
-
     public Member(String username, String nickname) {
         this.username = username;
         this.nickname = nickname;
         this.shop = new Shop(this);
     }
-
-    public void addLocation(MemberLocation memberLocation) {
-        memberLocation.setMember(this);
-        this.locations.add(memberLocation);
-    }
-
 }

@@ -2,6 +2,7 @@ package com.example.demo.wish.controller;
 
 
 import com.example.demo.security.UserDetailsImpl;
+import com.example.demo.wish.dto.WishReadResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -49,4 +50,23 @@ public interface WishDocs {
             @PathVariable Long itemId
     );
 
+    @Operation(
+            summary = "찜 여부 확인 API",
+            description = """
+                    찜 여부 확인  API. <br>
+                    JWT 토큰 필수.
+                    """
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "정상 작동",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = WishReadResponseDto.class)
+            )
+    )
+    ResponseEntity<WishReadResponseDto> readWishRecord(
+            UserDetailsImpl principal,
+            Long itemId
+    );
 }

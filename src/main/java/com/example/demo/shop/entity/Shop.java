@@ -28,7 +28,7 @@ public class Shop {
     @Column(name = "intro")
     private String shopIntro;
     @Column(name = "star_avg")
-    private double star;
+    private Double star;
 
     @OneToMany(mappedBy = "shop", orphanRemoval = true)
     private List<Item> itemList = new ArrayList<>();

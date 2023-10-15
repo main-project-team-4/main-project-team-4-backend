@@ -4,6 +4,7 @@ import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.item.service.ItemService;
 import com.example.demo.security.UserDetailsImpl;
 import com.example.demo.wish.dto.WishListResponseDto;
+import com.example.demo.wish.dto.WishReadResponseDto;
 import com.example.demo.wish.service.WishService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,6 +31,14 @@ public class WishController implements WishDocs{
             @PathVariable Long itemId
     ) {
         return wishService.toggle(principal.getMember(), itemId);
+    }
+
+    @GetMapping("/api/items/{itemId}/wishes")
+    public ResponseEntity<WishReadResponseDto> readWishRecord(
+            @AuthenticationPrincipal UserDetailsImpl principal,
+            @PathVariable Long itemId
+    ) {
+        return wishService.readWishRecord(principal.getMember(), itemId);
     }
 
     @GetMapping("/api/mypages/wishlists")

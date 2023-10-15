@@ -6,7 +6,6 @@ import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.item.service.ItemService;
 import com.example.demo.location.dto.LocationRequestDto;
 import com.example.demo.location.entity.Location;
-import com.example.demo.location.entity.MemberLocation;
 import com.example.demo.location.service.LocationService;
 import com.example.demo.member.entity.Member;
 import com.example.demo.security.UserDetailsImpl;
@@ -41,7 +40,7 @@ public class LocationController implements LocationDocs{
             @PageableDefault Pageable pageable
     ) {
         Member member = principal.getMember();
-        Location trgLocation = member.getLocations().get(0);
+        Location trgLocation = member.getLocation();
         return itemService.readNearbyItems(trgLocation, pageable);
     }
 }

@@ -66,7 +66,9 @@ public class WebSecurityConfig {
 
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
-                        .requestMatchers(antMatcher("/api/auth/**")).permitAll()
+                        .requestMatchers(antMatcher(HttpMethod.PUT, "/api/auth/members/me/**")).authenticated()
+                        .requestMatchers(antMatcher(HttpMethod.DELETE, "/api/auth/members/me/**")).authenticated()
+                        .requestMatchers(antMatcher(HttpMethod.GET, "/api/auth/**")).permitAll()
 
                         // 카테고리 API
                         .requestMatchers(antMatcher(HttpMethod.GET, "/api/categories")).permitAll()
@@ -88,6 +90,7 @@ public class WebSecurityConfig {
 
                         // 찜 API
                         .requestMatchers(antMatcher(HttpMethod.POST, "/api/items/*/wishes")).authenticated()
+                        .requestMatchers(antMatcher(HttpMethod.GET, "/api/items/*/wishes")).authenticated()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/api/mypages/wishlists")).authenticated()
 
                         // 팔로우 관련 API
@@ -95,6 +98,16 @@ public class WebSecurityConfig {
                         .requestMatchers(antMatcher(HttpMethod.GET, "/api/members/*/followers")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/api/members/*/followings")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/api/mypages/followerlists")).authenticated()
+
+                        // 리뷰 관련 API
+                        .requestMatchers(antMatcher(HttpMethod.POST, "/api/reviews")).authenticated()
+                        .requestMatchers(antMatcher(HttpMethod.GET, "/api/member/*/reviews")).permitAll()
+                        .requestMatchers(antMatcher(HttpMethod.PUT, "/api/reviews")).authenticated()
+                        .requestMatchers(antMatcher(HttpMethod.DELETE, "/api/reviews")).authenticated()
+
+                        // 거래 관련 API
+                        .requestMatchers(antMatcher(HttpMethod.GET, "/api/mypages/orders")).permitAll()
+                        .requestMatchers(antMatcher(HttpMethod.GET, "/api/mypages/sales")).permitAll()
 
                         // websocket
                         .requestMatchers(antMatcher(HttpMethod.POST, "/chat/**")).permitAll()
