@@ -1,6 +1,7 @@
 package com.example.demo.follow.service;
 
 import com.example.demo.follow.dto.FollowMemberResponseDto;
+import com.example.demo.follow.dto.FollowResponseDto;
 import com.example.demo.follow.entity.Follow;
 import com.example.demo.follow.repository.FollowRepository;
 import com.example.demo.member.entity.Member;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,18 +24,42 @@ public class FollowService {
     private final ShopRepository shopRepository;
 
     @Transactional
-    public ResponseEntity<Void> doShopFollow(Member memberLoggedIn, Long shopId) {
+    public ResponseEntity<FollowResponseDto> toggleShopFollow(Member memberLoggedIn, Long shopId) {
         Shop shop = findShopById(shopId);
 
-        Follow entity = new Follow(memberLoggedIn, shop);
-        followRepository.save(entity);
+        Optional<Follow> optionalFollow = followRepository.findByMemberAndShop_Id(memberLoggedIn, shopId);
+        boolean resultOfFollowing;
+        if (optionalFollow.isPresent()) {
+            Follow entity = optionalFollow.get();
+            resultOfFollowing = deleteFollow(entity);
+        } else {
+            resultOfFollowing = saveFollow(memberLoggedIn, shop);
+        }
 
-        return ResponseEntity.ok(null);
+        FollowResponseDto responseDto = new FollowResponseDto(resultOfFollowing);
+        return ResponseEntity.ok(responseDto);
     }
 
     private Shop findShopById(Long shopId) {
         return shopRepository.findById(shopId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 상점 ID는 존재하지 않습니다."));
+    }
+
+    private boolean saveFollow(Member member, Shop shop) {
+        Follow entity = new Follow(member, shop);
+        followRepository.save(entity);
+        return true;
+    }
+
+    private boolean deleteFollow(Follow entity) {
+        followRepository.delete(entity);
+        return false;
+    }
+
+    public ResponseEntity<FollowResponseDto> readFollowRecordAboutTarget(Member principal, Long shopId) {
+        boolean isFollowing = followRepository.existsByMemberAndShop_Id(principal, shopId);
+        FollowResponseDto responseDto = new FollowResponseDto(isFollowing);
+        return ResponseEntity.ok(responseDto);
     }
 
     public ResponseEntity<List<FollowMemberResponseDto>> readFollowersByMemberId(Long memberId) {

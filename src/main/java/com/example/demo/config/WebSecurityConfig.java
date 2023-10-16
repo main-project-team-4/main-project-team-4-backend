@@ -96,7 +96,8 @@ public class WebSecurityConfig {
                         .requestMatchers(antMatcher(HttpMethod.GET, "/api/mypages/wishlists")).authenticated()
 
                         // 팔로우 관련 API
-                        .requestMatchers(antMatcher(HttpMethod.POST, "/api/members/*/followers")).authenticated()
+                        .requestMatchers(antMatcher(HttpMethod.POST, "/api/shops/*/follows")).authenticated()
+                        .requestMatchers(antMatcher(HttpMethod.GET, "/api/shops/*/follows")).authenticated()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/api/members/*/followers")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/api/members/*/followings")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/api/mypages/followerlists")).authenticated()
