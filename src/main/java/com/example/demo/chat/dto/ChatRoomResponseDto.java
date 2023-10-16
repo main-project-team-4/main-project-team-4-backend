@@ -13,6 +13,7 @@ public class ChatRoomResponseDto {
     private String sellerName;
     private String consumerName;
     private String itemName;
+    private Long itemId;
 
     private String loginMember;
 
@@ -26,6 +27,7 @@ public class ChatRoomResponseDto {
         this.name = chatRoom.getRoomName();
         this.sellerName = chatRoom.getSeller().getNickname();
         this.consumerName = chatRoom.getConsumer().getNickname();
+        this.itemId = item.getId();
         this.itemName = item.getName();
         this.loginMember = member.getNickname();
     }

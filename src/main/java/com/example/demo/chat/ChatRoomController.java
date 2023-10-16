@@ -22,12 +22,6 @@ import java.util.List;
 public class ChatRoomController {
     private final ChatRoomService chatRoomService;
 
-    // 채팅 리스트 화면
-//    @GetMapping("/room")
-//    public String rooms(Model model) {
-//        return "/chat/room";
-//    }
-
     // 모든 채팅방 목록 반환 - 유저별
     @GetMapping("/rooms")
     public List<ChatRoomResponseDto> getAllChatRooms(@AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -51,9 +45,11 @@ public class ChatRoomController {
     }
 
     // 채팅방 입장 화면
-    @GetMapping("/room/enter/{roomId}")
-    public String roomDetail(Model model, @PathVariable String roomId) {
+    @GetMapping("/room/{itemId}/{roomId}")
+    public ModelAndView roomDetail(Model model, @PathVariable String roomId, @PathVariable Long itemId) {
         model.addAttribute("roomId", roomId);
-        return "/chat/roomdetail";
+        model.addAttribute("itemId", itemId);
+        ModelAndView page = new ModelAndView("/chat/roomdetail");
+        return page;
     }
 }
