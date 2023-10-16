@@ -66,6 +66,7 @@ public class WebSecurityConfig {
 
         http.authorizeHttpRequests((authorizeHttpRequests) ->
                 authorizeHttpRequests
+                        .requestMatchers(antMatcher(HttpMethod.GET, "/api/auth/members/me")).authenticated()
                         .requestMatchers(antMatcher(HttpMethod.PUT, "/api/auth/members/me/**")).authenticated()
                         .requestMatchers(antMatcher(HttpMethod.DELETE, "/api/auth/members/me/**")).authenticated()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/api/auth/**")).permitAll()
