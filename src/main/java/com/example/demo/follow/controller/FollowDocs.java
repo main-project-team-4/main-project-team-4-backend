@@ -2,6 +2,7 @@ package com.example.demo.follow.controller;
 
 
 import com.example.demo.follow.dto.FollowMemberResponseDto;
+import com.example.demo.follow.dto.FollowResponseDto;
 import com.example.demo.security.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -34,26 +35,11 @@ public interface FollowDocs {
             content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = FollowMemberResponseDto.class)
-            )//응답받을 데이터 타입
-    )
-    @ApiResponse(
-            responseCode = "404",
-            description = "'~~'번 팔로우는 존재하지 않음.",
-            content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorResponse.class)
-            ))
-    @ApiResponse(
-            responseCode = "500",
-            description = "서버 에러",
-            content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorResponse.class)
             )
     )
-     ResponseEntity<Void> doShopFollow(
-            @PathVariable Long shopId,
-            @AuthenticationPrincipal UserDetailsImpl principal
+     ResponseEntity<FollowResponseDto> toggleShopFollow(
+             Long shopId,
+             UserDetailsImpl principal
     );
 
     @Operation(
@@ -153,5 +139,25 @@ public interface FollowDocs {
     )
     ResponseEntity<List<FollowMemberResponseDto>> readFollowerListInMyPage(
             @AuthenticationPrincipal UserDetailsImpl principal
+    );
+
+    @Operation(
+            summary = "팔로우 여부 조회 API",
+            description = """
+                    팔로우 여부 조회 API. <br>
+                    로그인 유저가 해당 유저를 팔로우 했는지 확인.
+                    """
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "정상 작동",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = FollowResponseDto.class)
+            )
+    )
+    ResponseEntity<FollowResponseDto> readFollowersByMemberId(
+            Long memberId,
+            UserDetailsImpl principal
     );
 }

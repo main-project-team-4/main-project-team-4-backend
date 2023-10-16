@@ -1,6 +1,7 @@
 package com.example.demo.follow.controller;
 
 import com.example.demo.follow.dto.FollowMemberResponseDto;
+import com.example.demo.follow.dto.FollowResponseDto;
 import com.example.demo.follow.service.FollowService;
 import com.example.demo.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +20,19 @@ public class FollowController implements FollowDocs {
     private final FollowService followService;
 
     @PostMapping("/api/shops/{shopId}/follows")
-    public ResponseEntity<Void> doShopFollow(
+    public ResponseEntity<FollowResponseDto> toggleShopFollow(
             @PathVariable Long shopId,
             @AuthenticationPrincipal UserDetailsImpl principal
             ) {
-        return followService.doShopFollow(principal.getMember() , shopId);
+        return followService.toggleShopFollow(principal.getMember(), shopId);
+    }
+
+    @GetMapping("/api/shops/{shopId}/follows")
+    public ResponseEntity<FollowResponseDto> readFollowersByMemberId(
+            @PathVariable Long shopId,
+            @AuthenticationPrincipal UserDetailsImpl principal
+    ) {
+        return followService.readFollowRecordAboutTarget(principal.getMember(), shopId);
     }
 
     @GetMapping("/api/members/{memberId}/followers")
