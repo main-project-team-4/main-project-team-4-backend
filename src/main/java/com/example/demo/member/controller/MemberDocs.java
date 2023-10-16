@@ -4,6 +4,7 @@ package com.example.demo.member.controller;
 import com.example.demo.dto.MessageResponseDto;
 import com.example.demo.member.dto.LocationRequestDto;
 import com.example.demo.member.dto.MemberInfoRequestDto;
+import com.example.demo.member.dto.MyPageMemberResponseDto;
 import com.example.demo.security.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -119,6 +120,24 @@ public interface MemberDocs {
                     content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)
             )
             MultipartFile image,
+            UserDetailsImpl principal
+    );
+
+    @Operation(
+            summary = "회원 정보 조회 API",
+            description = """
+                    회원 정보 조회 API.<br>
+                    """
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "정상 작동",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = MyPageMemberResponseDto.class)
+            )
+    )
+    ResponseEntity<MyPageMemberResponseDto> readMyPageMember(
             UserDetailsImpl principal
     );
 }

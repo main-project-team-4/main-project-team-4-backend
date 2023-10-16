@@ -5,6 +5,7 @@ import com.example.demo.item.service.S3Uploader;
 import com.example.demo.location.entity.MemberLocation;
 import com.example.demo.member.dto.LocationRequestDto;
 import com.example.demo.member.dto.MemberInfoRequestDto;
+import com.example.demo.member.dto.MyPageMemberResponseDto;
 import com.example.demo.member.entity.Member;
 import com.example.demo.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -78,5 +79,12 @@ public class MemberService {
         memberRepository.save(member);
         MessageResponseDto msg = new MessageResponseDto("회원 프로필 사진 수정에 성공하였습니다.", HttpStatus.OK.value());
         return ResponseEntity.status(HttpStatus.OK).body(msg);
+    }
+
+    @Transactional
+    public ResponseEntity<MyPageMemberResponseDto> readMyPageMember(Member member) {
+        Member saved = memberRepository.save(member);
+        MyPageMemberResponseDto responseDto = new MyPageMemberResponseDto(saved);
+        return ResponseEntity.ok(responseDto);
     }
 }
