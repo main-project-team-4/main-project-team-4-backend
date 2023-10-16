@@ -7,13 +7,14 @@ import com.example.demo.shop.entity.Shop;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity @Table
 @Getter @Setter @NoArgsConstructor
-public class Member {
+public class Member implements Serializable {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

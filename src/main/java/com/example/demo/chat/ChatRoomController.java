@@ -2,14 +2,9 @@ package com.example.demo.chat;
 
 import com.example.demo.chat.dto.ChatRoomResponseDto;
 import com.example.demo.chat.entity.ChatRoom;
-import com.example.demo.dto.MessageResponseDto;
-import com.example.demo.item.entity.Item;
 import com.example.demo.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.h2.engine.Mode;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -31,8 +26,8 @@ public class ChatRoomController {
     // 채팅방 생성 - 아이템 상세 페이지 -> 채팅하기 버튼 누르면 실행
     @PostMapping("/room/{itemId}")
     @ResponseBody
-    public ResponseEntity<MessageResponseDto> createRoom(@PathVariable Long itemId,
-                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ChatRoom createRoom(@PathVariable Long itemId,
+                               @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return chatRoomService.createChatRoom(itemId, userDetails.getMember());
     }
 

@@ -8,6 +8,7 @@ import com.example.demo.shop.entity.Shop;
 import com.example.demo.location.entity.Location;
 import com.example.demo.trade.type.State;
 import com.example.demo.wish.entity.Wish;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -53,6 +54,7 @@ public class Item extends TimeStamp {
     @JoinColumn(name = "shop_id")
     private Shop shop;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_mid_id")
     private CategoryM categoryMidId;
