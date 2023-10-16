@@ -38,8 +38,8 @@ public class MemberApiTest {
             executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
     )
     @Test
-    @DisplayName("[정상 작동] GET /api/auth/members/me")
-    void read_run() throws Exception {
+    @DisplayName("[정상 작동] PUT /api/auth/members/me")
+    void updateMember_run() throws Exception {
         // given
         String url = "/api/auth/members/me";
 

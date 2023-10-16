@@ -9,12 +9,17 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
 @LoadEnvironmentVariables
@@ -22,11 +27,7 @@ public class CategoryApiTest {
     @Autowired
     private MockMvc mvc;
 
-    @Sql(
-            scripts = {"classpath:testcase-category.sql"},
-            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
-    )
-    @Test
+    @Test @Sql(scripts = {"classpath:testcase-category.sql"})
     @DisplayName("[정상 작동] GET /api/categories/{categoryId}")
     void read_run() throws Exception {
         // given
@@ -50,11 +51,7 @@ public class CategoryApiTest {
         ;
     }
 
-    @Sql(
-            scripts = {"classpath:testcase-category.sql"},
-            executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
-    )
-//    @Test
+    @Test @Sql(scripts = {"classpath:testcase-category.sql"})
     @DisplayName("[비정상 작동] GET /api/categories/{categoryId} - 존재하지 않는 ID 요구")
     void read_occur_error_when_wrong_category_id() throws Exception {
         // given
@@ -70,7 +67,101 @@ public class CategoryApiTest {
                 .andDo(print())
 
                 // 실제로 내가 원하는 값이 나오는 지 확인하기.
-                .andExpect(status().is4xxClientError())
+                .andExpect(status().isBadRequest())
         ;
+    }
+
+    @Test @Sql(scripts = {"classpath:testcase-category.sql"})
+    @DisplayName("[비정상 작동] GET /api/categories/{categoryId} - 존재하지 않는 layer 요구")
+    void read_occur_error_when_wrong_layer() throws Exception {
+        String notExistedLayer = "10000";
+
+        mvc.perform(
+                        get("/api/categories/1")
+                                .param("layer", notExistedLayer)
+                ).andDo(print())
+
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test @Sql(scripts = {"classpath:testcase-category.sql"})
+    @DisplayName("[정상 작동] GET /api/categories/{categoryId}/categories")
+    void readChildCategory_run() throws Exception {
+        int numOfMiddleCategoryOf1stChildren = 2;
+
+        mvc.perform(
+                        get("/api/categories/1/categories")
+                ).andDo(print())
+
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(hasSize(numOfMiddleCategoryOf1stChildren)))
+                .andExpect(jsonPath("$[*].id").hasJsonPath())
+                .andExpect(jsonPath("$[*].name").hasJsonPath());
+    }
+
+    @Test @Sql(scripts = {"classpath:testcase-category.sql"})
+    @DisplayName("[정상 작동] GET /api/categories/{categoryId}/items - 기본 설정값은 layer 2")
+    void readChildItem_run_when_no_layer() throws Exception {
+        int numOfMiddleCategoryOf1stItem = 2;
+        List<String> middleCategoryOf1stItemIdList = List.of("jacket1", "jacket2");
+
+        mvc.perform(
+                        get("/api/categories/1/items")
+                ).andDo(print())
+
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*]").value(hasSize(numOfMiddleCategoryOf1stItem)))
+                .andExpect(jsonPath("$[*].name").value(everyItem(in(middleCategoryOf1stItemIdList))));
+    }
+
+    @Test @Sql(scripts = {"classpath:testcase-category.sql"})
+    @DisplayName("[정상 작동] GET /api/categories/{categoryId}/items - 중분류 item 조회")
+    void readChildItem_run_when_layer_2() throws Exception {
+        int numOfMiddleCategoryOf1stItem = 2;
+        List<String> middleCategoryOf1stItemIdList = List.of("jacket1", "jacket2");
+
+        mvc.perform(
+                        get("/api/categories/1/items")
+                                .param("layer", "2")
+                ).andDo(print())
+
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*]").value(hasSize(numOfMiddleCategoryOf1stItem)))
+                .andExpect(jsonPath("$[*].name").value(everyItem(in(middleCategoryOf1stItemIdList))));
+    }
+
+    @Test @Sql(scripts = {"classpath:testcase-category.sql"})
+    @DisplayName("[정상 작동] GET /api/categories/{categoryId}/items - 대분류 item 조회")
+    void readChildItem_run_when_layer_1() throws Exception {
+        int numOfLargeCategoryOf1stItem = 4;
+        List<String> largeCategoryOf1stItemIdList = List.of("jacket1", "jacket2", "jean1", "jean2");
+
+        mvc.perform(
+                        get("/api/categories/1/items")
+                                .param("layer", "1")
+                ).andDo(print())
+
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*]").value(hasSize(numOfLargeCategoryOf1stItem)))
+                .andExpect(jsonPath("$[*].name").value(everyItem(in(largeCategoryOf1stItemIdList))));
+    }
+
+    @Test @Sql(scripts = {"classpath:testcase-category.sql"})
+    @DisplayName("[정상 작동] GET /api/categories/all/categories")
+    void readCategoryRecursively_run() throws Exception {
+        mvc.perform(
+                        get("/api/categories/all/categories")
+                                .param("layer", "1")
+                ).andDo(print())
+
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*].large_category_id").exists())
+                .andExpect(jsonPath("$[*].large_category_name").exists())
+                .andExpect(jsonPath("$[*].children.[*].mid_category_id").exists())
+                .andExpect(jsonPath("$[*].children.[*].mid_category_name").exists())
+                .andExpect(jsonPath("$[*].children.[*].large_category_id").exists())
+                .andExpect(jsonPath("$[*].children.[*].large_category_name").exists())
+
+                .andExpect(jsonPath("$[?(@.large_category_id == '1')].children.[*].large_category_id").value(everyItem(is(1))));
     }
 }
