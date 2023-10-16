@@ -4,6 +4,7 @@ import com.example.demo.category.entity.CategoryM;
 import com.example.demo.item.entity.Item;
 import com.example.demo.member.entity.Member;
 import com.example.demo.shop.entity.Shop;
+import com.example.demo.trade.type.State;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -42,6 +43,8 @@ public class ItemSearchResponseDto {
     @Schema(description = "상품의 메인 이미지", example = "https://m.hoopbro.co.kr/web/product/big/202308/68034e9c48fe22a0aab33bb52b9b0f4c.jpg")
     @JsonProperty("image_url")
     private String imageUrl;
+    @Schema(description = "상품의 상태. SELLEING, RESERVED, SOLDOUT 중 하나의 값을 가짐.", example = "SELLEING")
+    private String state;
 
     public ItemSearchResponseDto(Item entity) {
         this.itemId = entity.getId();
@@ -62,5 +65,8 @@ public class ItemSearchResponseDto {
 
         Optional<URL> imageUrl = Optional.of(entity).map(Item::getMain_image);
         this.imageUrl = imageUrl.map(URL::toString).orElse(null);
+
+        Optional<State> state = Optional.of(entity).map(Item::getState);
+        this.state = state.orElse(State.SELLING).name();
     }
 }

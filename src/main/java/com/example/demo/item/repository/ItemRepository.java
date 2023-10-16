@@ -6,7 +6,10 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface ItemRepository extends JpaRepository<Item, Long>, SearchRepository {
+public interface ItemRepository extends
+        JpaRepository<Item, Long>,
+        SearchRepository, PopularRepository, DistanceRepository, ShopDisplayRepository, TransactionRepository
+{
 
     @Query("SELECT i FROM Item i " +
             "JOIN FETCH i.categoryMidId " +

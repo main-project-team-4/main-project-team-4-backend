@@ -30,7 +30,7 @@ public class Shop implements Serializable {
     @Column(name = "intro")
     private String shopIntro;
     @Column(name = "star_avg")
-    private double star;
+    private Double star;
 
     @OneToMany(mappedBy = "shop", orphanRemoval = true)
     private List<Item> itemList = new ArrayList<>();
@@ -53,6 +53,11 @@ public class Shop implements Serializable {
 
     public Shop(ShopRequestDto requestDto, Member member){
         this.shopName = requestDto.getShopName();
+        this.member = member;
+    }
+
+    public Shop(Member member){
+        this.shopName = member.getNickname();
         this.member = member;
     }
 
