@@ -1,20 +1,20 @@
 package com.example.demo.chat;
 
 import com.example.demo.chat.dto.ChatRoomResponseDto;
-import com.example.demo.dto.MessageResponseDto;
+import com.example.demo.chat.entity.ChatRoom;
 import com.example.demo.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/chat")
-public class ChatRoomController implements ChatRoomDocs {
+public class ChatRoomController{
     private final ChatRoomService chatRoomService;
 
     // 채팅 리스트 화면
@@ -32,8 +32,8 @@ public class ChatRoomController implements ChatRoomDocs {
     // 채팅방 생성 - 아이템 상세 페이지 -> 채팅하기 버튼 누르면 실행
     @PostMapping("/room/{itemId}")
     @ResponseBody
-    public ResponseEntity<MessageResponseDto> createRoom(@PathVariable Long itemId,
-                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ChatRoom createRoom(@PathVariable Long itemId,
+                               @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return chatRoomService.createChatRoom(itemId, userDetails.getMember());
     }
 
@@ -46,9 +46,11 @@ public class ChatRoomController implements ChatRoomDocs {
     }
 
     // 채팅방 입장 화면
-    @GetMapping("/room/enter/{roomId}")
-    public String roomDetail(Model model, @PathVariable String roomId) {
+    @GetMapping("/room/{itemId}/{roomId}")
+    public ModelAndView roomDetail(Model model, @PathVariable String roomId, @PathVariable Long itemId) {
         model.addAttribute("roomId", roomId);
-        return "/chat/roomdetail";
+        model.addAttribute("itemId", itemId);
+        ModelAndView page = new ModelAndView("/chat/roomdetail");
+        return page;
     }
 }
