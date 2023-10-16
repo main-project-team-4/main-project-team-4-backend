@@ -1,18 +1,13 @@
 package com.example.demo.chat;
 
 import com.example.demo.chat.dto.ChatRoomResponseDto;
-import com.example.demo.chat.entity.ChatRoom;
 import com.example.demo.dto.MessageResponseDto;
-import com.example.demo.item.entity.Item;
 import com.example.demo.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.h2.engine.Mode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
