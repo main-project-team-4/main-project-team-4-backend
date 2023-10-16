@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @Controller
-public class ChatController {
+public class ChatController implements ChatDocs{
     private final SimpMessageSendingOperations messagingTemplate;
 
     @MessageMapping("/chat/message")
