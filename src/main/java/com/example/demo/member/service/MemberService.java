@@ -3,9 +3,7 @@ package com.example.demo.member.service;
 import com.example.demo.dto.MessageResponseDto;
 import com.example.demo.item.service.S3Uploader;
 import com.example.demo.location.entity.MemberLocation;
-import com.example.demo.member.dto.LocationRequestDto;
-import com.example.demo.member.dto.MemberInfoRequestDto;
-import com.example.demo.member.dto.MyPageMemberResponseDto;
+import com.example.demo.member.dto.*;
 import com.example.demo.member.entity.Member;
 import com.example.demo.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -85,6 +83,13 @@ public class MemberService {
     public ResponseEntity<MyPageMemberResponseDto> readMyPageMember(Member member) {
         Member saved = memberRepository.save(member);
         MyPageMemberResponseDto responseDto = new MyPageMemberResponseDto(saved);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    public ResponseEntity<ShopPageMemberResponseDto> readMemberInShopPage(Long memberId) {
+        MemberWithFollowMapper entity = memberRepository.findWithFollowInfoById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 유저는 존재하지 않습니다."));
+        ShopPageMemberResponseDto responseDto = new ShopPageMemberResponseDto(entity);
         return ResponseEntity.ok(responseDto);
     }
 }

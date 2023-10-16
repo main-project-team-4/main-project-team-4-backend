@@ -2,10 +2,7 @@ package com.example.demo.member.controller;
 
 import com.example.demo.dto.MessageResponseDto;
 import com.example.demo.kakao.service.KakaoService;
-import com.example.demo.member.dto.LocationRequestDto;
-import com.example.demo.member.dto.LoginResponseDto;
-import com.example.demo.member.dto.MemberInfoRequestDto;
-import com.example.demo.member.dto.MyPageMemberResponseDto;
+import com.example.demo.member.dto.*;
 import com.example.demo.member.service.MemberService;
 import com.example.demo.security.UserDetailsImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -28,6 +25,13 @@ public class MemberController implements MemberDocs{
             @AuthenticationPrincipal UserDetailsImpl principal
     ) {
         return memberService.readMyPageMember(principal.getMember());
+    }
+
+    @GetMapping("/members/{memberId}")
+    public ResponseEntity<ShopPageMemberResponseDto> readMemberInShopPage(
+            @PathVariable Long memberId
+    ) {
+        return memberService.readMemberInShopPage(memberId);
     }
 
     @PutMapping("/members/me")
