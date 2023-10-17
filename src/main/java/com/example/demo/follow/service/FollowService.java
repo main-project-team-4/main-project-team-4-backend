@@ -76,8 +76,15 @@ public class FollowService {
         return ResponseEntity.ok(dtoList);
     }
 
-    public ResponseEntity<List<FollowMemberResponseDto>> readFollowersByShopId(Long shopId, Long id) {
+    public ResponseEntity<List<FollowMemberResponseDto>> readFollowersByShopId(Long shopId) {
         List<FollowMemberResponseDto> dtoList = memberRepository.findFollowersByMember_Id(shopId).stream()
+                .map(FollowMemberResponseDto::new)
+                .toList();
+        return ResponseEntity.ok(dtoList);
+    }
+
+    public ResponseEntity<List<FollowMemberResponseDto>> readFollowingsByShopId(Long shopId) {
+        List<FollowMemberResponseDto> dtoList = memberRepository.findFollowingsByMember_Id(shopId).stream()
                 .map(FollowMemberResponseDto::new)
                 .toList();
         return ResponseEntity.ok(dtoList);

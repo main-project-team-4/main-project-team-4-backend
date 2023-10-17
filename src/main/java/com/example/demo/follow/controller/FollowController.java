@@ -35,20 +35,6 @@ public class FollowController implements FollowDocs {
         return followService.readFollowRecordAboutTarget(principal.getMember(), shopId);
     }
 
-    @GetMapping("/api/members/{memberId}/followers")
-    public ResponseEntity<List<FollowMemberResponseDto>> readFollowersByMemberId(
-            @PathVariable Long memberId
-    ) {
-        return followService.readFollowersByMemberId(memberId);
-    }
-
-    @GetMapping("/api/members/{memberId}/followings")
-    public ResponseEntity<List<FollowMemberResponseDto>> readFollowingsByMemberId(
-            @PathVariable Long memberId
-    ) {
-        return followService.readFollowingsByMemberId(memberId);
-    }
-
     @GetMapping("/api/mypages/followerlists")
     public ResponseEntity<List<FollowMemberResponseDto>> readFollowerListInMyPage(
             @AuthenticationPrincipal UserDetailsImpl principal
@@ -56,11 +42,18 @@ public class FollowController implements FollowDocs {
         return followService.readFollowingsByMemberId(principal.getMember().getId());
     }
 
+    @GetMapping("/api/shops/{shopId}/followings")
+    public ResponseEntity<List<FollowMemberResponseDto>> readFollowingsByMemberId(
+            @PathVariable Long shopId
+    ) {
+        return followService.readFollowingsByShopId(shopId);
+    }
+
     @GetMapping("/api/shops/{shop_id}/followers")
     public ResponseEntity<List<FollowMemberResponseDto>> readFollowerListByShopId(
-            @PathVariable("shop_id") Long shopId, @AuthenticationPrincipal UserDetailsImpl principal
+            @PathVariable("shop_id") Long shopId
     ) {
-        return followService.readFollowersByShopId(shopId, principal.getMember().getId());
+        return followService.readFollowersByShopId(shopId);
     }
 
 

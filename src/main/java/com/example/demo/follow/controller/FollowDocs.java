@@ -71,7 +71,7 @@ public interface FollowDocs {
                     schema = @Schema(implementation = ErrorResponse.class)
             )
     )
-    ResponseEntity<List<FollowMemberResponseDto>> readFollowersByMemberId(
+    ResponseEntity<List<FollowMemberResponseDto>> readFollowerListByShopId(
             @PathVariable Long memberId
     );
 
