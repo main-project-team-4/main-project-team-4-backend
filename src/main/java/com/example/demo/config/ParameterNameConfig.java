@@ -26,9 +26,15 @@ public class ParameterNameConfig {
         public static final String PRICE = "item_price";
     }
 
+    public static class Category {
+        public static final String ID = "category_id";
+        public static final String NAME = "category_name";
+    }
+
     public static class CategoryLarge {
         public static final String ID = "category_l_id";
         public static final String NAME = "category_l_name";
+        public static final String CHILDREN = "children";
     }
 
     public static class CategoryMiddle {
