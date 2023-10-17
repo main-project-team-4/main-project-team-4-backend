@@ -1,6 +1,7 @@
 package com.example.demo.review.dto;
 
 
+import com.example.demo.config.ParameterNameConfig;
 import com.example.demo.item.entity.Item;
 import com.example.demo.member.entity.Member;
 import com.example.demo.review.entity.Review;
@@ -17,24 +18,27 @@ import java.util.Optional;
 @Setter
 public class ReviewResponseDto {
     @Schema(description = "리뷰 id", example = "1")
+    @JsonProperty(ParameterNameConfig.Review.ID)
     private Long id;
     @Schema(description = "리뷰 내용", example = "맛있어요!")
+    @JsonProperty(ParameterNameConfig.Review.COMMENT)
     private String comment;
     @Schema(description = "리뷰 작성 시간", example = "2021-08-09T15:00:00")
+    @JsonProperty(ParameterNameConfig.Review.CREATED_AT)
     private LocalDateTime createdAt;
 
     @Schema(description = "리뷰한 상품 ID", example = "1423")
-    @JsonProperty("item_id")
+    @JsonProperty(ParameterNameConfig.Item.ID)
     private Long itemId;
     @Schema(description = "리뷰한 상품 이름", example = "아우터")
-    @JsonProperty("item_name")
+    @JsonProperty(ParameterNameConfig.Item.NAME)
     private String itemName;
 
     @Schema(description = "리뷰어 ID", example = "1423")
-    @JsonProperty("review_id")
+    @JsonProperty(ParameterNameConfig.Member.ID)
     private Long reviewerId;
     @Schema(description = "리뷰어 이름", example = "iksadnorth")
-    @JsonProperty("review_name")
+    @JsonProperty(ParameterNameConfig.Member.NICKNAME)
     private String reviewerName;
 
     public ReviewResponseDto(Review review) {
