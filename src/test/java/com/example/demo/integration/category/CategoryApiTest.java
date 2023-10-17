@@ -46,8 +46,8 @@ public class CategoryApiTest {
                 .andExpect(status().isOk())
                 // JsonPath 관련 문법 레퍼런스
                 // https://seongjin.me/how-to-use-jsonpath-in-kubernetes/
-                .andExpect(jsonPath("$.id").value("1"))
-                .andExpect(jsonPath("$.name").value("man"))
+                .andExpect(jsonPath("$.category_id").value("1"))
+                .andExpect(jsonPath("$.category_name").value("man"))
         ;
     }
 
@@ -95,8 +95,8 @@ public class CategoryApiTest {
 
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(hasSize(numOfMiddleCategoryOf1stChildren)))
-                .andExpect(jsonPath("$[*].id").hasJsonPath())
-                .andExpect(jsonPath("$[*].name").hasJsonPath());
+                .andExpect(jsonPath("$[*].category_id").hasJsonPath())
+                .andExpect(jsonPath("$[*].category_name").hasJsonPath());
     }
 
     @Test @Sql(scripts = {"classpath:testcase-category.sql"})
@@ -155,13 +155,13 @@ public class CategoryApiTest {
                 ).andDo(print())
 
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[*].large_category_id").exists())
-                .andExpect(jsonPath("$[*].large_category_name").exists())
-                .andExpect(jsonPath("$[*].children.[*].mid_category_id").exists())
-                .andExpect(jsonPath("$[*].children.[*].mid_category_name").exists())
-                .andExpect(jsonPath("$[*].children.[*].large_category_id").exists())
-                .andExpect(jsonPath("$[*].children.[*].large_category_name").exists())
+                .andExpect(jsonPath("$[*].category_l_id").exists())
+                .andExpect(jsonPath("$[*].category_l_name").exists())
+                .andExpect(jsonPath("$[*].children.[*].category_m_id").exists())
+                .andExpect(jsonPath("$[*].children.[*].category_m_name").exists())
+                .andExpect(jsonPath("$[*].children.[*].category_l_id").exists())
+                .andExpect(jsonPath("$[*].children.[*].category_l_name").exists())
 
-                .andExpect(jsonPath("$[?(@.large_category_id == '1')].children.[*].large_category_id").value(everyItem(is(1))));
+                .andExpect(jsonPath("$[?(@.category_l_id == '1')].children.[*].category_l_id").value(everyItem(is(1))));
     }
 }
