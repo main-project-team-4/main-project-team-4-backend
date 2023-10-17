@@ -24,5 +24,17 @@ public interface MemberRepository extends JpaRepository<Member,Long>, WithFollow
             "WHERE f.member.id = :memberId")
     List<Member> findFollowingsByMember_Id(Long memberId);
 
+    @Query("SELECT m FROM Member m " +
+            "JOIN m.followList f " +
+            "JOIN f.shop s " +
+            "WHERE s.id = :shopId")
+    List<Member> findFollowersByShop_Id(Long shopId);
+
+    @Query("SELECT m FROM Member m " +
+            "JOIN m.shop s " +
+            "JOIN s.follows f " +
+            "WHERE f.member.shop.id = :shopId")
+    List<Member> findFollowingsByShop_Id(Long shopId);
+
     Optional<Member> findByNickname(String nickname);
 }

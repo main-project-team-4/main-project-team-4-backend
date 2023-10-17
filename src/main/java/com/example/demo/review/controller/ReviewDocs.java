@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -114,4 +116,23 @@ public interface ReviewDocs {
             )
     )
     ResponseEntity<MessageResponseDto> deleteReview(@PathVariable Long review_id, @AuthenticationPrincipal UserDetailsImpl userDetails);
+
+    @Operation(
+            summary = "상점 리뷰 목록 API",
+            description = """
+                    상점 리뷰 목록 API
+                    """
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "정상 작동",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ReviewResponseDto.class)
+            )
+    )
+    ResponseEntity<Page<ReviewResponseDto>> readReviewList(
+            Long shopId,
+            Pageable pageable
+    );
 }

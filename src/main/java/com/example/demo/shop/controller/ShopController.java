@@ -5,7 +5,6 @@ import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.item.service.ItemService;
 import com.example.demo.member.dto.SignupRequestDto;
 import com.example.demo.member.entity.Member;
-import com.example.demo.member.service.MemberService;
 import com.example.demo.security.UserDetailsImpl;
 import com.example.demo.shop.dto.ShopRequestDto;
 import com.example.demo.shop.dto.ShopResponseDto;
@@ -49,12 +48,12 @@ public class ShopController implements ShopDocs{
         return shopService.insertShop(member);
     }
 
-    @GetMapping("/members/{memberId}/items")
+    @GetMapping("/shops/{shopId}/items")
     public ResponseEntity<Page<ItemSearchResponseDto>> readItemsOfShop(
-            @PathVariable Long memberId,
+            @PathVariable Long shopId,
             @PageableDefault Pageable pageable
             ) {
-        return itemService.readItemsOfShop(memberId, pageable);
+        return itemService.readItemsOfShop(shopId, pageable);
     }
 
 }
