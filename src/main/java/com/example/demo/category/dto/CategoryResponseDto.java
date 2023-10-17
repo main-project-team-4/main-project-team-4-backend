@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 @Getter @RequiredArgsConstructor
 public class CategoryResponseDto {
     @Schema(description = "카테고리 id", example = "1")
-    @JsonProperty(ParameterNameConfig.Category.NAME)
+    @JsonProperty(ParameterNameConfig.Category.ID)
     private Long id;
     @Schema(description = "카테고리 이름", example = "남성의류")
     @JsonProperty(ParameterNameConfig.Category.NAME)

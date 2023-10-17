@@ -21,6 +21,7 @@ public class ParameterNameConfig {
         public static final String COMMENT = "item_comment";
         public static final String MAIN_IMAGE = "item_main_image";
         public static final String SUB_IMAGE = "item_sub_image";
+        public static final String IMAGES = "item_image_list";
         public static final String NAME = "item_name";
         public static final String STATE = "item_state";
         public static final String PRICE = "item_price";
