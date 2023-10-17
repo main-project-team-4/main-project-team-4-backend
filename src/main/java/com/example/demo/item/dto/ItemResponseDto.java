@@ -2,6 +2,7 @@ package com.example.demo.item.dto;
 
 import com.example.demo.category.entity.CategoryL;
 import com.example.demo.category.entity.CategoryM;
+import com.example.demo.config.ParameterNameConfig;
 import com.example.demo.item.entity.Item;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,31 +15,38 @@ import java.util.Optional;
 @Getter
 public class ItemResponseDto {
     @Schema(description = "상품의 id", example = "1")
+    @JsonProperty(ParameterNameConfig.Item.ID)
     public Long id;
     @Schema(description = "상품의 가게(상점) id", example = "1")
+    @JsonProperty(ParameterNameConfig.Shop.ID)
     private Long shopId;
     @Schema(description = "상품의 이름", example = "아비렉스 가죽자켓")
+    @JsonProperty(ParameterNameConfig.Item.NAME)
     private String name;
     @Schema(description = "상품의 가격", example = "10000")
+    @JsonProperty(ParameterNameConfig.Item.PRICE)
     private int price;
     @Schema(description = "상품 설명", example = "친칠라들이 좋아합니다!")
+    @JsonProperty(ParameterNameConfig.Item.COMMENT)
     private String comment;
     @Schema(description = "상품의 메인 이미지", example = "https://m.hoopbro.co.kr/web/product/big/202308/68034e9c48fe22a0aab33bb52b9b0f4c.jpg")
+    @JsonProperty(ParameterNameConfig.Item.MAIN_IMAGE)
     private URL main_image;
     @Schema(description = "상품의 서브 이미지들", example = "https://m.hoopbro.co.kr/web/product/big/202308/68034e9c48fe22a0aab33bb52b9b0f4c.jpg")
+    @JsonProperty(ParameterNameConfig.Item.SUB_IMAGE)
     private List<URL> sub_images;
 
     @Schema(description = "대분류 카테고리 ID", example = "1")
-    @JsonProperty("large_category_id")
+    @JsonProperty(ParameterNameConfig.CategoryLarge.ID)
     private Long largeCategoryId;
     @Schema(description = "대분류 카테고리 이름", example = "여성 의류")
-    @JsonProperty("large_category_name")
+    @JsonProperty(ParameterNameConfig.CategoryLarge.NAME)
     private String largeCategoryName;
     @Schema(description = "중분류 카테고리 ID", example = "1")
-    @JsonProperty("middle_category_id")
+    @JsonProperty(ParameterNameConfig.CategoryMiddle.ID)
     private Long middleCategoryId;
     @Schema(description = "중분류 카테고리 이름", example = "아우터")
-    @JsonProperty("middle_category_name")
+    @JsonProperty(ParameterNameConfig.CategoryMiddle.NAME)
     private String middleCategoryName;
 
     public ItemResponseDto(Item item) {
