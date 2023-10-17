@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,11 +30,8 @@ public class ItemResponseDto {
     @Schema(description = "상품 설명", example = "친칠라들이 좋아합니다!")
     @JsonProperty(ParameterNameConfig.Item.COMMENT)
     private String comment;
-    @Schema(description = "상품의 메인 이미지", example = "https://m.hoopbro.co.kr/web/product/big/202308/68034e9c48fe22a0aab33bb52b9b0f4c.jpg")
-    @JsonProperty(ParameterNameConfig.Item.MAIN_IMAGE)
-    private URL main_image;
-    @Schema(description = "상품의 서브 이미지들", example = "https://m.hoopbro.co.kr/web/product/big/202308/68034e9c48fe22a0aab33bb52b9b0f4c.jpg")
-    @JsonProperty(ParameterNameConfig.Item.SUB_IMAGE)
+    @Schema(description = "상품의 이미지들", example = "[https://m.hoopbro.co.kr/web/product/big/202308/68034e9c48fe22a0aab33bb52b9b0f4c.jpg]")
+    @JsonProperty(ParameterNameConfig.Item.IMAGES)
     private List<URL> sub_images;
 
     @Schema(description = "대분류 카테고리 ID", example = "1")
@@ -55,8 +53,7 @@ public class ItemResponseDto {
         this.name = item.getName();
         this.price = item.getPrice();
         this.comment = item.getComment();
-        this.main_image = item.getMain_image();
-        this.sub_images = item.getSub_images();
+        this.sub_images = getImageTotalImages(item);
 
         Optional<CategoryM> middleCategory = Optional.of(item.getCategoryMidId());
         this.middleCategoryId = middleCategory.map(CategoryM::getId).orElse(null);
@@ -65,5 +62,15 @@ public class ItemResponseDto {
         Optional<CategoryL> largeCategory = middleCategory.map(CategoryM::getParent);
         this.largeCategoryId = largeCategory.map(CategoryL::getId).orElse(null);
         this.largeCategoryName = largeCategory.map(CategoryL::getName).orElse(null);
+    }
+
+    private List<URL> getImageTotalImages(Item item) {
+        URL mainImage = item.getMain_image();
+        List<URL> subImages = item.getSub_images();
+
+        List<URL> imageList = new ArrayList<>(1 + subImages.size());
+        imageList.add(mainImage);
+        imageList.addAll(subImages);
+        return imageList;
     }
 }
