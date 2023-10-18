@@ -35,7 +35,7 @@ public class Member {
     @Column(name = "image", nullable = true)
     private URL image;
 
-    @OneToOne(mappedBy = "member", cascade = CascadeType.PERSIST)
+    @OneToOne(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Shop shop;
 
     @OneToMany(mappedBy = "member")
