@@ -6,6 +6,7 @@ import com.example.demo.location.entity.MemberLocation;
 import com.example.demo.member.dto.*;
 import com.example.demo.member.entity.Member;
 import com.example.demo.member.repository.MemberRepository;
+import com.example.demo.shop.entity.Shop;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +38,9 @@ public class MemberService {
         // 닉네임 변경.
         changeNickname(memberLoggedIn, request.getNickname());
 
+        // 상점명 변경.
+        changeShopName(memberLoggedIn, request.getShopName());
+
         // 변경된 내용 저장.
         memberRepository.save(memberLoggedIn);
 
@@ -49,6 +53,13 @@ public class MemberService {
 
         validateUniqueNickname(nickname);
         member.setNickname(nickname);
+    }
+
+    private void changeShopName(Member member, String shopName) {
+        if(!StringUtils.hasText(shopName)) return;
+
+        Shop shop = member.getShop();
+        shop.setShopName(shopName);
     }
 
     private void validateUniqueNickname(String nickname) {

@@ -16,4 +16,8 @@ public class MemberInfoRequestDto {
     @JsonProperty(ParameterNameConfig.Member.NICKNAME)
     private String nickname;
 
+    @Schema(description = "유저 상점 닉네임", example = "고기닭고기 상점")
+    @JsonProperty(ParameterNameConfig.Shop.NAME)
+    private String shopName;
+
 }
