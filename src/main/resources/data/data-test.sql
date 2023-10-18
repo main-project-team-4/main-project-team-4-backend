@@ -290,24 +290,6 @@ insert into item (created_at, comment, main_image_url, name, price, state, categ
 insert into item (created_at, comment, main_image_url, name, price, state, category_mid_id, shop_id) values ('2023-06-18T06:38:08Z', 'Nam ultrices, libero non mattis pulvinar, nulla pede ullamcorper augue, a suscipit nulla elit ac nulla.', 'http://dummyimage.com/134x211.png/dddddd/000000', 'Sun - Dried Tomatoes', 15433, 2, 4, 7);
 insert into item (created_at, comment, main_image_url, name, price, state, category_mid_id, shop_id) values ('2023-05-21T10:09:59Z', 'Morbi non quam nec dui luctus rutrum.', 'http://dummyimage.com/141x227.png/5fa2dd/ffffff', 'Coffee - Ristretto Coffee Capsule', 24322, 0, 13, 3);
 
-insert into follow (member_id, shop_id) values (1, 3);
-insert into follow (member_id, shop_id) values (1, 4);
-insert into follow (member_id, shop_id) values (2, 3);
-insert into follow (member_id, shop_id) values (2, 4);
-insert into follow (member_id, shop_id) values (3, 4);
-
-insert into wish (item_id, member_id) values (1, 1);
-insert into wish (item_id, member_id) values (2, 1);
-insert into wish (item_id, member_id) values (3, 1);
-insert into wish (item_id, member_id) values (4, 1);
-insert into wish (item_id, member_id) values (1, 2);
-insert into wish (item_id, member_id) values (3, 2);
-insert into wish (item_id, member_id) values (5, 2);
-insert into wish (item_id, member_id) values (7, 2);
-insert into wish (item_id, member_id) values (6, 3);
-insert into wish (item_id, member_id) values (7, 3);
-insert into wish (item_id, member_id) values (8, 3);
-
 insert into item_location (item_id, name, latitude, longitude) values (1, '732 Dapin Plaza', '937', '137');
 insert into item_location (item_id, name, latitude, longitude) values (2, '10 Corscot Parkway', '077', '548');
 insert into item_location (item_id, name, latitude, longitude) values (3, '45856 Ryan Hill', '410', '515');
@@ -1010,3 +992,58 @@ insert into review (created_at, comment, rating, item_id, member_id, shop_id) va
 insert into review (created_at, comment, rating, item_id, member_id, shop_id) values ('2023-05-12 18:48:37', 'Cras mi pede, malesuada in, imperdiet et, commodo vulputate, justo. In blandit ultrices enim. Lorem ipsum dolor sit amet, consectetuer adipiscing elit.', 2, 29, 18, 18);
 insert into review (created_at, comment, rating, item_id, member_id, shop_id) values ('2022-12-29 15:57:27', 'In hac habitasse platea dictumst.', 2, 176, 19, 19);
 insert into review (created_at, comment, rating, item_id, member_id, shop_id) values ('2023-06-12 23:11:02', 'Donec semper sapien a libero.', 5, 76, 20, 20);
+
+insert into trade (item_id, member_id, seller_id) values (2, 1, 2);
+insert into trade (item_id, member_id, seller_id) values (3, 1, 3);
+insert into trade (item_id, member_id, seller_id) values (4, 1, 4);
+insert into trade (item_id, member_id, seller_id) values (5, 1, 5);
+insert into trade (item_id, member_id, seller_id) values (6, 1, 6);
+insert into trade (item_id, member_id, seller_id) values (7, 1, 7);
+insert into trade (item_id, member_id, seller_id) values (8, 1, 8);
+insert into trade (item_id, member_id, seller_id) values (9, 1, 9);
+insert into trade (item_id, member_id, seller_id) values (10, 1, 10);
+insert into trade (item_id, member_id, seller_id) values (11, 1, 11);
+
+insert into trade (item_id, member_id, seller_id) values (12, 12, 1);
+insert into trade (item_id, member_id, seller_id) values (13, 13, 1);
+insert into trade (item_id, member_id, seller_id) values (14, 14, 1);
+insert into trade (item_id, member_id, seller_id) values (15, 15, 1);
+insert into trade (item_id, member_id, seller_id) values (16, 16, 1);
+insert into trade (item_id, member_id, seller_id) values (17, 17, 1);
+insert into trade (item_id, member_id, seller_id) values (18, 18, 1);
+insert into trade (item_id, member_id, seller_id) values (19, 19, 1);
+insert into trade (item_id, member_id, seller_id) values (20, 20, 1);
+insert into trade (item_id, member_id, seller_id) values (21, 11, 1);
+
+insert into follow (member_id, shop_id) values (1, 12);
+insert into follow (member_id, shop_id) values (1, 13);
+insert into follow (member_id, shop_id) values (1, 14);
+insert into follow (member_id, shop_id) values (1, 15);
+insert into follow (member_id, shop_id) values (1, 16);
+insert into follow (member_id, shop_id) values (1, 17);
+insert into follow (member_id, shop_id) values (1, 18);
+insert into follow (member_id, shop_id) values (1, 19);
+insert into follow (member_id, shop_id) values (1, 10);
+insert into follow (member_id, shop_id) values (1, 11);
+
+insert into follow (member_id, shop_id) values (2, 1);
+insert into follow (member_id, shop_id) values (3, 1);
+insert into follow (member_id, shop_id) values (4, 1);
+insert into follow (member_id, shop_id) values (5, 1);
+insert into follow (member_id, shop_id) values (6, 1);
+insert into follow (member_id, shop_id) values (7, 1);
+insert into follow (member_id, shop_id) values (8, 1);
+insert into follow (member_id, shop_id) values (9, 1);
+insert into follow (member_id, shop_id) values (10, 1);
+insert into follow (member_id, shop_id) values (1, 1);
+
+insert into wish (item_id, member_id) values (102, 1);
+insert into wish (item_id, member_id) values (103, 1);
+insert into wish (item_id, member_id) values (104, 1);
+insert into wish (item_id, member_id) values (105, 1);
+insert into wish (item_id, member_id) values (106, 1);
+insert into wish (item_id, member_id) values (107, 1);
+insert into wish (item_id, member_id) values (108, 1);
+insert into wish (item_id, member_id) values (109, 1);
+insert into wish (item_id, member_id) values (110, 1);
+insert into wish (item_id, member_id) values (111, 1);
