@@ -7,6 +7,7 @@ import com.example.demo.member.dto.*;
 import com.example.demo.member.entity.Member;
 import com.example.demo.member.repository.MemberRepository;
 import com.example.demo.shop.entity.Shop;
+import com.example.demo.shop.repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final ShopRepository shopRepository;
     private final S3Uploader s3Uploader;
 
      public ResponseEntity<MessageResponseDto> deleteMember(Member member) {
@@ -58,6 +60,7 @@ public class MemberService {
     private void changeShopName(Member member, String shopName) {
         if(!StringUtils.hasText(shopName)) return;
 
+        validateUniqueShopName(shopName);
         Shop shop = member.getShop();
         shop.setShopName(shopName);
     }
@@ -66,6 +69,13 @@ public class MemberService {
         Optional<Member> checkUsername = memberRepository.findByNickname(nickname);
         if(checkUsername.isPresent()){
             throw new IllegalArgumentException("중복된 Nickname 입니다.");
+        }
+    }
+
+    private void validateUniqueShopName(String shopName) {
+        Optional<Shop> checkUsername = shopRepository.findByShopName(shopName);
+        if(checkUsername.isPresent()){
+            throw new IllegalArgumentException("중복된 상점명 입니다.");
         }
     }
 
