@@ -18,6 +18,9 @@ public class MyPageMemberResponseDto {
     @Schema(description = "회원 닉네임", example = "iksadnorth")
     @JsonProperty(ParameterNameConfig.Member.NICKNAME)
     private String nickname;
+    @Schema(description = "회원 상점명", example = "iksadnorth 상점")
+    @JsonProperty(ParameterNameConfig.Shop.NAME)
+    private String shopName;
     @Schema(description = "회원 거주지", example = "서울특별시 중구 세종대로 110 서울특별시청")
     @JsonProperty(ParameterNameConfig.Location.NAME)
     private String location;
@@ -31,6 +34,9 @@ public class MyPageMemberResponseDto {
     public MyPageMemberResponseDto(Member entity) {
         this.id = entity.getId();
         this.nickname = entity.getNickname();
+        this.shopName = Optional.ofNullable(entity.getShop())
+                .map(Shop::getShopName)
+                .orElse(null);
         this.location = Optional.ofNullable(entity.getLocation())
                 .map(MemberLocation::getName)
                 .orElse(null);
