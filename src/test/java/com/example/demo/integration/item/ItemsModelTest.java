@@ -2,6 +2,8 @@ package com.example.demo.integration.item;
 
 import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.item.service.ItemService;
+import com.example.demo.location.entity.Location;
+import com.example.demo.location.entity.MemberLocation;
 import com.example.demo.utils.LoadEnvironmentVariables;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,10 +18,8 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,6 +42,30 @@ public class ItemsModelTest {
             )
     })
     @interface LoadTestCaseSearch {}
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @SqlGroup({
+            @Sql({
+                    "classpath:data/testcase-popular.sql"
+            }),
+            @Sql(
+                    scripts = "classpath:truncate-testcases.sql",
+                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
+            )
+    })
+    @interface LoadTestCasePopular {}
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @SqlGroup({
+            @Sql({
+                    "classpath:data/testcase-location.sql"
+            }),
+            @Sql(
+                    scripts = "classpath:truncate-testcases.sql",
+                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
+            )
+    })
+    @interface LoadTestCaseLocation {}
 
     @LoadTestCaseSearch
     @Test
@@ -79,5 +103,44 @@ public class ItemsModelTest {
                 .hasSize(8)
                 .extracting(ItemSearchResponseDto::getItemId)
                 .isEqualTo(List.of(6L, 5L, 4L, 1L, 2L, 3L, 8L, 7L));
+    }
+
+    @LoadTestCasePopular
+    @Test
+    @DisplayName("[정상 작동] readPopularItems")
+    void readPopularItems() {
+        // given
+        int num = 4;
+        Pageable pageable = PageRequest.of(0, num);
+
+        // when
+        ResponseEntity<Page<ItemSearchResponseDto>> result = itemService.readPopularItems(pageable);
+
+        // then
+        assertThat(result.getBody())
+                .hasSize(num)
+                .extracting(ItemSearchResponseDto::getItemId)
+                .isEqualTo(List.of(1L, 3L, 5L, 6L));
+    }
+
+    @LoadTestCaseLocation
+    @Test
+    @DisplayName("[정상 작동] readNearbyItems")
+    void readNearbyItems() {
+        // given
+        int num = 8;
+        Location location = new MemberLocation();
+        location.setLatitude(0L);
+        location.setLongitude(0L);
+        Pageable pageable = PageRequest.of(0, num);
+
+        // when
+        ResponseEntity<Page<ItemSearchResponseDto>> result = itemService.readNearbyItems(location, pageable);
+
+        // then
+        assertThat(result.getBody())
+                .hasSize(num)
+                .extracting(ItemSearchResponseDto::getItemId)
+                .isEqualTo(List.of(1L, 5L, 2L, 6L, 3L, 7L, 4L, 8L));
     }
 }
