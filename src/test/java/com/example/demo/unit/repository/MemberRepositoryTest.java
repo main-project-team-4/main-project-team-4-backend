@@ -3,7 +3,7 @@ package com.example.demo.unit.repository;
 import com.example.demo.member.entity.Member;
 import com.example.demo.member.repository.MemberRepository;
 import com.example.demo.utils.EnableQuerydslTest;
-import com.example.demo.utils.LoadTeatCaseFollow;
+import com.example.demo.utils.testcase.LoadTeatCaseFollow;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

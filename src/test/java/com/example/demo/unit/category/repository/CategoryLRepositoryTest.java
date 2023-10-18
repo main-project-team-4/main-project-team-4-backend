@@ -3,7 +3,7 @@ package com.example.demo.unit.category.repository;
 import com.example.demo.category.entity.CategoryL;
 import com.example.demo.category.repository.CategoryLRepository;
 import com.example.demo.utils.EnableQuerydslTest;
-import com.example.demo.utils.LoadTeatCaseCategory;
+import com.example.demo.utils.testcase.LoadTeatCaseCategory;
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
