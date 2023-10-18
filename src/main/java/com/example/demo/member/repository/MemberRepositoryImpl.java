@@ -40,4 +40,29 @@ public class MemberRepositoryImpl implements WithFollowInfoRepository {
         );
         return Optional.of(result);
     }
+
+    @Override
+    public Optional<MemberWithFollowMapper> findWithFollowInfoByShopId(Long shopId) {
+        Member entity = factory
+                .selectFrom(member)
+                .where(member.shop.id.eq(shopId))
+                .fetchFirst();
+
+        long followers = factory
+                .select(follow.count())
+                .from(follow)
+                .where(follow.shop.id.eq(shopId))
+                .fetchFirst();
+
+        long followings = factory
+                .select(follow.count())
+                .from(follow)
+                .where(follow.member.shop.id.eq(shopId))
+                .fetchFirst();
+
+        MemberWithFollowMapper result = new MemberWithFollowMapper(
+                entity, followers, followings
+        );
+        return Optional.of(result);
+    }
 }

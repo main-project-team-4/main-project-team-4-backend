@@ -3,8 +3,10 @@ package com.example.demo.shop.controller;
 import com.example.demo.dto.MessageResponseDto;
 import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.item.service.ItemService;
+import com.example.demo.member.dto.ShopPageMemberResponseDto;
 import com.example.demo.member.dto.SignupRequestDto;
 import com.example.demo.member.entity.Member;
+import com.example.demo.member.service.MemberService;
 import com.example.demo.security.UserDetailsImpl;
 import com.example.demo.shop.dto.ShopRequestDto;
 import com.example.demo.shop.dto.ShopResponseDto;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 public class ShopController implements ShopDocs{
     private final ShopService shopService;
     private final ItemService itemService;
+    private final MemberService memberService;
 
     @PostMapping("/shops/create")
     public ResponseEntity<MessageResponseDto> createShop(@RequestBody SignupRequestDto requestDto, Member member){
@@ -46,6 +49,13 @@ public class ShopController implements ShopDocs{
     ) {
         Member member = userDetails.getMember();
         return shopService.insertShop(member);
+    }
+
+    @GetMapping("/shops/{shopId}")
+    public ResponseEntity<ShopPageMemberResponseDto> readShopPage(
+            @PathVariable Long shopId
+    ) {
+        return memberService.readShopPage(shopId);
     }
 
     @GetMapping("/shops/{shopId}/items")

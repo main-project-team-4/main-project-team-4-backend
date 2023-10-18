@@ -103,4 +103,11 @@ public class MemberService {
         ShopPageMemberResponseDto responseDto = new ShopPageMemberResponseDto(entity);
         return ResponseEntity.ok(responseDto);
     }
+
+    public ResponseEntity<ShopPageMemberResponseDto> readShopPage(Long shopId) {
+        MemberWithFollowMapper entity = memberRepository.findWithFollowInfoByShopId(shopId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 상점은 존재하지 않습니다."));
+        ShopPageMemberResponseDto responseDto = new ShopPageMemberResponseDto(entity);
+        return ResponseEntity.ok(responseDto);
+    }
 }
