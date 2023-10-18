@@ -3,6 +3,7 @@ package com.example.demo.shop.controller;
 
 import com.example.demo.dto.MessageResponseDto;
 import com.example.demo.item.dto.ItemSearchResponseDto;
+import com.example.demo.member.dto.ShopPageMemberResponseDto;
 import com.example.demo.member.dto.SignupRequestDto;
 import com.example.demo.member.entity.Member;
 import com.example.demo.shop.dto.ShopRequestDto;
@@ -150,5 +151,23 @@ public interface ShopDocs {
     ResponseEntity<Page<ItemSearchResponseDto>> readItemsOfShop(
             Long shopId,
             Pageable pageable
+    );
+
+    @Operation(
+            summary = "상점 페이지 회원 정보 조회 API",
+            description = """
+                    상점 페이지 회원 정보 조회 API
+                    """
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "정상 작동",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ShopPageMemberResponseDto.class)
+            )
+    )
+    ResponseEntity<ShopPageMemberResponseDto> readShopPage(
+            @PathVariable Long shopId
     );
 }

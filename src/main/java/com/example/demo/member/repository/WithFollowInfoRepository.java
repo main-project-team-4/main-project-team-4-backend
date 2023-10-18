@@ -6,4 +6,6 @@ import java.util.Optional;
 
 public interface WithFollowInfoRepository {
     Optional<MemberWithFollowMapper> findWithFollowInfoById(Long id);
+
+    Optional<MemberWithFollowMapper> findWithFollowInfoByShopId(Long shopId);
 }

@@ -17,6 +17,9 @@ public class ShopPageMemberResponseDto {
     @Schema(description = "회원 닉네임", example = "iksadnorth")
     @JsonProperty(ParameterNameConfig.Member.NICKNAME)
     private String nickname;
+    @Schema(description = "상점 이름", example = "iksadnorth 상점")
+    @JsonProperty(ParameterNameConfig.Shop.NAME)
+    private String shopName;
     @Schema(description = "회원의 상점 소개", example = "엄청나게 잘 작성한 상점 소개글.")
     @JsonProperty(ParameterNameConfig.Shop.INTRO)
     private String intro;
@@ -38,6 +41,9 @@ public class ShopPageMemberResponseDto {
 
         this.id = entity.getId();
         this.nickname = entity.getNickname();
+        this.shopName = Optional.ofNullable(entity.getShop())
+                .map(Shop::getShopName)
+                .orElse(null);
         this.intro = Optional.ofNullable(entity.getShop())
                 .map(Shop::getShopIntro)
                 .orElse(null);
