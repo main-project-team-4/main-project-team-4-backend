@@ -2,6 +2,7 @@ package com.example.demo.follow.dto;
 
 import com.example.demo.config.ParameterNameConfig;
 import com.example.demo.member.entity.Member;
+import com.example.demo.shop.entity.Shop;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -14,6 +15,9 @@ public class FollowMemberResponseDto {
     @Schema(description = "팔로우한 회원의 id", example = "1")
     @JsonProperty(ParameterNameConfig.Member.ID)
     private Long id;
+    @Schema(description = "팔로우한 회원의 상점 id", example = "1")
+    @JsonProperty(ParameterNameConfig.Shop.ID)
+    private Long shopId;
     @Schema(description = "팔로우한 회원의 닉네임", example = "user1")
     @JsonProperty(ParameterNameConfig.Member.NICKNAME)
     private String nickname;
@@ -24,6 +28,9 @@ public class FollowMemberResponseDto {
     public FollowMemberResponseDto(Member entity) {
         this.id = entity.getId();
         this.nickname = entity.getNickname();
+        this.shopId = Optional.of(entity.getShop())
+                .map(Shop::getId)
+                .orElse(null);
         this.imageUrl = Optional.of(entity)
                 .map(Member::getImage)
                 .map(Object::toString)
