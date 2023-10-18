@@ -33,6 +33,9 @@ public class ReviewResponseDto {
     @Schema(description = "리뷰한 상품 이름", example = "아우터")
     @JsonProperty(ParameterNameConfig.Item.NAME)
     private String itemName;
+    @Schema(description = "리뷰한 상품 이미지", example = "https://cdn.pixabay.com/photo/2023/10/14/09/20/mountains-8314422_1280.png")
+    @JsonProperty(ParameterNameConfig.Item.MAIN_IMAGE)
+    private String itemImageUrl;
 
     @Schema(description = "리뷰어 ID", example = "1423")
     @JsonProperty(ParameterNameConfig.Member.ID)
@@ -49,6 +52,9 @@ public class ReviewResponseDto {
         Optional<Item> item = Optional.of(review).map(Review::getItem);
         this.itemId = item.map(Item::getId).orElse(null);
         this.itemName = item.map(Item::getName).orElse(null);
+        this.itemImageUrl = item.map(Item::getMain_image)
+                .map(Object::toString)
+                .orElse(null);
 
         Optional<Member> member = Optional.of(review).map(Review::getMember);
         this.reviewerId = member.map(Member::getId).orElse(null);
