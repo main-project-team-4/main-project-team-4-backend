@@ -51,8 +51,6 @@ public class ChatRoom implements Serializable {
     @JoinColumn(name = "item_id")
     private Item item;
 
-
-
     public ChatRoom (Item item, Member member){
         this.roomId = UUID.randomUUID().toString();
         this.consumer = member;
@@ -68,10 +66,11 @@ public class ChatRoom implements Serializable {
 //        return chatRoom;
 //    }
 
-    public static ChatRoom create(String name, Member consumer, Member seller) {
+    public static ChatRoom create(String name, Item item, Member consumer, Member seller) {
         ChatRoom chatRoom = new ChatRoom();
         chatRoom.roomId = UUID.randomUUID().toString();
         chatRoom.roomName = name;
+        chatRoom.item = item;
         chatRoom.consumer=consumer;
         chatRoom.seller=seller;
         return chatRoom;

@@ -116,6 +116,7 @@ public class WebSecurityConfig {
                         .requestMatchers(antMatcher("/ws-stomp/**")).permitAll()
                         //.requestMatchers(antMatcher("/ws/chat")).permitAll()
 
+
                         //.anyRequest().authenticated()
                         .anyRequest().permitAll()
         );

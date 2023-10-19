@@ -12,6 +12,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Item extends TimeStamp {
+public class Item extends TimeStamp implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -44,6 +45,7 @@ public class Item extends TimeStamp {
     @Column(name = "state")
     private State state;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "shop_id")
     private Shop shop;

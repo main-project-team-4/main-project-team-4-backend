@@ -1,8 +1,14 @@
 package com.example.demo.chat.entity;
 
+import com.example.demo.member.entity.Member;
+import com.example.demo.member.entity.QMember;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Getter
 @Builder
 @AllArgsConstructor
@@ -12,26 +18,33 @@ public class ChatMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private MessageType type; // 메시지 타입
-    private String sender; // 메시지 보낸사람
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member sender; // 메시지 보낸사람
+
     private String message; // 메시지
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chatroom_id")
     private ChatRoom chatRoom;
 
-    public static ChatMessage createChatMessage(ChatRoom chatRoom, String sender, String message,MessageType type) {
-        ChatMessage chatMessage= ChatMessage.builder()
+
+    public static ChatMessage createChatMessage(ChatRoom chatRoom, Member member, String message, MessageType type) {
+        ChatMessage chatMessage = ChatMessage.builder()
                 .chatRoom(chatRoom)
-                .sender(sender)
+                .sender(member)
                 .message(message)
                 .type(type)
                 .build();
         return chatMessage;
     }
 
-    public void setSender(String sender){
-        this.sender=sender;
-    }
+//    public void setSender(String sender){
+//        this.sender = sender;
+//    }
 
     public void setMessage(String message){
         this.message=message;

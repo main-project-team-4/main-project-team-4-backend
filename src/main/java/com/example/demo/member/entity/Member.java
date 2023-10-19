@@ -1,9 +1,12 @@
 package com.example.demo.member.entity;
 
+import com.example.demo.chat.entity.ChatMessage;
 import com.example.demo.chat.entity.ChatRoom;
 import com.example.demo.follow.entity.Follow;
 import com.example.demo.location.entity.MemberLocation;
 import com.example.demo.shop.entity.Shop;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -47,6 +50,9 @@ public class Member implements Serializable {
 
     @OneToMany(mappedBy = "consumer")
     private List<ChatRoom> consumerChatRoomList = new ArrayList<>();
+
+    @OneToOne(mappedBy = "sender")
+    private ChatMessage chatMessage;
 
     public Member(String username, String nickname) {
         this.username = username;

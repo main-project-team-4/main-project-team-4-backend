@@ -1,5 +1,7 @@
 package com.example.demo.chat.dto;
 
+import com.example.demo.chat.ChatRoomRepository;
+import com.example.demo.chat.entity.Chat;
 import com.example.demo.chat.entity.ChatRoom;
 import com.example.demo.item.entity.Item;
 import com.example.demo.member.entity.Member;
@@ -36,6 +38,14 @@ public class ChatRoomResponseDto {
         this.consumerName = chatRoom.getConsumer().getNickname();
         this.itemId = item.getId();
         this.itemName = item.getName();
+        this.loginMember = member.getNickname();
+    }
+
+    public ChatRoomResponseDto(ChatRoom chatRoom, Member member) {
+        this.roomId = chatRoom.getId();
+        this.name = chatRoom.getRoomName();
+        this.sellerName = chatRoom.getSeller().getNickname();
+        this.consumerName = chatRoom.getConsumer().getNickname();
         this.loginMember = member.getNickname();
     }
 }
