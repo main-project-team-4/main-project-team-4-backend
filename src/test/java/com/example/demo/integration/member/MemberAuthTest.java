@@ -17,11 +17,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import java.net.URL;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -147,6 +151,28 @@ public class MemberAuthTest {
 
         ResponseEntity<MessageResponseDto> result = ResponseEntity.ok(new MessageResponseDto("mock msg", 200));
         when(memberService.updateMemberLocation(any(), any()))
+                .thenReturn(result);
+
+        // when & then
+        mvc.perform(request)
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @AuthTestUtil.LoadTestCaseAuth
+    @Test
+    @DisplayName("[정상 작동] POST /api/auth/members/me/images")
+    void updateProfileImage() throws Exception {
+        // given
+        URL url = new URL("https://cdn.pixabay.com/photo/2023/09/20/11/40/plants-8264654_1280.jpg");
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("image", url.openStream());
+
+        MockHttpServletRequestBuilder request = multipart("/api/auth/members/me/images")
+                .file(mockMultipartFile);
+        request = authTestUtil.setAccessToken(request);
+
+        ResponseEntity<MessageResponseDto> result = ResponseEntity.ok(new MessageResponseDto("mock msg", 200));
+        when(memberService.updateProfileImage(any(), any()))
                 .thenReturn(result);
 
         // when & then

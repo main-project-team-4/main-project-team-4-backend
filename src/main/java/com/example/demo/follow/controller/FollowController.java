@@ -1,5 +1,6 @@
 package com.example.demo.follow.controller;
 
+import com.example.demo.dto.MessageResponseDto;
 import com.example.demo.follow.dto.FollowMemberResponseDto;
 import com.example.demo.follow.dto.FollowResponseDto;
 import com.example.demo.follow.service.FollowService;
@@ -7,10 +8,7 @@ import com.example.demo.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -56,5 +54,11 @@ public class FollowController implements FollowDocs {
         return followService.readFollowersByShopId(shopId);
     }
 
-
+    @DeleteMapping("/api/follows/{followId}")
+    public ResponseEntity<MessageResponseDto> deleteFollow(
+            @PathVariable("followId") Long followId,
+            @AuthenticationPrincipal UserDetailsImpl principal
+    ) {
+        return followService.deleteFollowRecord(followId, principal.getMember());
+    }
 }

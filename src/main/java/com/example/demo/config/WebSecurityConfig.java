@@ -101,6 +101,7 @@ public class WebSecurityConfig {
                         .requestMatchers(antMatcher(HttpMethod.GET, "/api/members/*/followers")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/api/members/*/followings")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/api/mypages/followerlists")).authenticated()
+                        .requestMatchers(antMatcher(HttpMethod.DELETE, "/api/follows/*")).authenticated()
 
                         // 리뷰 관련 API
                         .requestMatchers(antMatcher(HttpMethod.POST, "/api/reviews")).authenticated()
