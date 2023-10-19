@@ -107,17 +107,11 @@ public class KakaoService {
 
         boolean first = kakaoUser == null;
         if (first) {
-            String nickname = kakaoUserInfo.getEmail();
-            nickname = getNicknameFromEmail(nickname);
+            String nickname = kakaoUserInfo.getNickname();
             kakaoUser = new Member(kakaoId, nickname);
             memberRepository.save(kakaoUser);
         }
         return new Tray(kakaoUser, first);
-    }
-
-    private String getNicknameFromEmail(String email) {
-        String[] pieceOfEmail = email.split("@");
-        return pieceOfEmail[0];
     }
 
     record Tray(
