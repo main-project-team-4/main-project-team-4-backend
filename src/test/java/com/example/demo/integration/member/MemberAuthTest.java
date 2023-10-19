@@ -4,6 +4,7 @@ import com.example.demo.dto.MessageResponseDto;
 import com.example.demo.member.controller.MemberController;
 import com.example.demo.member.dto.LocationRequestDto;
 import com.example.demo.member.dto.MemberInfoRequestDto;
+import com.example.demo.member.dto.ShopPageMemberResponseDto;
 import com.example.demo.member.service.MemberService;
 import com.example.demo.utils.LoadEnvironmentVariables;
 import com.example.demo.utils.testcase.AuthTestUtil;
@@ -25,8 +26,7 @@ import java.net.URL;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -179,5 +179,78 @@ public class MemberAuthTest {
         mvc.perform(request)
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @AuthTestUtil.LoadTestCaseAuth
+    @Test
+    @DisplayName("[비정상 작동] POST /api/auth/members/me/images - 잘못된 image Key Name")
+    void updateProfileImage_withWrongKeyNameOfImage() throws Exception {
+        // given
+        URL url = new URL("https://cdn.pixabay.com/photo/2023/09/20/11/40/plants-8264654_1280.jpg");
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("wrong_image_key_name", url.openStream());
+
+        MockHttpServletRequestBuilder request = multipart("/api/auth/members/me/images")
+                .file(mockMultipartFile);
+        request = authTestUtil.setAccessToken(request);
+
+        ResponseEntity<MessageResponseDto> result = ResponseEntity.ok(new MessageResponseDto("mock msg", 200));
+        when(memberService.updateProfileImage(any(), any()))
+                .thenReturn(result);
+
+        // when & then
+        mvc.perform(request)
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("[정상 작동] GET /api/auth/members/{memberId}")
+    void readMemberInShopPage() throws Exception {
+        // given
+        MockHttpServletRequestBuilder request = get("/api/auth/members/1");
+
+        ResponseEntity<ShopPageMemberResponseDto> result = ResponseEntity.ok(new ShopPageMemberResponseDto());
+        when(memberService.readMemberInShopPage(any()))
+                .thenReturn(result);
+
+        // when & then
+        mvc.perform(request)
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @AuthTestUtil.LoadTestCaseAuth
+    @Test
+    @DisplayName("[정상 작동] DELETE /api/auth/members/me")
+    void deleteMember() throws Exception {
+        // given
+        MockHttpServletRequestBuilder request = delete("/api/auth/members/me");
+        request = authTestUtil.setAccessToken(request);
+
+        ResponseEntity<MessageResponseDto> result = ResponseEntity.ok(new MessageResponseDto("mock msg", 200));
+        when(memberService.deleteMember(any()))
+                .thenReturn(result);
+
+        // when & then
+        mvc.perform(request)
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @AuthTestUtil.LoadTestCaseAuth
+    @Test
+    @DisplayName("[비정상 작동] DELETE /api/auth/members/me - JWT 없이 호출")
+    void deleteMember_withoutJwt() throws Exception {
+        // given
+        MockHttpServletRequestBuilder request = delete("/api/auth/members/me");
+
+        ResponseEntity<MessageResponseDto> result = ResponseEntity.ok(new MessageResponseDto("mock msg", 200));
+        when(memberService.deleteMember(any()))
+                .thenReturn(result);
+
+        // when & then
+        mvc.perform(request)
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
     }
 }

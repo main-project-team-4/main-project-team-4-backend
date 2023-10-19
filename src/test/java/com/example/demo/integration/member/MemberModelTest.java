@@ -1,9 +1,11 @@
 package com.example.demo.integration.member;
 
+import com.amazonaws.services.s3.AmazonS3;
 import com.example.demo.location.entity.Location;
 import com.example.demo.location.entity.MemberLocation;
 import com.example.demo.member.dto.LocationRequestDto;
 import com.example.demo.member.dto.MemberInfoRequestDto;
+import com.example.demo.member.dto.ShopPageMemberResponseDto;
 import com.example.demo.member.entity.Member;
 import com.example.demo.member.repository.MemberRepository;
 import com.example.demo.member.service.MemberService;
@@ -13,20 +15,30 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 
+import java.io.IOException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.net.URL;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @LoadEnvironmentVariables
 public class MemberModelTest {
     @Autowired
     private MemberService memberService;
+    @MockBean
+    private AmazonS3 amazonS3;
+
     @Autowired
     private MemberRepository memberRepository;
 
@@ -210,5 +222,60 @@ public class MemberModelTest {
 
         // then
         assertThrows(Throwable.class, func);
+    }
+
+    @LoadTestCaseMember
+    @Test
+    @DisplayName("[정상 작동] updateProfileImage")
+    void updateProfileImage() throws IOException {
+        // given
+        URL url = new URL("https://cdn.pixabay.com/photo/2023/09/20/11/40/plants-8264654_1280.jpg");
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("image", url.openStream());
+
+        Member member = memberRepository.findById(1L).orElseThrow();
+        String mainImageUrl = member.getImage().toString();
+        assertThat(url.toString())
+                .isNotEqualTo(mainImageUrl);
+
+        when(amazonS3.getUrl(any(), any()))
+                .thenReturn(url);
+
+        // when
+        memberService.updateProfileImage(mockMultipartFile, member);
+
+        // then
+        Member changed = memberRepository.findById(1L).orElseThrow();
+        assertThat(changed.getImage().toString())
+                .isNotEqualTo(mainImageUrl);
+    }
+
+    @LoadTestCaseMember
+    @Test
+    @DisplayName("[정상 작동] readMemberInShopPage")
+    void readMemberInShopPage() {
+        // given
+        Long memberId = 1L;
+
+        // when
+        ResponseEntity<ShopPageMemberResponseDto> result = memberService.readMemberInShopPage(memberId);
+
+        // then
+        assertThat(result.getBody()).isNotNull();
+    }
+
+    @LoadTestCaseMember
+    @Test
+    @DisplayName("[정상 작동] deleteMember")
+    void deleteMember() {
+        // given
+        Member member = memberRepository.findById(1L).orElseThrow();
+        long numOfMemberBeforeDelete = memberRepository.count();
+
+        // when
+        memberService.deleteMember(member);
+
+        // then
+        long numOfMemberAfterDelete = memberRepository.count();
+        assertThat(numOfMemberAfterDelete).isEqualTo(numOfMemberBeforeDelete - 1);
     }
 }

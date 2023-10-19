@@ -35,13 +35,13 @@ public class Member {
     @Column(name = "image", nullable = true)
     private URL image;
 
-    @OneToOne(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToOne(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     private Shop shop;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = {CascadeType.REMOVE})
     private List<Follow> followList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "seller")
+    @OneToMany(mappedBy = "seller", cascade = {CascadeType.REMOVE})
     private List<ChatRoom> sellerChatRoomList = new ArrayList<>();
 
     @OneToMany(mappedBy = "consumer")
