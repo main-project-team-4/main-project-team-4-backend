@@ -3,7 +3,7 @@ package com.example.demo.unit.item;
 import com.example.demo.item.entity.Item;
 import com.example.demo.item.repository.ItemRepository;
 import com.example.demo.utils.EnableQuerydslTest;
-import com.example.demo.utils.LoadTeatCaseCategory;
+import com.example.demo.utils.testcase.LoadTeatCaseCategory;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

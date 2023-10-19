@@ -50,7 +50,7 @@ public class MemberController implements MemberDocs{
         return memberService.updateMemberLocation(request, principal.getMember());
     }
 
-    @PutMapping(
+    @PostMapping(
             value = "/members/me/images",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )

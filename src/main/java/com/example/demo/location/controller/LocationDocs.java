@@ -2,6 +2,7 @@ package com.example.demo.location.controller;
 
 
 import com.example.demo.dto.MessageResponseDto;
+import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.location.dto.LocationRequestDto;
 import com.example.demo.security.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,6 +12,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -86,4 +89,15 @@ public interface LocationDocs {
             )
     )
     public ResponseEntity<MessageResponseDto> deleteLocation(@PathVariable Long location_id, @AuthenticationPrincipal UserDetailsImpl userDetails);
+
+    @Operation(
+            summary = "근처 상품 API",
+            description = """
+                    근처 상품 API
+                    """
+    )
+    ResponseEntity<Page<ItemSearchResponseDto>> readNearbyItems(
+            UserDetailsImpl principal,
+            Pageable pageable
+    );
 }

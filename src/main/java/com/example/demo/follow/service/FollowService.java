@@ -1,5 +1,6 @@
 package com.example.demo.follow.service;
 
+import com.example.demo.dto.MessageResponseDto;
 import com.example.demo.follow.dto.FollowMemberResponseDto;
 import com.example.demo.follow.dto.FollowResponseDto;
 import com.example.demo.follow.entity.Follow;
@@ -9,7 +10,9 @@ import com.example.demo.member.repository.MemberRepository;
 import com.example.demo.shop.entity.Shop;
 import com.example.demo.shop.repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -88,5 +91,29 @@ public class FollowService {
                 .map(FollowMemberResponseDto::new)
                 .toList();
         return ResponseEntity.ok(dtoList);
+    }
+
+    public ResponseEntity<MessageResponseDto> deleteFollowRecord(Long followId, Member memberLoggedIn) {
+        Follow follow = findFollowById(followId);
+        validateTargetShopOwnerOfFollower(follow, memberLoggedIn);
+
+        deleteFollow(follow);
+
+        MessageResponseDto msg = new MessageResponseDto("팔로우 삭제에 성공하였습니다.", HttpStatus.OK.value());
+        return ResponseEntity.status(HttpStatus.OK).body(msg);
+    }
+
+    private void validateTargetShopOwnerOfFollower(Follow follow, Member member) {
+        Long followerIdInDB = follow.getShop().getMember().getId();
+        Long memberIdLoggedIn = member.getId();
+
+        if (!followerIdInDB.equals(memberIdLoggedIn)) {
+            throw new AccessDeniedException("해당 팔로우 기록의 팔로워가 아닌 사람은 삭제할 수 없습니다.");
+        }
+    }
+
+    private Follow findFollowById(Long followId) {
+        return followRepository.findById(followId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 팔로우 기록은 존재하지 않습니다."));
     }
 }

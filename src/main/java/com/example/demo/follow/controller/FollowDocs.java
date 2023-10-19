@@ -1,6 +1,7 @@
 package com.example.demo.follow.controller;
 
 
+import com.example.demo.dto.MessageResponseDto;
 import com.example.demo.follow.dto.FollowMemberResponseDto;
 import com.example.demo.follow.dto.FollowResponseDto;
 import com.example.demo.security.UserDetailsImpl;
@@ -158,6 +159,26 @@ public interface FollowDocs {
     )
     ResponseEntity<FollowResponseDto> readFollowersByMemberId(
             Long memberId,
+            UserDetailsImpl principal
+    );
+
+    @Operation(
+            summary = "팔로워 삭제 API",
+            description = """
+                    팔로워 삭제 API.<br>
+                    팔로우 당한 사람이 아닌 사람의 접근은 403 에러를 발생시킵니다.
+                    """
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "정상 작동",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = MessageResponseDto.class)
+            )
+    )
+    ResponseEntity<MessageResponseDto> deleteFollow(
+            Long followId,
             UserDetailsImpl principal
     );
 }
