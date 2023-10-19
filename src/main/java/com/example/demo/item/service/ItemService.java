@@ -146,6 +146,7 @@ public class ItemService {
         return itemRepository.findTop100ByOrderByWishCountDesc();
     }
 
+    @Transactional
     public ItemResponseDto showItem(Long id) {
         Item item = findItem(id);
         return new ItemResponseDto(item);
@@ -163,6 +164,7 @@ public class ItemService {
         return ResponseEntity.ok(dtoList);
     }
 
+    @Transactional
     public ResponseEntity<Page<ItemSearchResponseDto>> readItemsOfShop(Long shopId, Pageable pageable) {
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 상점은 존재하지 않습니다."));

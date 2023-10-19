@@ -1,5 +1,7 @@
 package com.example.demo.integration.item;
 
+import com.example.demo.integration.member.MemberModelTest;
+import com.example.demo.item.dto.ItemResponseDto;
 import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.item.service.ItemService;
 import com.example.demo.location.entity.Location;
@@ -7,6 +9,7 @@ import com.example.demo.location.entity.MemberLocation;
 import com.example.demo.utils.LoadEnvironmentVariables;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
@@ -22,6 +25,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @LoadEnvironmentVariables
@@ -64,6 +68,18 @@ public class ItemsModelTest {
             )
     })
     @interface LoadTestCaseLocation {}
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @SqlGroup({
+            @Sql({
+                    "classpath:data/testcase-item.sql"
+            }),
+            @Sql(
+                    scripts = "classpath:truncate-testcases.sql",
+                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
+            )
+    })
+    @interface LoadTestCaseItem {}
 
     @LoadTestCaseSearch
     @Test
@@ -140,5 +156,35 @@ public class ItemsModelTest {
                 .hasSize(num)
                 .extracting(ItemSearchResponseDto::getItemId)
                 .isEqualTo(List.of(1L, 5L, 2L, 6L, 3L, 7L, 4L, 8L));
+    }
+
+    @LoadTestCaseItem
+    @Test
+    @DisplayName("[정상 작동] showItem")
+    void showItem() {
+        // given
+        Long itemId = 1L;
+
+        // when
+        ItemResponseDto result = itemService.showItem(itemId);
+
+        // then
+        assertThat(result)
+                .extracting(ItemResponseDto::getId)
+                .isEqualTo(1L);
+    }
+
+    @LoadTestCaseItem
+    @Test
+    @DisplayName("[비정상 작동] showItem - 존재하지 않는 itemId")
+    void showItem_whenNonExistedItemId() {
+        // given
+        Long itemId = 100000L;
+
+        // when
+        Executable func = () -> itemService.showItem(itemId);
+
+        // then
+        assertThrows(Throwable.class, func);
     }
 }

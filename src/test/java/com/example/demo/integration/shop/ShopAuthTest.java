@@ -1,10 +1,11 @@
-package com.example.demo.integration.item;
+package com.example.demo.integration.shop;
 
-import com.example.demo.item.controller.ItemController;
-import com.example.demo.item.dto.ItemResponseDto;
+import com.example.demo.dto.MessageResponseDto;
 import com.example.demo.item.dto.ItemSearchResponseDto;
-import com.example.demo.item.entity.Item;
 import com.example.demo.item.service.ItemService;
+import com.example.demo.member.controller.MemberController;
+import com.example.demo.member.service.MemberService;
+import com.example.demo.shop.controller.ShopController;
 import com.example.demo.utils.LoadEnvironmentVariables;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,43 +28,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @LoadEnvironmentVariables
-public class ItemAuthTest {
+public class ShopAuthTest {
     @Autowired
     private MockMvc mvc;
 
     @InjectMocks
-    private ItemController itemController;
+    private ShopController shopController;
     @MockBean
     private ItemService itemService;
 
     @Test
-    @DisplayName("[정상 작동] GET /api/items?keyword=<검색어>&page=0&size=4&sort=createdAt,desc")
-    void read_run() throws Exception {
+    @DisplayName("[정상 작동] GET /api/shops/{shopId}/items")
+    void readItemsOfShop_whenChangeNickname() throws Exception {
         // given
-        MockHttpServletRequestBuilder request = get("/api/items")
-                .param("keyword", "shirt")
+        MockHttpServletRequestBuilder request = get("/api/shops/1/items")
                 .param("page", "0")
                 .param("size", "10")
                 .param("sort", "createdAt,desc");
 
         ResponseEntity<Page<ItemSearchResponseDto>> result = ResponseEntity.ok(Page.empty());
-        when(itemService.searchItem(any(), any()))
-                .thenReturn(result);
-
-        // when & then
-        mvc.perform(request)
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    @DisplayName("[정상 작동] GET /api/items/{itemId}")
-    void showItem_run() throws Exception {
-        // given
-        MockHttpServletRequestBuilder request = get("/api/items/1");
-
-       ItemResponseDto result = new ItemResponseDto();
-        when(itemService.showItem(any()))
+        when(itemService.readItemsOfShop(any(), any()))
                 .thenReturn(result);
 
         // when & then

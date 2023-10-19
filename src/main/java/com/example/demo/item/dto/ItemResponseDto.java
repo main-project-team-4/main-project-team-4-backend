@@ -7,13 +7,14 @@ import com.example.demo.item.entity.Item;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Getter
+@Getter @NoArgsConstructor
 public class ItemResponseDto {
     @Schema(description = "상품의 id", example = "1")
     @JsonProperty(ParameterNameConfig.Item.ID)
