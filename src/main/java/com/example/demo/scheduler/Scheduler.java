@@ -22,7 +22,7 @@ public class Scheduler {
     private final RedisRepository redisRepository;
 
     // 초, 분, 시, 일, 주, 월 순서
-//    @Scheduled(cron = "*/10 * * * * *") // 10초마다 업데이트
+    @Scheduled(cron = "*/10 * * * * *") // 10초마다 업데이트
     public void updateRank() {
         log.info("랭킹 업데이트 실행");
         List<Item> itemRanking = itemService.updateRanking();
