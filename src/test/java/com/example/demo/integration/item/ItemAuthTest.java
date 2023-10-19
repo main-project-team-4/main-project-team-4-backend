@@ -1,9 +1,5 @@
 package com.example.demo.integration.item;
 
-import com.example.demo.category.controller.CategoryController;
-import com.example.demo.category.dto.CategoryResponseDto;
-import com.example.demo.category.service.CategoryService;
-import com.example.demo.dto.MessageResponseDto;
 import com.example.demo.item.controller.ItemController;
 import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.item.service.ItemService;
@@ -21,7 +17,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;

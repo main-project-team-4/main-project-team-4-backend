@@ -1,8 +1,6 @@
 package com.example.demo.integration.category;
 
 import com.example.demo.category.dto.CategoryBundleResponseDto;
-import com.example.demo.category.dto.CategoryResponseDto;
-import com.example.demo.category.dto.MidCategoryResponseDto;
 import com.example.demo.category.service.CategoryService;
 import com.example.demo.utils.LoadEnvironmentVariables;
 import org.junit.jupiter.api.DisplayName;
@@ -12,17 +10,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Transactional
 @SpringBootTest
 @LoadEnvironmentVariables
 public class CategoryModelTest {

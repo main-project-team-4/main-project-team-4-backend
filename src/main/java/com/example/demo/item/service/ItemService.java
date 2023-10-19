@@ -131,6 +131,7 @@ public class ItemService {
         return ResponseEntity.status(HttpStatus.OK).body(msg);
     }
 
+    @Transactional
     public ResponseEntity<Page<ItemSearchResponseDto>> searchItem(
             String keyword,
             Pageable pageable

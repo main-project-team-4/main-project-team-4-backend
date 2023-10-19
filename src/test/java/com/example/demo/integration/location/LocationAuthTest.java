@@ -47,10 +47,27 @@ public class LocationAuthTest {
     @DisplayName("[정상 작동] GET /api/nearby-items")
     void read_run() throws Exception {
         // given
-        String token = authTestUtil.getToken("1");
-
         MockHttpServletRequestBuilder request = get("/api/nearby-items")
-                .header(HttpHeaders.AUTHORIZATION, token)
+                .param("page", "0")
+                .param("size", "10")
+                .param("sort", "createdAt,desc");
+        request = authTestUtil.setAccessToken(request);
+
+        ResponseEntity<Page<ItemSearchResponseDto>> result = ResponseEntity.ok(Page.empty());
+        when(itemService.readNearbyItems(any(), any()))
+                .thenReturn(result);
+
+        // when & then
+        mvc.perform(request)
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("[비정상 작동] GET /api/nearby-items - jwt 없이 호출")
+    void read_run_withoutJwt() throws Exception {
+        // given
+        MockHttpServletRequestBuilder request = get("/api/nearby-items")
                 .param("page", "0")
                 .param("size", "10")
                 .param("sort", "createdAt,desc");
@@ -62,6 +79,6 @@ public class LocationAuthTest {
         // when & then
         mvc.perform(request)
                 .andDo(print())
-                .andExpect(status().isOk());
+                .andExpect(status().isUnauthorized());
     }
 }
