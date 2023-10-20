@@ -3,6 +3,7 @@ package com.example.demo.integration.review;
 import com.example.demo.member.entity.Member;
 import com.example.demo.member.repository.MemberRepository;
 import com.example.demo.review.dto.ReviewRequestDto;
+import com.example.demo.review.dto.ReviewResponseDto;
 import com.example.demo.review.entity.Review;
 import com.example.demo.review.repository.ReviewRepository;
 import com.example.demo.review.service.ReviewService;
@@ -12,11 +13,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -185,5 +191,23 @@ public class ReviewModelTest {
 
         // then
         assertThrows(Throwable.class, func);
+    }
+
+    @LoadTestCaseReview
+    @Test
+    @DisplayName("[정상 작동] readReviewList")
+    void readReviewList() {
+        // given
+        Long shopId = 1L;
+        Pageable pageable = PageRequest.of(0, 100);
+
+        // when
+        ResponseEntity<Page<ReviewResponseDto>> result = reviewService.readReviewList(shopId, pageable);
+
+        // then
+        assertThat(result.getBody().getContent())
+                .extracting(ReviewResponseDto::getId)
+                .hasSize(3)
+                .containsAnyElementsOf(List.of(1L, 6L, 11L));
     }
 }

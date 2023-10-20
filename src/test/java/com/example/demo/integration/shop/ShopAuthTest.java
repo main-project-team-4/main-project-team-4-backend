@@ -1,9 +1,8 @@
 package com.example.demo.integration.shop;
 
-import com.example.demo.dto.MessageResponseDto;
 import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.item.service.ItemService;
-import com.example.demo.member.controller.MemberController;
+import com.example.demo.member.dto.ShopPageMemberResponseDto;
 import com.example.demo.member.service.MemberService;
 import com.example.demo.shop.controller.ShopController;
 import com.example.demo.utils.LoadEnvironmentVariables;
@@ -36,6 +35,8 @@ public class ShopAuthTest {
     private ShopController shopController;
     @MockBean
     private ItemService itemService;
+    @MockBean
+    private MemberService memberService;
 
     @Test
     @DisplayName("[정상 작동] GET /api/shops/{shopId}/items")
@@ -48,6 +49,22 @@ public class ShopAuthTest {
 
         ResponseEntity<Page<ItemSearchResponseDto>> result = ResponseEntity.ok(Page.empty());
         when(itemService.readItemsOfShop(any(), any()))
+                .thenReturn(result);
+
+        // when & then
+        mvc.perform(request)
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("[정상 작동] GET /api/shops/{shopId}")
+    void readShopPage() throws Exception {
+        // given
+        MockHttpServletRequestBuilder request = get("/api/shops/1");
+
+        ResponseEntity<ShopPageMemberResponseDto> result = ResponseEntity.ok(new ShopPageMemberResponseDto());
+        when(memberService.readShopPage(any()))
                 .thenReturn(result);
 
         // when & then

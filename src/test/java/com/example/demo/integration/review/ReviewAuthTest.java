@@ -3,6 +3,7 @@ package com.example.demo.integration.review;
 import com.example.demo.dto.MessageResponseDto;
 import com.example.demo.review.controller.ReviewController;
 import com.example.demo.review.dto.ReviewRequestDto;
+import com.example.demo.review.dto.ReviewResponseDto;
 import com.example.demo.review.service.ReviewService;
 import com.example.demo.utils.LoadEnvironmentVariables;
 import com.example.demo.utils.testcase.AuthTestUtil;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
@@ -163,5 +165,24 @@ public class ReviewAuthTest {
         mvc.perform(request)
                 .andDo(print())
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @DisplayName("[정상 작동] GET /api/shop/{shopId}/reviews")
+    void readReviewList() throws Exception {
+        // given
+        MockHttpServletRequestBuilder request = get("/api/shop/1/reviews")
+                .param("page", "0")
+                .param("size", "10")
+                .param("sort", "createdAt,desc");
+
+        ResponseEntity<Page<ReviewResponseDto>> result = ResponseEntity.ok(Page.empty());
+        when(reviewService.readReviewList(any(), any()))
+                .thenReturn(result);
+
+        // when & then
+        mvc.perform(request)
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 }
