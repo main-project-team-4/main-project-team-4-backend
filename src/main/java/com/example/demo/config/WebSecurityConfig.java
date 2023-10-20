@@ -114,6 +114,7 @@ public class WebSecurityConfig {
                         // 거래 관련 API
                         .requestMatchers(antMatcher(HttpMethod.GET, "/api/mypages/orders")).authenticated()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/api/mypages/sales")).authenticated()
+                        .requestMatchers(antMatcher(HttpMethod.POST, "/api/trades")).authenticated()
 
                         // websocket
                         .requestMatchers(antMatcher(HttpMethod.POST, "/chat/**")).permitAll()
