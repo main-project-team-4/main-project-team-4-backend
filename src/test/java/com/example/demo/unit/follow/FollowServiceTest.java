@@ -1,4 +1,4 @@
-package com.example.demo.unit.service;
+package com.example.demo.unit.follow;
 
 import com.example.demo.follow.repository.FollowRepository;
 import com.example.demo.follow.service.FollowService;
