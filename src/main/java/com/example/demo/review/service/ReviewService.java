@@ -62,6 +62,7 @@ public class ReviewService {
         );
     }
 
+    @Transactional
     public ResponseEntity<Page<ReviewResponseDto>> readReviewList(Long shopId, Pageable pageable) {
         Page<ReviewResponseDto> dtoList = reviewRepository.findByShop_Id(shopId, pageable)
                 .map(ReviewResponseDto::new);

@@ -6,10 +6,11 @@ import com.example.demo.shop.entity.Shop;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.Optional;
 
-@Getter
+@Getter @NoArgsConstructor
 public class ShopPageMemberResponseDto {
     @Schema(description = "회원 ID", example = "125124")
     @JsonProperty(ParameterNameConfig.Member.ID)

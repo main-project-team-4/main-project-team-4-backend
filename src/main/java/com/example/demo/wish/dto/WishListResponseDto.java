@@ -12,6 +12,9 @@ import java.util.Optional;
 
 @Getter @AllArgsConstructor
 public class WishListResponseDto {
+    @Schema(description = "상품 ID", example = "53262")
+    @JsonProperty(ParameterNameConfig.Item.ID)
+    private Long itemId;
     @Schema(description = "상품 이미지 url", example = "https://m.hoopbro.co.kr/web/product/big/202308/68034e9c48fe22a0aab33bb52b9b0f4c.jpg")
     @JsonProperty(ParameterNameConfig.Item.MAIN_IMAGE)
     private String imageUrl;
@@ -28,6 +31,9 @@ public class WishListResponseDto {
     public WishListResponseDto(Wish entity) {
         Optional<Item> optionalItem = Optional.of(entity).map(Wish::getItem);
 
+        this.itemId = optionalItem
+                .map(Item::getId)
+                .orElse(null);
         this.imageUrl = optionalItem
                 .map(Item::getMain_image)
                 .map(Object::toString)

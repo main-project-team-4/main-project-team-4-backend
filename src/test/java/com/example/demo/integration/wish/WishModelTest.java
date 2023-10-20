@@ -3,6 +3,7 @@ package com.example.demo.integration.wish;
 import com.example.demo.member.entity.Member;
 import com.example.demo.member.repository.MemberRepository;
 import com.example.demo.utils.LoadEnvironmentVariables;
+import com.example.demo.wish.dto.WishListResponseDto;
 import com.example.demo.wish.dto.WishReadResponseDto;
 import com.example.demo.wish.repository.WishRepository;
 import com.example.demo.wish.service.WishService;
@@ -18,7 +19,9 @@ import org.springframework.test.context.jdbc.SqlGroup;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
@@ -153,5 +156,23 @@ public class WishModelTest {
 
         // then
         assertFalse(result.getBody().getIsWished());
+    }
+
+    @LoadTestCaseWish
+    @Test
+    @DisplayName("[정상 작동] readMyWishLists")
+    void readMyWishLists() {
+        // given
+        Long memberId = 2L;
+        Member member = memberRepository.findById(memberId).orElseThrow();
+
+        // when
+        ResponseEntity<List<WishListResponseDto>> result = wishService.readMyWishLists(member);
+
+        // then
+        assertThat(result.getBody())
+                .extracting(WishListResponseDto::getItemId)
+                .hasSize(4)
+                .containsAnyElementsOf(List.of(1L, 3L, 5L, 7L));
     }
 }

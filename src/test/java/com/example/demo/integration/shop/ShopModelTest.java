@@ -2,6 +2,8 @@ package com.example.demo.integration.shop;
 
 import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.item.service.ItemService;
+import com.example.demo.member.dto.ShopPageMemberResponseDto;
+import com.example.demo.member.service.MemberService;
 import com.example.demo.utils.LoadEnvironmentVariables;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,6 +29,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class ShopModelTest {
     @Autowired
     private ItemService itemService;
+    @Autowired
+    private MemberService memberService;
 
     @Retention(RetentionPolicy.RUNTIME)
     @SqlGroup({
@@ -39,6 +43,18 @@ public class ShopModelTest {
             )
     })
     @interface LoadTestCaseShop {}
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @SqlGroup({
+            @Sql({
+                    "classpath:data/testcase-follow.sql"
+            }),
+            @Sql(
+                    scripts = "classpath:truncate-testcases.sql",
+                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
+            )
+    })
+    @interface LoadTestCaseFollow {}
 
     @LoadTestCaseShop
     @Test
@@ -68,6 +84,39 @@ public class ShopModelTest {
 
         // when
         Executable func = () -> itemService.readItemsOfShop(shopId, pageable);
+
+        // then
+        assertThrows(Throwable.class, func);
+    }
+
+    @LoadTestCaseFollow
+    @Test
+    @DisplayName("[정상 작동] readShopPage")
+    void readShopPage() {
+        // given
+        Long shopId = 3L;
+
+        // when
+        ResponseEntity<ShopPageMemberResponseDto> result = memberService.readShopPage(shopId);
+
+        // then
+        assertThat(result.getBody())
+                .extracting(ShopPageMemberResponseDto::getFollowers)
+                .isEqualTo(2L);
+        assertThat(result.getBody())
+                .extracting(ShopPageMemberResponseDto::getFollowings)
+                .isEqualTo(1L);
+    }
+
+    @LoadTestCaseFollow
+    @Test
+    @DisplayName("[비정상 작동] readShopPage - 존재하지 않는 상점 ID")
+    void readShopPage_whenGivenNonExistedShopId() {
+        // given
+        Long shopId = 100000L;
+
+        // when
+        Executable func = () -> memberService.readShopPage(shopId);
 
         // then
         assertThrows(Throwable.class, func);

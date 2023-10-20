@@ -93,6 +93,7 @@ public class FollowService {
         return ResponseEntity.ok(dtoList);
     }
 
+    @Transactional
     public ResponseEntity<MessageResponseDto> deleteFollowRecord(Long followId, Member memberLoggedIn) {
         Follow follow = findFollowById(followId);
         validateTargetShopOwnerOfFollower(follow, memberLoggedIn);
