@@ -25,6 +25,7 @@ public class ParameterNameConfig {
         public static final String NAME = "item_name";
         public static final String STATE = "item_state";
         public static final String PRICE = "item_price";
+        public static final String WITH_DELIVERY_FEE = "item_with_delivery_fee";
     }
 
     public static class Category {

@@ -27,4 +27,8 @@ public class itemRequestDto {
     @JsonProperty(ParameterNameConfig.Item.COMMENT)
     private String comment;
 
+    @Schema(description = "배송비 포함여부", example = "true")
+    @JsonProperty(ParameterNameConfig.Item.WITH_DELIVERY_FEE)
+    private Boolean isContainingDeliveryFee;
+
 }
