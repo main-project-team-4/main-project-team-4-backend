@@ -111,6 +111,24 @@ public class MemberModelTest {
 
     @LoadTestCaseMember
     @Test
+    @DisplayName("[정상 작동] updateMember - shopIntro")
+    void updateMember_whenGivenShopIntro() {
+        // given
+        String shopIntro = "mock shopIntro";
+        MemberInfoRequestDto dto = new MemberInfoRequestDto();
+        dto.setShopIntro(shopIntro);
+        Member member = memberRepository.findById(1L).orElseThrow();
+
+        // when
+        memberService.updateMember(dto, member);
+
+        // then
+        Member changed = memberRepository.findById(1L).orElseThrow();
+        assertThat(changed.getShop().getShopIntro()).isEqualTo(shopIntro);
+    }
+
+    @LoadTestCaseMember
+    @Test
     @DisplayName("[정상 작동] updateMember - shopName 변경 시, nickname 변경 없음.")
     void updateMember_whenGivenShopName_thenNicknameDoesNotChange() {
         // given
