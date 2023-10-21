@@ -46,6 +46,9 @@ public class MemberService {
         // 상점 소개글 변경.
         changeShopIntro(memberLoggedIn, request.getShopIntro());
 
+        // 거주지 변경.
+        changeMemberLocation(memberLoggedIn, request.getLocation());
+
         // 변경된 내용 저장.
         memberRepository.save(memberLoggedIn);
 
@@ -73,6 +76,13 @@ public class MemberService {
         validateUniqueShopName(shopName);
         Shop shop = member.getShop();
         shop.setShopName(shopName);
+    }
+
+    private void changeMemberLocation(Member member, String address) {
+        if(!StringUtils.hasText(address)) return;
+
+        MemberLocation location = member.getLocation();
+        location.setName(address);
     }
 
     private void validateUniqueNickname(String nickname) {
