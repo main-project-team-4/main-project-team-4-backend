@@ -49,11 +49,13 @@
                 axios.get(`/chat/room/${roomId}`).then(response => {
                     this.chatrooms = response.data;
                     var sender = response.data.loginMember;
+                    var itemId = response.data.itemId;
 
                     if (sender != "") {
                         localStorage.setItem('wschat.sender', sender);
                         localStorage.setItem('wschat.roomId', roomId);
-                        location.href = "/chat/room/enter/" + roomId;
+                        location.href = "/chat/room/" + itemId + "/" + roomId;
+                        // location.href = "/chat/room/enter/" + roomId;
                     }
                 });
             }

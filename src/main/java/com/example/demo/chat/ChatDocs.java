@@ -1,6 +1,5 @@
 package com.example.demo.chat;
 
-
 import com.example.demo.chat.entity.ChatMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

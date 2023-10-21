@@ -142,9 +142,9 @@ public class ItemService {
     }
 
     // 랭킹 Top 20 조회
-    public List<Item> updateRanking() {
-        return itemRepository.findTop100ByOrderByWishCountDesc();
-    }
+//    public List<Item> updateRanking() {
+//        return itemRepository.findTop100ByOrderByWishCountDesc();
+//    }
 
     @Transactional
     public ItemResponseDto showItem(Long id) {

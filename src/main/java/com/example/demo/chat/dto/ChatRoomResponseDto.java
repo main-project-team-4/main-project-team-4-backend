@@ -1,5 +1,7 @@
 package com.example.demo.chat.dto;
 
+import com.example.demo.chat.ChatRoomRepository;
+import com.example.demo.chat.entity.Chat;
 import com.example.demo.chat.entity.ChatRoom;
 import com.example.demo.item.entity.Item;
 import com.example.demo.member.entity.Member;
@@ -19,6 +21,7 @@ public class ChatRoomResponseDto {
     private String consumerName;
     @Schema(description = "아이템 이름", example = "아비렉스 가죽자켓")
     private String itemName;
+    private Long itemId;
 
     @Schema(description = "로그인한 멤버 닉네임", example = "고기닭고기")
     private String loginMember;
@@ -33,7 +36,16 @@ public class ChatRoomResponseDto {
         this.name = chatRoom.getRoomName();
         this.sellerName = chatRoom.getSeller().getNickname();
         this.consumerName = chatRoom.getConsumer().getNickname();
+        this.itemId = item.getId();
         this.itemName = item.getName();
+        this.loginMember = member.getNickname();
+    }
+
+    public ChatRoomResponseDto(ChatRoom chatRoom, Member member) {
+        this.roomId = chatRoom.getId();
+        this.name = chatRoom.getRoomName();
+        this.sellerName = chatRoom.getSeller().getNickname();
+        this.consumerName = chatRoom.getConsumer().getNickname();
         this.loginMember = member.getNickname();
     }
 }

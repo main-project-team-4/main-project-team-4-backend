@@ -1,6 +1,7 @@
 package com.example.demo.chat;
 
 import com.example.demo.chat.dto.ChatRoomResponseDto;
+import com.example.demo.chat.entity.ChatRoom;
 import com.example.demo.dto.MessageResponseDto;
 import com.example.demo.security.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -71,8 +72,8 @@ public interface ChatRoomDocs {
                     mediaType = "application/json"
             )
     )
-    public ResponseEntity<MessageResponseDto> createRoom(@PathVariable Long itemId,
-                                                         @AuthenticationPrincipal UserDetailsImpl userDetails);
+    public ChatRoom createRoom(@PathVariable Long itemId,
+                               @AuthenticationPrincipal UserDetailsImpl userDetails);
 
     @Operation(
             summary = "채팅방 상세 조회",

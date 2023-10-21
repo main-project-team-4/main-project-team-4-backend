@@ -6,11 +6,13 @@ import com.example.demo.member.dto.SignupRequestDto;
 import com.example.demo.member.entity.Member;
 import com.example.demo.review.entity.Review;
 import com.example.demo.shop.dto.ShopRequestDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +21,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Table(name = "shop")
-public class Shop {
+public class Shop implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,6 +38,7 @@ public class Shop {
     @OneToMany(mappedBy = "shop", orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
 
+    @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id")
     private Member member;
