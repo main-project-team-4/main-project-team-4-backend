@@ -4,6 +4,7 @@ package com.example.demo.follow.controller;
 import com.example.demo.dto.MessageResponseDto;
 import com.example.demo.follow.dto.FollowMemberResponseDto;
 import com.example.demo.follow.dto.FollowResponseDto;
+import com.example.demo.follow.dto.FollowersResponseDto;
 import com.example.demo.security.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -46,7 +47,8 @@ public interface FollowDocs {
     @Operation(
             summary = "팔로워 목록 조회",
             description = """
-                    팔로워 목록 조회
+                    팔로워 목록 조회.<br>
+                    만약 JWT를 추가로 보낸다면, 열람 대상이 각 팔로워를 팔로우하고 있는지 여부도 포함해서 알려줍니다.
                     """
     )
     @ApiResponse(
@@ -54,26 +56,12 @@ public interface FollowDocs {
             description = "정상 작동",
             content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = FollowMemberResponseDto.class)
+                    schema = @Schema(implementation = FollowersResponseDto.class)
             )//응답받을 데이터 타입
     )
-    @ApiResponse(
-            responseCode = "404",
-            description = "'~~'번 팔로워는 존재하지 않음.",
-            content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorResponse.class)
-            ))
-    @ApiResponse(
-            responseCode = "500",
-            description = "서버 에러",
-            content = @Content(
-                    mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorResponse.class)
-            )
-    )
-    ResponseEntity<List<FollowMemberResponseDto>> readFollowerListByShopId(
-            @PathVariable Long memberId
+    ResponseEntity<List<FollowersResponseDto>> readFollowerListByShopId(
+            @PathVariable Long memberId,
+            UserDetailsImpl principal
     );
 
     @Operation(
