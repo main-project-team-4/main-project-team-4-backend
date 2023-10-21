@@ -2,6 +2,7 @@ package com.example.demo.integration.follow;
 
 import com.example.demo.follow.dto.FollowMemberResponseDto;
 import com.example.demo.follow.dto.FollowResponseDto;
+import com.example.demo.follow.dto.FollowersResponseDto;
 import com.example.demo.follow.repository.FollowRepository;
 import com.example.demo.follow.service.FollowService;
 import com.example.demo.member.entity.Member;
@@ -164,12 +165,29 @@ public class FollowModelTest {
         Long shopId = 3L;
 
         // when
-        ResponseEntity<List<FollowMemberResponseDto>> result = followService.readFollowersByShopId(shopId);
+        ResponseEntity<List<FollowersResponseDto>> result = followService.readFollowersByShopId(shopId, null);
 
         // then
         assertThat(result.getBody())
-                .extracting(FollowMemberResponseDto::getId)
+                .extracting(FollowersResponseDto::getId)
                 .containsAnyElementsOf(List.of(1L, 2L));
+    }
+
+    @LoadTestCaseFollow
+    @Test
+    @DisplayName("[정상 작동] readFollowersByShopId - JWT가 주어진 경우, 각 팔로워를 팔로우하는지 여부를 알려줌.")
+    void readFollowersByShopId_withJwt() {
+        // given
+        Long shopId = 3L;
+        Member memberLoggedIn = memberRepository.findById(2L).orElseThrow();
+
+        // when
+        ResponseEntity<List<FollowersResponseDto>> result = followService.readFollowersByShopId(shopId, memberLoggedIn);
+
+        // then
+        assertThat(result.getBody())
+                .extracting(FollowersResponseDto::getIsPrincipalFollowing)
+                .isEqualTo(List.of(true, false));
     }
 
     @LoadTestCaseFollow

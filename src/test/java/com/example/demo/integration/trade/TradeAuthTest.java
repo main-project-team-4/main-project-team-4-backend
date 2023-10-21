@@ -1,10 +1,14 @@
 package com.example.demo.integration.trade;
 
+import com.example.demo.dto.MessageResponseDto;
 import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.trade.controller.TradeController;
+import com.example.demo.trade.dto.TradeRequestDto;
 import com.example.demo.trade.service.TradeService;
+import com.example.demo.trade.type.State;
 import com.example.demo.utils.LoadEnvironmentVariables;
 import com.example.demo.utils.testcase.AuthTestUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -13,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -20,6 +25,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -37,6 +43,8 @@ public class TradeAuthTest {
 
     @Autowired
     private AuthTestUtil authTestUtil;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @AuthTestUtil.LoadTestCaseAuth
     @Test
@@ -112,6 +120,53 @@ public class TradeAuthTest {
 
         ResponseEntity<Page<ItemSearchResponseDto>> result = ResponseEntity.ok(Page.empty());
         when(tradeService.readOrders(any(), any()))
+                .thenReturn(result);
+
+        // when & then
+        mvc.perform(request)
+                .andDo(print())
+                .andExpect(status().isUnauthorized());
+    }
+
+    @AuthTestUtil.LoadTestCaseAuth
+    @Test
+    @DisplayName("[정상 작동] POST /api/trades")
+    void updateTradeRecord() throws Exception {
+        // given
+        Long itemId = 1L;
+        Long memberId = 1L;
+        TradeRequestDto dto = new TradeRequestDto(itemId, memberId, State.SOLDOUT);
+
+        MockHttpServletRequestBuilder request = post("/api/trades")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto));
+        request = authTestUtil.setAccessToken(request);
+
+        ResponseEntity<MessageResponseDto> result = ResponseEntity.ok(new MessageResponseDto("mock msg", 200));
+        when(tradeService.updateTradeRecord(any(), any()))
+                .thenReturn(result);
+
+        // when & then
+        mvc.perform(request)
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @AuthTestUtil.LoadTestCaseAuth
+    @Test
+    @DisplayName("[비정상 작동] POST /api/trades - JWT 없이 호출")
+    void updateTradeRecord_withoutJwt() throws Exception {
+        // given
+        Long itemId = 1L;
+        Long memberId = 1L;
+        TradeRequestDto dto = new TradeRequestDto(itemId, memberId, State.SOLDOUT);
+
+        MockHttpServletRequestBuilder request = post("/api/trades")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto));
+
+        ResponseEntity<MessageResponseDto> result = ResponseEntity.ok(new MessageResponseDto("mock msg", 200));
+        when(tradeService.updateTradeRecord(any(), any()))
                 .thenReturn(result);
 
         // when & then

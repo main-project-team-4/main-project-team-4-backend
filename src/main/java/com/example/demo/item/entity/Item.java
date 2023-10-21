@@ -10,13 +10,14 @@ import com.example.demo.wish.entity.Wish;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter
+@Getter @Setter
 @NoArgsConstructor
 public class Item extends TimeStamp {
     @Id

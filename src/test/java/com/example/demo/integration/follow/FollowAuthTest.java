@@ -4,6 +4,7 @@ import com.example.demo.dto.MessageResponseDto;
 import com.example.demo.follow.controller.FollowController;
 import com.example.demo.follow.dto.FollowMemberResponseDto;
 import com.example.demo.follow.dto.FollowResponseDto;
+import com.example.demo.follow.dto.FollowersResponseDto;
 import com.example.demo.follow.service.FollowService;
 import com.example.demo.utils.LoadEnvironmentVariables;
 import com.example.demo.utils.testcase.AuthTestUtil;
@@ -133,8 +134,8 @@ public class FollowAuthTest {
         // given
         MockHttpServletRequestBuilder request = get("/api/shops/1/followers");
 
-        ResponseEntity<List<FollowMemberResponseDto>> result = ResponseEntity.ok(List.of());
-        when(followService.readFollowersByShopId(any()))
+        ResponseEntity<List<FollowersResponseDto>> result = ResponseEntity.ok(List.of());
+        when(followService.readFollowersByShopId(any(), any()))
                 .thenReturn(result);
 
         // when & then

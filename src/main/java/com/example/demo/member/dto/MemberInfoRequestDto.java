@@ -20,4 +20,8 @@ public class MemberInfoRequestDto {
     @JsonProperty(ParameterNameConfig.Shop.NAME)
     private String shopName;
 
+    @Schema(description = "유저 상점 소개글", example = "정말 잘 작성한 상점 소개글")
+    @JsonProperty(ParameterNameConfig.Shop.INTRO)
+    private String shopIntro;
+
 }

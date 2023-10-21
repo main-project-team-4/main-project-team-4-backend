@@ -3,6 +3,7 @@ package com.example.demo.follow.service;
 import com.example.demo.dto.MessageResponseDto;
 import com.example.demo.follow.dto.FollowMemberResponseDto;
 import com.example.demo.follow.dto.FollowResponseDto;
+import com.example.demo.follow.dto.FollowersResponseDto;
 import com.example.demo.follow.entity.Follow;
 import com.example.demo.follow.repository.FollowRepository;
 import com.example.demo.member.entity.Member;
@@ -79,11 +80,23 @@ public class FollowService {
         return ResponseEntity.ok(dtoList);
     }
 
-    public ResponseEntity<List<FollowMemberResponseDto>> readFollowersByShopId(Long shopId) {
-        List<FollowMemberResponseDto> dtoList = memberRepository.findFollowersByMember_Id(shopId).stream()
-                .map(FollowMemberResponseDto::new)
+    public ResponseEntity<List<FollowersResponseDto>> readFollowersByShopId(Long shopId, Member memberLoggedIn) {
+        List<FollowersResponseDto> dtoList = memberRepository.findFollowersByMember_Id(shopId).stream()
+                .map(FollowersResponseDto::new)
                 .toList();
+
+        if(memberLoggedIn != null) {
+            addFollowFlagByMemberId(dtoList, memberLoggedIn);
+        }
+
         return ResponseEntity.ok(dtoList);
+    }
+
+    private void addFollowFlagByMemberId(List<FollowersResponseDto> dtoList, Member memberLoggedIn) {
+        for(FollowersResponseDto dto : dtoList) {
+            boolean isFollowing = followRepository.existsByMemberAndShop_Id(memberLoggedIn, dto.getShopId());
+            dto.setPrincipalFollowing(isFollowing);
+        }
     }
 
     public ResponseEntity<List<FollowMemberResponseDto>> readFollowingsByShopId(Long shopId) {

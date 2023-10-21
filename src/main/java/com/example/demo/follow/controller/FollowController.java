@@ -3,7 +3,9 @@ package com.example.demo.follow.controller;
 import com.example.demo.dto.MessageResponseDto;
 import com.example.demo.follow.dto.FollowMemberResponseDto;
 import com.example.demo.follow.dto.FollowResponseDto;
+import com.example.demo.follow.dto.FollowersResponseDto;
 import com.example.demo.follow.service.FollowService;
+import com.example.demo.member.entity.Member;
 import com.example.demo.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -48,10 +51,14 @@ public class FollowController implements FollowDocs {
     }
 
     @GetMapping("/api/shops/{shop_id}/followers")
-    public ResponseEntity<List<FollowMemberResponseDto>> readFollowerListByShopId(
-            @PathVariable("shop_id") Long shopId
+    public ResponseEntity<List<FollowersResponseDto>> readFollowerListByShopId(
+            @PathVariable("shop_id") Long shopId,
+            @AuthenticationPrincipal UserDetailsImpl principal
     ) {
-        return followService.readFollowersByShopId(shopId);
+        Member memberLoggedIn = Optional.ofNullable(principal)
+                .map(UserDetailsImpl::getMember)
+                .orElse(null);
+        return followService.readFollowersByShopId(shopId, memberLoggedIn);
     }
 
     @DeleteMapping("/api/follows/{followId}")

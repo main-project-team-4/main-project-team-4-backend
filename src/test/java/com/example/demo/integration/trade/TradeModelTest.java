@@ -1,12 +1,18 @@
 package com.example.demo.integration.trade;
 
 import com.example.demo.item.dto.ItemSearchResponseDto;
+import com.example.demo.item.entity.Item;
 import com.example.demo.member.entity.Member;
 import com.example.demo.member.repository.MemberRepository;
+import com.example.demo.trade.dto.TradeRequestDto;
+import com.example.demo.trade.entity.Trade;
+import com.example.demo.trade.repository.TradeRepository;
 import com.example.demo.trade.service.TradeService;
+import com.example.demo.trade.type.State;
 import com.example.demo.utils.LoadEnvironmentVariables;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
@@ -15,12 +21,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @LoadEnvironmentVariables
@@ -30,6 +39,8 @@ public class TradeModelTest {
 
     @Autowired
     private MemberRepository memberRepository;
+    @Autowired
+    private TradeRepository tradeRepository;
 
     @Retention(RetentionPolicy.RUNTIME)
     @SqlGroup({
@@ -75,5 +86,96 @@ public class TradeModelTest {
         assertThat(result.getBody().getContent())
                 .extracting(ItemSearchResponseDto::getItemId)
                 .containsAnyElementsOf(List.of(1L, 2L));
+    }
+
+    @LoadTestCaseTrade
+    @Test
+    @DisplayName("[정상 작동] updateTradeRecord - 기존 거래 기록이 없는 경우")
+    void updateTradeRecord_whenNonExistedTradeRecord() throws AccessDeniedException {
+        // given
+        Member memberWhoOwnItem = memberRepository.findById(4L).orElseThrow();
+        TradeRequestDto dto = new TradeRequestDto(8L, 1L, State.SOLDOUT);
+
+        long countBeforeUpdate = tradeRepository.count();
+
+        // when
+        tradeService.updateTradeRecord(memberWhoOwnItem, dto);
+
+        // then
+        long countAfterUpdate = tradeRepository.count();
+
+        assertThat(countAfterUpdate).isEqualTo(countBeforeUpdate + 1);
+    }
+
+    @Transactional
+    @LoadTestCaseTrade
+    @Test
+    @DisplayName("[정상 작동] updateTradeRecord - 기존 거래 기록이 존재하는 경우")
+    void updateTradeRecord_whenExistedTradeRecord() throws AccessDeniedException {
+        // given
+        State state = State.SOLDOUT;
+        Member memberWhoOwnItem = memberRepository.findById(1L).orElseThrow();
+        TradeRequestDto dto = new TradeRequestDto(1L, 2L, state);
+
+        Long tradeId = 1L;
+
+        Trade tradeBeforeUpdate = tradeRepository.findById(tradeId).orElseThrow();
+        assertThat(tradeBeforeUpdate.getItem())
+                .extracting(Item::getState)
+                .isNotEqualTo(state);
+
+        // when
+        tradeService.updateTradeRecord(memberWhoOwnItem, dto);
+
+        // then
+        Trade tradeAfterUpdate = tradeRepository.findById(tradeId).orElseThrow();
+        assertThat(tradeAfterUpdate.getItem())
+                .extracting(Item::getState)
+                .isEqualTo(state);
+    }
+
+    @LoadTestCaseTrade
+    @Test
+    @DisplayName("[비정상 작동] updateTradeRecord - 상품 소유자가 아닌 사람의 접근")
+    void updateTradeRecord_whenAccessNonGrantedPerson() {
+        // given
+        Member memberWhoNotOwnItem = memberRepository.findById(1L).orElseThrow();
+        TradeRequestDto dto = new TradeRequestDto(8L, 1L, State.SOLDOUT);
+
+        // when
+        Executable func = () -> tradeService.updateTradeRecord(memberWhoNotOwnItem, dto);
+
+        // then
+        assertThrows(Throwable.class, func);
+    }
+
+    @LoadTestCaseTrade
+    @Test
+    @DisplayName("[비정상 작동] updateTradeRecord - 존재하지 않는 상품 ID")
+    void updateTradeRecord_whenNonExistedItemId() {
+        // given
+        Member memberWhoOwnItem = memberRepository.findById(4L).orElseThrow();
+        TradeRequestDto dto = new TradeRequestDto(10000000L, 1L, State.SOLDOUT);
+
+        // when
+        Executable func = () -> tradeService.updateTradeRecord(memberWhoOwnItem, dto);
+
+        // then
+        assertThrows(Throwable.class, func);
+    }
+
+    @LoadTestCaseTrade
+    @Test
+    @DisplayName("[비정상 작동] updateTradeRecord - 존재하지 않는 구매자 ID")
+    void updateTradeRecord_whenNonExistedConsumerId() {
+        // given
+        Member memberWhoOwnItem = memberRepository.findById(4L).orElseThrow();
+        TradeRequestDto dto = new TradeRequestDto(8L, 10000000L, State.SOLDOUT);
+
+        // when
+        Executable func = () -> tradeService.updateTradeRecord(memberWhoOwnItem, dto);
+
+        // then
+        assertThrows(Throwable.class, func);
     }
 }

@@ -43,11 +43,21 @@ public class MemberService {
         // 상점명 변경.
         changeShopName(memberLoggedIn, request.getShopName());
 
+        // 상점 소개글 변경.
+        changeShopIntro(memberLoggedIn, request.getShopIntro());
+
         // 변경된 내용 저장.
         memberRepository.save(memberLoggedIn);
 
         MessageResponseDto msg = new MessageResponseDto("회원정보 수정에 성공하였습니다.", HttpStatus.OK.value());
         return ResponseEntity.status(HttpStatus.OK).body(msg);
+    }
+
+    private void changeShopIntro(Member memberLoggedIn, String shopIntro) {
+        if(!StringUtils.hasText(shopIntro)) return;
+
+        Shop shop = memberLoggedIn.getShop();
+        shop.setShopIntro(shopIntro);
     }
 
     private void changeNickname(Member member, String nickname) {
