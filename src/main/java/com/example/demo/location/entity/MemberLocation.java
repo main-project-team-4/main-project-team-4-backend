@@ -22,8 +22,11 @@ public class MemberLocation extends Location {
     private Member member;
 
     public MemberLocation(LocationRequestDto requestDto, Member member) {
-        this.id = getId();
         this.name = requestDto.getName();
+        this.member = member;
+    }
+
+    public MemberLocation(Member member) {
         this.member = member;
     }
 }

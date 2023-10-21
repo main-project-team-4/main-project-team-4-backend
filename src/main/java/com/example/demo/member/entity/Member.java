@@ -51,5 +51,6 @@ public class Member {
         this.username = username;
         this.nickname = nickname;
         this.shop = new Shop(this);
+        this.location = new MemberLocation(this);
     }
 }
