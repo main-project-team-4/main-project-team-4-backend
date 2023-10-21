@@ -1,5 +1,8 @@
 package com.example.demo.chat.dto;
 
-public class ChatRoomRequestDto {
+import lombok.Getter;
 
+@Getter
+public class ChatRoomRequestDto {
+    private String roomId;
 }

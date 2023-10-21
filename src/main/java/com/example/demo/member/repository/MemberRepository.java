@@ -1,6 +1,7 @@
 package com.example.demo.member.repository;
 
 import com.example.demo.member.entity.Member;
+import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -25,4 +26,7 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     List<Member> findFollowingsByMember_Id(Long memberId);
 
     Optional<Member> findByNickname(String nickname);
+
+    @Query("SELECT m FROM Member m WHERE m.id = :id")
+    Optional<Member> findNickNameById(@Param("id") String id);
 }

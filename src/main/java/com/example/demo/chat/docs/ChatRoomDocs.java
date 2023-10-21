@@ -1,4 +1,4 @@
-package com.example.demo.chat;
+package com.example.demo.chat.docs;
 
 import com.example.demo.chat.dto.ChatRoomResponseDto;
 import com.example.demo.chat.entity.ChatRoom;

@@ -1,4 +1,4 @@
-package com.example.demo.config;
+package com.example.demo.chat.websocket;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,11 +12,10 @@ import org.springframework.web.socket.config.annotation.*;
 @EnableWebSocketMessageBroker
 @RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
-
     @Override
-    public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/sub");
-        config.setApplicationDestinationPrefixes("/pub");
+    public void configureMessageBroker(MessageBrokerRegistry registry) {
+        registry.enableSimpleBroker("/sub");
+        registry.setApplicationDestinationPrefixes("/pub");
     }
 
     @Override
@@ -26,11 +25,3 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .withSockJS();
     }
 }
-
-// ws://localhost:8080/ws/chat
-//{
-//    "messageType" : "ENTER",
-//    "roomId" : "",
-//    "sender" : "user1",
-//    "message" : ""
-//}

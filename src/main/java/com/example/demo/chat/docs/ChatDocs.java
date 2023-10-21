@@ -1,4 +1,4 @@
-package com.example.demo.chat;
+package com.example.demo.chat.docs;
 
 import com.example.demo.chat.entity.ChatMessage;
 import io.swagger.v3.oas.annotations.Operation;

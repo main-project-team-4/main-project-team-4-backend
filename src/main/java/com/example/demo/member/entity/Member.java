@@ -51,8 +51,8 @@ public class Member implements Serializable {
     @OneToMany(mappedBy = "consumer")
     private List<ChatRoom> consumerChatRoomList = new ArrayList<>();
 
-    @OneToOne(mappedBy = "sender")
-    private ChatMessage chatMessage;
+//    @OneToOne(mappedBy = "sender")
+//    private ChatMessage chatMessage;
 
     public Member(String username, String nickname) {
         this.username = username;

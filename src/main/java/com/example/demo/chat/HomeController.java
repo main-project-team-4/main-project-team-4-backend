@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-public class HomeController{
+public class HomeController {
     @GetMapping("/chat/room")         // 접속 주소
     public String getChatRooms() {
         return "chat/room";             // html

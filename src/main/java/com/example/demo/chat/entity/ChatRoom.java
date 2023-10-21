@@ -6,9 +6,8 @@ import com.example.demo.member.entity.Member;
 import com.example.demo.shop.entity.Shop;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.data.redis.core.RedisHash;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -19,6 +18,8 @@ import java.util.UUID;
 @Table(name = "chatroom")
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class ChatRoom implements Serializable {
     private static final long serialVersionUID = 6494678977089006639L;
@@ -50,6 +51,7 @@ public class ChatRoom implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Item item;
+
 
     public ChatRoom (Item item, Member member){
         this.roomId = UUID.randomUUID().toString();

@@ -1,7 +1,5 @@
 package com.example.demo.chat.dto;
 
-import com.example.demo.chat.ChatRoomRepository;
-import com.example.demo.chat.entity.Chat;
 import com.example.demo.chat.entity.ChatRoom;
 import com.example.demo.item.entity.Item;
 import com.example.demo.member.entity.Member;
