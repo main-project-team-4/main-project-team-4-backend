@@ -56,6 +56,18 @@ public class ShopModelTest {
     })
     @interface LoadTestCaseFollow {}
 
+    @Retention(RetentionPolicy.RUNTIME)
+    @SqlGroup({
+            @Sql({
+                    "classpath:data/testcase-review.sql"
+            }),
+            @Sql(
+                    scripts = "classpath:truncate-testcases.sql",
+                    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
+            )
+    })
+    @interface LoadTestCaseReview {}
+
     @LoadTestCaseShop
     @Test
     @DisplayName("[정상 작동] readItemsOfShop")
@@ -120,5 +132,21 @@ public class ShopModelTest {
 
         // then
         assertThrows(Throwable.class, func);
+    }
+
+    @LoadTestCaseReview
+    @Test
+    @DisplayName("[정상 작동] readShopPage - 리뷰 평균이 적절히 계산되는지 확인.")
+    void readShopPage_testForReviewRating() {
+        // given
+        Long shopId = 1L;
+
+        // when
+        ResponseEntity<ShopPageMemberResponseDto> result = memberService.readShopPage(shopId);
+
+        // then
+        assertThat(result.getBody())
+                .extracting(ShopPageMemberResponseDto::getRatingAvg)
+                .isEqualTo(7d/3);
     }
 }

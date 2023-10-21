@@ -36,6 +36,9 @@ public class ShopPageMemberResponseDto {
     @Schema(description = "해당 회원의 팔로워 수", example = "210")
     @JsonProperty(ParameterNameConfig.Follow.NUM_FOLLOWERS)
     private Long followers;
+    @Schema(description = "해당 회원의 리뷰 평균", example = "3.45")
+    @JsonProperty(ParameterNameConfig.Review.RATING_AVG)
+    private Double ratingAvg;
 
     public ShopPageMemberResponseDto(MemberWithFollowMapper mapper) {
         Member entity = mapper.getMember();
@@ -56,5 +59,6 @@ public class ShopPageMemberResponseDto {
                 .orElse(null);
         this.followings = mapper.getNumOfFollowings();
         this.followers = mapper.getNumOfFollowers();
+        this.ratingAvg = mapper.getAvgOfRating();
     }
 }
