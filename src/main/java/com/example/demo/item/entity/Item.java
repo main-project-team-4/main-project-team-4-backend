@@ -44,6 +44,9 @@ public class Item extends TimeStamp {
     @Column(name = "state")
     private State state;
 
+    @Column(name = "with_delivery_fee")
+    private Boolean withDeliveryFee;
+
     @ManyToOne
     @JoinColumn(name = "shop_id")
     private Shop shop;
@@ -62,7 +65,7 @@ public class Item extends TimeStamp {
     @OneToOne(mappedBy = "item", cascade = CascadeType.PERSIST)
     private ItemLocation itemLocation;
 
-    public Item(String name, int price, String comment, URL main_image, List<URL> sub_images, Shop shop) {
+    public Item(String name, int price, String comment, URL main_image, List<URL> sub_images, Shop shop, Boolean withDeliveryFee) {
         this.id = getId();
         this.shop = shop;
         this.name = name;
@@ -70,6 +73,7 @@ public class Item extends TimeStamp {
         this.comment = comment;
         this.main_image = main_image;
         this.sub_images.addAll(sub_images);
+        this.withDeliveryFee = withDeliveryFee;
     }
 
     public void updateSubImage(List<URL> sub_images) {
