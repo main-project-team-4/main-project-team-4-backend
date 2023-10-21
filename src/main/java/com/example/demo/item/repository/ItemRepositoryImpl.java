@@ -17,6 +17,7 @@ import java.util.List;
 
 import static com.example.demo.item.entity.QItem.item;
 import static com.example.demo.location.entity.QItemLocation.itemLocation;
+import static com.example.demo.location.entity.QMemberLocation.memberLocation;
 import static com.example.demo.trade.entity.QTrade.trade;
 import static com.example.demo.wish.entity.QWish.wish;
 
@@ -86,10 +87,10 @@ public class ItemRepositoryImpl implements
         List<Item> result = jpaQueryFactory
                 .select(item)
                 .from(item)
-                .leftJoin(itemLocation).on(itemLocation.item.id.eq(item.id))
+                .leftJoin(memberLocation).on(memberLocation.member.id.eq(item.shop.member.id))
 
                 .orderBy(
-                        QueryBuilder.radius(center, itemLocation._super).asc()
+                        QueryBuilder.radius(center, memberLocation._super).asc()
                 )
 
                 .offset(pageable.getOffset())
