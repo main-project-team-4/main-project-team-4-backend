@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import static com.example.demo.follow.entity.QFollow.follow;
 import static com.example.demo.member.entity.QMember.member;
+import static com.example.demo.review.entity.QReview.review;
 
 @Repository
 @RequiredArgsConstructor
@@ -35,8 +36,14 @@ public class MemberRepositoryImpl implements WithFollowInfoRepository {
                 .where(follow.member.id.eq(id))
                 .fetchFirst();
 
+        Double avgOfReviewRating = factory
+                .select(review.rating.avg())
+                .from(review)
+                .where(review.shop.member.id.eq(id))
+                .fetchFirst();
+
         MemberWithFollowMapper result = new MemberWithFollowMapper(
-                entity, followers, followings
+                entity, followers, followings, avgOfReviewRating
         );
         return Optional.of(result);
     }
@@ -60,8 +67,14 @@ public class MemberRepositoryImpl implements WithFollowInfoRepository {
                 .where(follow.member.shop.id.eq(shopId))
                 .fetchFirst();
 
+        Double avgOfReviewRating = factory
+                .select(review.rating.avg())
+                .from(review)
+                .where(review.shop.id.eq(shopId))
+                .fetchFirst();
+
         MemberWithFollowMapper result = new MemberWithFollowMapper(
-                entity, followers, followings
+                entity, followers, followings, avgOfReviewRating
         );
         return Optional.of(result);
     }

@@ -8,14 +8,17 @@ public class MemberWithFollowMapper {
     private Member member;
     private Long numOfFollowers;
     private Long numOfFollowings;
+    private Double avgOfRating;
 
     public MemberWithFollowMapper(
             Member member,
             Long numOfFollowers,
-            Long numOfFollowings
+            Long numOfFollowings,
+            Double avgOfRating
     ) {
         this.member = member;
         this.numOfFollowers = numOfFollowers;
         this.numOfFollowings = numOfFollowings;
+        this.avgOfRating = avgOfRating;
     }
 }
