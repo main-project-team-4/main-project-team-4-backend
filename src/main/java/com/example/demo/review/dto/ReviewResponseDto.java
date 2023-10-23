@@ -44,6 +44,10 @@ public class ReviewResponseDto {
     @JsonProperty(ParameterNameConfig.Member.NICKNAME)
     private String reviewerName;
 
+    @Schema(description = "리뷰 점수", example = "3.5463")
+    @JsonProperty(ParameterNameConfig.Review.RATING)
+    private Double reviewRating;
+
     public ReviewResponseDto(Review review) {
         this.id = review.getId();
         this.comment = review.getComment();
@@ -59,6 +63,8 @@ public class ReviewResponseDto {
         Optional<Member> member = Optional.of(review).map(Review::getMember);
         this.reviewerId = member.map(Member::getId).orElse(null);
         this.reviewerName = member.map(Member::getNickname).orElse(null);
+
+        this.reviewRating = review.getRating();
     }
 
 }
