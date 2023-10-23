@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Slf4j(topic = "Scheduler")
-@Component
+//@Component
 @RequiredArgsConstructor
 public class Scheduler {
 
