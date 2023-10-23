@@ -20,7 +20,7 @@
         </div>
     </div>
     <ul class="list-group">
-        <li class="list-group-item list-group-item-action" v-for="item in chatrooms" v-bind:key="item.roomId" v-on:click="enterRoom(item.roomId)">
+        <li class="list-group-item list-group-item-action" v-for="item in chatrooms" v-bind:key="item.roomId" v-on:click="enterRoom(item.roomId, item.roomName, item.sender)">
             {{item.roomName}}
         </li>
     </ul>
@@ -34,6 +34,7 @@
         data: {
             roomName : '',
             roomId: '',
+            sender: '',
             chatrooms: [
             ],
         },
@@ -44,21 +45,13 @@
             findAllRoom: function() {
                 axios.get('/chat/rooms').then(response => { this.chatrooms = response.data; });
             },
-            enterRoom: function(roomId, roomName) {
+            enterRoom: function(roomId, roomName, sender) {
                 axios.get(`/chat/room/${roomId}`).then(response => {
-                    // this.chatrooms = response.data;
-                    // this.roomId = response.data;
-                    // this.sender = response.data;
-                    //var roomId = response.data.roomId;
-                    // let roomName = response.data.roomName;
-                    // let sender = response.data.loginMember;
-                    // console.log("Vue - RoomId : "+roomId);
-                    // var itemId = response.data.itemId;
-
                     // if (sender != "") {
                         //localStorage.setItem('wschat.sender', sender);
                         localStorage.setItem('wschat.roomId', roomId);
                         localStorage.setItem('wschat.roomName', roomName);
+                        localStorage.setItem('wschat.sender', sender);
                         console.log("채팅방으로 이동하기 전");
                         location.href = "/chat/room/" + roomId;
                         // location.href = "/chat/room/" + itemId + "/" + roomId;

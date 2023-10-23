@@ -5,12 +5,7 @@ import jakarta.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.io.ClassPathResource;
 import redis.embedded.RedisServer;
-
-import java.io.File;
-import java.net.URISyntaxException;
-import java.util.Objects;
 
 @Profile("local")
 @Configuration
@@ -22,16 +17,10 @@ public class ChatRedisLocalConfig {
 
     @PostConstruct
     public void start() {
-        if (isArmArchitecture()) {
-            redisServer = new RedisServer(Objects.requireNonNull(getRedisServerExecutable()),
-                    redisPort);
-        }
-        if (!isArmArchitecture()) {
-            redisServer = RedisServer.builder()
-                    .port(redisPort)
-                    .setting("maxmemory 128M")
-                    .build();
-        }
+        redisServer = RedisServer.builder()
+                .port(redisPort)
+                .setting("maxmemory 128M")
+                .build();
         redisServer.start();
     }
 
@@ -40,17 +29,5 @@ public class ChatRedisLocalConfig {
         if (redisServer != null) {
             redisServer.stop();
         }
-    }
-
-    private File getRedisServerExecutable() {
-        try {
-            return new File("src/main/resources/binary/redis/redis-server-7.2.2-mac-arm64");
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    private boolean isArmArchitecture() {
-        return System.getProperty("os.arch").contains("aarch64");
     }
 }

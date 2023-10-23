@@ -22,7 +22,7 @@
         <div class="input-group-prepend">
             <label class="input-group-text">내용</label>
         </div>
-        <input type="text" class="form-control" v-model="message" v-on:keypress.enter="sendMessage('TALK')">
+        <input type="text" class="form-control" v-model="message" v-on:keypress.enter="">
         <div class="input-group-append">
             <button class="btn btn-primary" type="button" @click="sendMessage('TALK')">보내기</button>
         </div>
@@ -51,7 +51,7 @@
         data: {
             roomId: '',
             room: {},
-            //sender: '',
+            sender: '',
             message: '',
             messages: [],
             token: ''
@@ -59,31 +59,17 @@
         created() {
             this.roomId = localStorage.getItem('wschat.roomId');
             this.roomName = localStorage.getItem('wschat.roomName');
-            //this.sender = localStorage.getItem('wschat.sender');
-            //this.findRoom();
-
-            var _this = this;
-            axios.get('/chat/user').then(response => {
-                _this.token = response.data.token;
-                ws.connect({"token":_this.token}, function(frame) {
-                    ws.subscribe("/sub/chat/room/"+_this.roomId, function(message) {
-                        var recv = JSON.parse(message.body);
-                        _this.recvMessage(recv);
-                    });
-                    _this.sendMessage('ENTER');
-                }, function(error) {
-                    alert("서버 연결에 실패 하였습니다. 다시 접속해 주십시요.");
-                    // location.href="/chat/room";
-                });
-            });
+            this.sender = localStorage.getItem('wschat.sender');
+            this.findRoom();
         },
         methods: {
             findRoom: function() {
                 axios.get('/chat/room/'+this.roomId).then(response => { this.room = response.data; });
             },
-            sendMessage: function(type) {
+            sendMessage: function() {
                 // ws.send("/pub/chat/message", {}, JSON.stringify({type:'TALK', roomId:this.roomId, sender:this.sender, message:this.message}));
-                ws.send("/pub/chat/message", {"token":this.token}, JSON.stringify({type:type, roomId:this.roomId, message:this.message}));
+                ws.send("/pub/chat/message", {}, JSON.stringify({
+                    type:'TALK', sender:this.sender, roomId:this.roomId, message:this.message, roomName:this.roomName}));
                 this.message = '';
             },
             recvMessage: function(recv) {
@@ -98,7 +84,7 @@
                 var recv = JSON.parse(message.body);
                 vm.recvMessage(recv);
             });
-            ws.send("/pub/chat/message", {}, JSON.stringify({type:'ENTER', roomId:vm.$data.roomId, sender:vm.$data.sender}));
+            ws.send("/pub/chat/message", {}, JSON.stringify({type:'ENTER', roomId:vm.$data.roomId, sender:vm.$data.sender, message:''}));
         }, function(error) {
             if(reconnect++ <= 5) {
                 setTimeout(function() {

@@ -1,6 +1,5 @@
 package com.example.demo.chat.entity;
 
-import com.example.demo.shop.entity.Shop;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

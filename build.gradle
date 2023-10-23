@@ -25,8 +25,10 @@ dependencies {
 	// websocket
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 	//embedded-redis
-	implementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.2'
+	//implementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.2'
+	implementation ('it.ozimov:embedded-redis:0.7.2') { exclude group: "org.slf4j", module: "slf4j-simple" }
 	implementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.2'
+	implementation 'org.springframework:spring-messaging:5.3.23'
 
 	implementation 'org.springframework.boot:spring-boot-starter-freemarker'
 	implementation 'org.springframework.boot:spring-boot-devtools'
