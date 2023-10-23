@@ -25,7 +25,7 @@ public class Review extends TimeStamp {
     private String comment;
 
     @Column(name="rating", nullable = false, length = 500)
-    private int rating;
+    private Double rating;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="shop_id", nullable = false)
