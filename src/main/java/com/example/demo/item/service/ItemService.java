@@ -35,7 +35,7 @@ public class ItemService {
     private final ShopRepository shopRepository;
     private final S3Uploader s3Uploader;
 
-    public ResponseEntity<MessageResponseDto> createItem(Member member, MultipartFile main_image, List<MultipartFile> sub_images, itemRequestDto requestDto) throws IOException {
+    public ResponseEntity<ItemResponseDto> createItem(Member member, MultipartFile main_image, List<MultipartFile> sub_images, itemRequestDto requestDto) throws IOException {
         postBlankCheck(main_image);
 
         Shop shop = shopRepository.findById(member.getShop().getId()).orElseThrow(
@@ -62,10 +62,11 @@ public class ItemService {
         CategoryM categoryM = categoryMRepository.findById(requestDto.getMiddleCategoryId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID의 카테고리는 존재하지 않습니다."));
 
-        itemRepository.save(new Item(requestDto.getName(), requestDto.getPrice(), requestDto.getComment(), main_imageUrl, sub_imageUrls, shop, requestDto.getIsContainingDeliveryFee(), categoryM));
+        Item item = new Item(requestDto.getName(), requestDto.getPrice(), requestDto.getComment(), main_imageUrl, sub_imageUrls, shop, requestDto.getIsContainingDeliveryFee(), categoryM);
+        Item saved = itemRepository.save(item);
 
-        MessageResponseDto msg = new MessageResponseDto("상품이 등록되었습니다.", HttpStatus.OK.value());
-        return ResponseEntity.status(HttpStatus.OK).body(msg);
+        ItemResponseDto dto = new ItemResponseDto(saved);
+        return ResponseEntity.status(HttpStatus.OK).body(dto);
 
     }
 
