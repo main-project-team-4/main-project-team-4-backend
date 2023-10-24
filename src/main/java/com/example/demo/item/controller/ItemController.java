@@ -29,7 +29,7 @@ public class ItemController implements ItemDocs {
 
 //    @Secured("ROLE_USER")
     @PostMapping
-    public ResponseEntity<MessageResponseDto> createItem(
+    public ResponseEntity<ItemResponseDto> createItem(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Valid @RequestParam("main_image") MultipartFile main_image,
             @Valid @RequestParam(value = "sub_image", required = false) List<MultipartFile> sub_images,
