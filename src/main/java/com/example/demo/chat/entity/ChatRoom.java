@@ -51,13 +51,4 @@ public class ChatRoom implements Serializable {
         this.seller = item.getShop().getMember();
         this.roomName = consumer.getNickname() + " 님의 " + item.getName() + " 문의";
     }
-
-    public static ChatRoom create(String name, Item item, Member consumer, Member seller) {
-        ChatRoom chatRoom = new ChatRoom();
-        chatRoom.roomName = name;
-        chatRoom.item = item;
-        chatRoom.consumer=consumer;
-        chatRoom.seller=seller;
-        return chatRoom;
-    }
 }

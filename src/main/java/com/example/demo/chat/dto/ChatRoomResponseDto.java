@@ -24,12 +24,7 @@ public class ChatRoomResponseDto {
     @Schema(description = "로그인한 멤버 닉네임", example = "고기닭고기")
     private String sender;
 
-    public ChatRoomResponseDto(ChatRoom chatRoom){
-        this.roomId = chatRoom.getId();
-        this.roomName = chatRoom.getRoomName();
-    }
-
-    public ChatRoomResponseDto(ChatRoom chatRoom, Item item, Member member){
+    public ChatRoomResponseDto(ChatRoom chatRoom, Item item){
         this.roomId = chatRoom.getId();
         this.roomName = chatRoom.getRoomName();
         this.sellerName = chatRoom.getSeller().getNickname();

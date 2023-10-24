@@ -5,8 +5,7 @@ public enum MessageType {
 
     ENTER,
 
-    QUIT,
-
     TALK
 
+    // QUIT
 }

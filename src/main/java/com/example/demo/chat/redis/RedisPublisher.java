@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class RedisPublisher {
-    private final RedisTemplate<String, Object> redisChatTemplate;
+    private final RedisTemplate<String, Object> redisChatRoomTemplate;
 
     public void publish(ChannelTopic topic, ChatMessage message) {
-        redisChatTemplate.convertAndSend(topic.getTopic(), message);
+        redisChatRoomTemplate.convertAndSend(topic.getTopic(), message);
     }
 }
