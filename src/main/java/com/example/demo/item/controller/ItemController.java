@@ -31,7 +31,7 @@ public class ItemController implements ItemDocs {
     @PostMapping
     public ResponseEntity<MessageResponseDto> createItem(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @Valid @RequestParam(value = "main_image", required = false) MultipartFile main_image,
+            @Valid @RequestParam("main_image") MultipartFile main_image,
             @Valid @RequestParam(value = "sub_image", required = false) List<MultipartFile> sub_images,
             @RequestPart(value = "requestDto", required = false) itemRequestDto requestDto
             ) throws IOException {

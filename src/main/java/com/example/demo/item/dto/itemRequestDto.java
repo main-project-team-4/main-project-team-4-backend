@@ -31,4 +31,7 @@ public class itemRequestDto {
     @JsonProperty(ParameterNameConfig.Item.WITH_DELIVERY_FEE)
     private Boolean isContainingDeliveryFee;
 
+    @Schema(description = "중분류 카테고리 ID", example = "62537")
+    @JsonProperty(ParameterNameConfig.CategoryMiddle.ID)
+    private Long middleCategoryId;
 }
