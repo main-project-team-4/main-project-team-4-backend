@@ -28,6 +28,9 @@
         </div>
     </div>
     <ul class="list-group">
+        <li class="list-group-item" v-for="message in chatMessages">
+            {{ message.sender }} - {{ message.message }}
+        </li>
         <li class="list-group-item" v-for="message in messages">
             {{message.sender}} - {{message.message}}</a>
         </li>
@@ -40,7 +43,6 @@
 <script src="/webjars/sockjs-client/1.1.2/sockjs.min.js"></script>
 <script src="/webjars/stomp-websocket/2.3.3-1/stomp.min.js"></script>
 <script>
-    //alert(document.title);
     // websocket & stomp initialize
     var sock = new SockJS("/ws-stomp");
     var ws = Stomp.over(sock);
@@ -54,6 +56,7 @@
             sender: '',
             message: '',
             messages: [],
+            chatMessages: [],
             token: ''
         },
         created() {
@@ -61,10 +64,14 @@
             this.roomName = localStorage.getItem('wschat.roomName');
             this.sender = localStorage.getItem('wschat.sender');
             this.findRoom();
+            this.getMessages();
         },
         methods: {
             findRoom: function() {
                 axios.get('/chat/room/'+this.roomId).then(response => { this.room = response.data; });
+            },
+            getMessages: function(){
+                axios.get('/message/'+this.roomId).then(response => {this.chatMessages = response.data; });
             },
             sendMessage: function() {
                 // ws.send("/pub/chat/message", {}, JSON.stringify({type:'TALK', roomId:this.roomId, sender:this.sender, message:this.message}));
@@ -84,7 +91,7 @@
                 var recv = JSON.parse(message.body);
                 vm.recvMessage(recv);
             });
-            ws.send("/pub/chat/message", {}, JSON.stringify({type:'ENTER', roomId:vm.$data.roomId, sender:vm.$data.sender, message:''}));
+            // ws.send("/pub/chat/message", {}, JSON.stringify({type:'ENTER', roomId:vm.$data.roomId, sender:vm.$data.sender, message:''}));
         }, function(error) {
             if(reconnect++ <= 5) {
                 setTimeout(function() {

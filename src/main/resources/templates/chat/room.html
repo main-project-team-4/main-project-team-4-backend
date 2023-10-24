@@ -47,16 +47,10 @@
             },
             enterRoom: function(roomId, roomName, sender) {
                 axios.get(`/chat/room/${roomId}`).then(response => {
-                    // if (sender != "") {
-                        //localStorage.setItem('wschat.sender', sender);
-                        localStorage.setItem('wschat.roomId', roomId);
-                        localStorage.setItem('wschat.roomName', roomName);
-                        localStorage.setItem('wschat.sender', sender);
-                        console.log("채팅방으로 이동하기 전");
-                        location.href = "/chat/room/" + roomId;
-                        // location.href = "/chat/room/" + itemId + "/" + roomId;
-                        // location.href = "/chat/room/enter/" + roomId;
-                    // }
+                    localStorage.setItem('wschat.roomId', roomId);
+                    localStorage.setItem('wschat.roomName', roomName);
+                    localStorage.setItem('wschat.sender', sender);
+                    location.href = "/chat/room/" + roomId;
                 });
             }
         }
