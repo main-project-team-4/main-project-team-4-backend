@@ -1,10 +1,9 @@
 package com.example.demo.chat.entity;
 
+import com.example.demo.entity.TimeStamp;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-
-import java.time.ZonedDateTime;
 
 @Slf4j
 @Getter
@@ -12,7 +11,7 @@ import java.time.ZonedDateTime;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class ChatMessage {
+public class ChatMessage extends TimeStamp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,11 +29,7 @@ public class ChatMessage {
 
     private Long roomId;
 
-    private ZonedDateTime time;
-
-    private String token;
-
-    public ChatMessage(ChatRoom chatRoom, Long roomId, String sender, String message, MessageType type){
+    public ChatMessage(ChatRoom chatRoom, String sender, String message, MessageType type){
         this.chatRoom = chatRoom;
         this.roomId = chatRoom.getId();
         this.sender = sender;
@@ -49,5 +44,4 @@ public class ChatMessage {
     public void setMessage(String message){
         this.message=message;
     }
-
 }
