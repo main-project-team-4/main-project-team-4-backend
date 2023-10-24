@@ -129,6 +129,57 @@ public class MemberModelTest {
 
     @LoadTestCaseMember
     @Test
+    @DisplayName("[정상 작동] updateMember - location")
+    void updateMember_whenGivenLocation() {
+        // given
+        String location = "카카오 본사";
+        MemberInfoRequestDto dto = new MemberInfoRequestDto();
+        dto.setLocation(location);
+        Member member = memberRepository.findById(1L).orElseThrow();
+        MemberLocation memberLocation = member.getLocation();
+
+        assertThat(memberLocation.getName()).isNotEqualTo(location);
+        Long latitudeBeforeUpdate = memberLocation.getLatitude();
+        Long longitudeBeforeUpdate = memberLocation.getLongitude();
+
+        // when
+        memberService.updateMember(dto, member);
+
+        // then
+        Member changed = memberRepository.findById(1L).orElseThrow();
+        MemberLocation changedLocation = changed.getLocation();
+
+        assertThat(changedLocation.getName()).isEqualTo(location);
+        assertThat(changedLocation.getLatitude())
+                .isNotNull()
+                .isNotEqualTo(latitudeBeforeUpdate);
+        assertThat(changedLocation.getLongitude())
+                .isNotNull()
+                .isNotEqualTo(longitudeBeforeUpdate);
+    }
+
+    @LoadTestCaseMember
+    @Test
+    @DisplayName("[비정상 작동] updateMember - 존재하지 않는 주소명을 기입 시, 오류 발생")
+    void updateMember_whenGivenWrongLocation() {
+        // given
+        String location = "절대로 존재할 수가 없는 이상한 주소명";
+        MemberInfoRequestDto dto = new MemberInfoRequestDto();
+        dto.setLocation(location);
+        Member member = memberRepository.findById(1L).orElseThrow();
+        MemberLocation memberLocation = member.getLocation();
+
+        assertThat(memberLocation.getName()).isNotEqualTo(location);
+
+        // when
+        Executable func = () -> memberService.updateMember(dto, member);
+
+        // then
+        assertThrows(Throwable.class, func);
+    }
+
+    @LoadTestCaseMember
+    @Test
     @DisplayName("[정상 작동] updateMember - shopName 변경 시, nickname 변경 없음.")
     void updateMember_whenGivenShopName_thenNicknameDoesNotChange() {
         // given

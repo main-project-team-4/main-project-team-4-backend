@@ -26,6 +26,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 	//embedded-redis
 	//implementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.2'
+	implementation ('it.ozimov:embedded-redis:0.7.2') { exclude group: "org.slf4j", module: "slf4j-simple" }
+	implementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.2'
+	implementation 'org.springframework:spring-messaging:5.3.23'
 
 	implementation 'org.springframework.boot:spring-boot-starter-freemarker'
 	implementation 'org.springframework.boot:spring-boot-devtools'
@@ -53,7 +56,6 @@ dependencies {
 	compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
-	// implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
 	//Redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
@@ -88,7 +90,12 @@ dependencies {
 	// thymeleaf
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
+	// ObjectMapper
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
 
+	// 역직렬화 오류
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
 }
 
 tasks.named('test') {

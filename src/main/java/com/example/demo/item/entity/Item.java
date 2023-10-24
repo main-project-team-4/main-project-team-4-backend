@@ -44,7 +44,7 @@ public class Item extends TimeStamp implements Serializable {
     private List<URL> sub_images = new ArrayList<>(); // 리스트 필드 초기화
 
     @Column(name = "state")
-    private State state;
+    private State state = State.SELLING;
 
     @Column(name = "with_delivery_fee")
     private Boolean withDeliveryFee;
@@ -69,7 +69,7 @@ public class Item extends TimeStamp implements Serializable {
     @OneToOne(mappedBy = "item", cascade = CascadeType.PERSIST)
     private ItemLocation itemLocation;
 
-    public Item(String name, int price, String comment, URL main_image, List<URL> sub_images, Shop shop, Boolean withDeliveryFee) {
+    public Item(String name, int price, String comment, URL main_image, List<URL> sub_images, Shop shop, Boolean withDeliveryFee, CategoryM categoryM) {
         this.id = getId();
         this.shop = shop;
         this.name = name;
@@ -78,6 +78,7 @@ public class Item extends TimeStamp implements Serializable {
         this.main_image = main_image;
         this.sub_images.addAll(sub_images);
         this.withDeliveryFee = withDeliveryFee;
+        this.categoryMidId = categoryM;
     }
 
     public void updateSubImage(List<URL> sub_images) {

@@ -24,4 +24,8 @@ public class MemberInfoRequestDto {
     @JsonProperty(ParameterNameConfig.Shop.INTRO)
     private String shopIntro;
 
+    @Schema(description = "유저 위치 정보", example = "서울 특별시 강서구")
+    @JsonProperty(ParameterNameConfig.Location.NAME)
+    private String location;
+
 }

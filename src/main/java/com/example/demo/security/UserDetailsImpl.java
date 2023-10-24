@@ -1,6 +1,8 @@
 package com.example.demo.security;
 
 import com.example.demo.member.entity.Member;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,7 +14,8 @@ public class UserDetailsImpl implements UserDetails {
 
     private final Member member;
 
-    public UserDetailsImpl(Member member) {
+    @JsonCreator
+    public UserDetailsImpl(@JsonProperty("Member")Member member) {
         this.member = member;
     }
 
