@@ -25,7 +25,7 @@ public class Shop implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "name", nullable = false)
+    @Column(name = "name")
     private String shopName;
     @Column(name = "intro")
     private String shopIntro;

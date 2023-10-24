@@ -34,7 +34,7 @@ public class LocationController implements LocationDocs{
         return locationService.deleteLocation(location_id, userDetails.getMember());
     }
 
-    @GetMapping("/api/nearby-items")
+    @GetMapping("/nearby-items")
     public ResponseEntity<Page<ItemSearchResponseDto>> readNearbyItems(
             @AuthenticationPrincipal UserDetailsImpl principal,
             @PageableDefault Pageable pageable

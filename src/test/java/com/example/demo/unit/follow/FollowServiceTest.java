@@ -1,4 +1,4 @@
-package com.example.demo.unit.service;
+package com.example.demo.unit.follow;
 
 import com.example.demo.follow.repository.FollowRepository;
 import com.example.demo.follow.service.FollowService;
@@ -34,7 +34,7 @@ class FollowServiceTest {
                 .thenReturn(Optional.of(new Shop()));
 
         // when
-        followService.doShopFollow(memberLoggedIn, shopId);
+        followService.toggleShopFollow(memberLoggedIn, shopId);
 
         // then
         verify(followRepository, times(1))
@@ -52,7 +52,7 @@ class FollowServiceTest {
                 .thenReturn(Optional.empty());
 
         // when
-        Executable func = () -> followService.doShopFollow(memberLoggedIn, shopId);
+        Executable func = () -> followService.toggleShopFollow(memberLoggedIn, shopId);
 
         // then
         assertThrows(IllegalArgumentException.class, func);

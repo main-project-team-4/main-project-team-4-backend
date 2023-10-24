@@ -25,7 +25,7 @@ public class Review extends TimeStamp {
     private String comment;
 
     @Column(name="rating", nullable = false, length = 500)
-    private int rating;
+    private Double rating;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="shop_id", nullable = false)
@@ -44,6 +44,7 @@ public class Review extends TimeStamp {
         this.comment = requestDto.getComment();
         this.shop = shop;
         this.member = member;
+        this.rating = (double) requestDto.getRating();
     }
 
     public void update(ReviewRequestDto requestDto){

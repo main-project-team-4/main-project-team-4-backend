@@ -62,8 +62,9 @@ public class ReviewService {
         );
     }
 
-    public ResponseEntity<Page<ReviewResponseDto>> readReviewList(Long memberId, Pageable pageable) {
-        Page<ReviewResponseDto> dtoList = reviewRepository.findByMember_Id(memberId, pageable)
+    @Transactional
+    public ResponseEntity<Page<ReviewResponseDto>> readReviewList(Long shopId, Pageable pageable) {
+        Page<ReviewResponseDto> dtoList = reviewRepository.findByShop_Id(shopId, pageable)
                 .map(ReviewResponseDto::new);
         return ResponseEntity.ok(dtoList);
     }

@@ -61,7 +61,7 @@ public interface ItemDocs {
     )
 
 
-    ResponseEntity<MessageResponseDto> createItem(
+    ResponseEntity<ItemResponseDto> createItem(
             @Parameter(
                     description = "상품 생성 시, 필요한 정보들.",
                     schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = itemRequestDto.class)

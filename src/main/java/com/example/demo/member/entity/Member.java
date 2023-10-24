@@ -39,13 +39,13 @@ public class Member implements Serializable {
     @Column(name = "image", nullable = true)
     private URL image;
 
-    @OneToOne(mappedBy = "member", cascade = CascadeType.PERSIST)
+    @OneToOne(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     private Shop shop;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = {CascadeType.REMOVE})
     private List<Follow> followList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "seller")
+    @OneToMany(mappedBy = "seller", cascade = {CascadeType.REMOVE})
     private List<ChatRoom> sellerChatRoomList = new ArrayList<>();
 
     @OneToMany(mappedBy = "consumer")
@@ -58,5 +58,6 @@ public class Member implements Serializable {
         this.username = username;
         this.nickname = nickname;
         this.shop = new Shop(this);
+        this.location = new MemberLocation(this);
     }
 }

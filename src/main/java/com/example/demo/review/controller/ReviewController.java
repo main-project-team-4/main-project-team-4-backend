@@ -27,12 +27,12 @@ public class ReviewController implements ReviewDocs{
         return reviewService.createReview(requestDto, userDetails.getMember());
     }
 
-    @GetMapping("/member/{memberId}/reviews")
+    @GetMapping("/shop/{shopId}/reviews")
     public ResponseEntity<Page<ReviewResponseDto>> readReviewList(
-            @PathVariable Long memberId,
+            @PathVariable Long shopId,
             @PageableDefault Pageable pageable
             ) {
-        return reviewService.readReviewList(memberId, pageable);
+        return reviewService.readReviewList(shopId, pageable);
     }
 
 

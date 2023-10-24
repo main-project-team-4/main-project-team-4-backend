@@ -1,14 +1,15 @@
 package com.example.demo.item.service;
 
+import com.example.demo.category.entity.CategoryM;
+import com.example.demo.category.repository.CategoryMRepository;
 import com.example.demo.dto.MessageResponseDto;
 import com.example.demo.item.dto.ItemResponseDto;
+import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.item.dto.itemRequestDto;
 import com.example.demo.item.entity.Item;
 import com.example.demo.item.repository.ItemRepository;
-import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.location.entity.Location;
 import com.example.demo.member.entity.Member;
-import com.example.demo.member.repository.MemberRepository;
 import com.example.demo.shop.entity.Shop;
 import com.example.demo.shop.repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,12 +30,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ItemService {
 
+    private final CategoryMRepository categoryMRepository;
     private final ItemRepository itemRepository;
     private final ShopRepository shopRepository;
-    private final MemberRepository memberRepository;
     private final S3Uploader s3Uploader;
 
-    public ResponseEntity<MessageResponseDto> createItem(Member member, MultipartFile main_image, List<MultipartFile> sub_images, itemRequestDto requestDto) throws IOException {
+    public ResponseEntity<ItemResponseDto> createItem(Member member, MultipartFile main_image, List<MultipartFile> sub_images, itemRequestDto requestDto) throws IOException {
         postBlankCheck(main_image);
 
         Shop shop = shopRepository.findById(member.getShop().getId()).orElseThrow(
@@ -57,10 +58,15 @@ public class ItemService {
             sub_imageUrls.add(new URL(multipartFile));
         }
 
-        itemRepository.save(new Item(requestDto.getName(), requestDto.getPrice(), requestDto.getComment(), main_imageUrl, sub_imageUrls, shop));
+        // 카테고리 설정
+        CategoryM categoryM = categoryMRepository.findById(requestDto.getMiddleCategoryId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 카테고리는 존재하지 않습니다."));
 
-        MessageResponseDto msg = new MessageResponseDto("상품이 등록되었습니다.", HttpStatus.OK.value());
-        return ResponseEntity.status(HttpStatus.OK).body(msg);
+        Item item = new Item(requestDto.getName(), requestDto.getPrice(), requestDto.getComment(), main_imageUrl, sub_imageUrls, shop, requestDto.getIsContainingDeliveryFee(), categoryM);
+        Item saved = itemRepository.save(item);
+
+        ItemResponseDto dto = new ItemResponseDto(saved);
+        return ResponseEntity.status(HttpStatus.OK).body(dto);
 
     }
 
@@ -133,6 +139,7 @@ public class ItemService {
         return ResponseEntity.status(HttpStatus.OK).body(msg);
     }
 
+    @Transactional
     public ResponseEntity<Page<ItemSearchResponseDto>> searchItem(
             String keyword,
             Pageable pageable
@@ -147,6 +154,7 @@ public class ItemService {
 //        return itemRepository.findTop100ByOrderByWishCountDesc();
 //    }
 
+    @Transactional
     public ItemResponseDto showItem(Long id) {
         Item item = findItem(id);
         return new ItemResponseDto(item);
@@ -158,17 +166,19 @@ public class ItemService {
         return ResponseEntity.ok(dtoList);
     }
 
+    @Transactional
     public ResponseEntity<Page<ItemSearchResponseDto>> readNearbyItems(Location location, Pageable pageable) {
         Page<ItemSearchResponseDto> dtoList = itemRepository.findNearbyItems(location, pageable)
                 .map(ItemSearchResponseDto::new);
         return ResponseEntity.ok(dtoList);
     }
 
-    public ResponseEntity<Page<ItemSearchResponseDto>> readItemsOfShop(Long memberId, Pageable pageable) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저는 존재하지 않습니다."));
+    @Transactional
+    public ResponseEntity<Page<ItemSearchResponseDto>> readItemsOfShop(Long shopId, Pageable pageable) {
+        Shop shop = shopRepository.findById(shopId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 상점은 존재하지 않습니다."));
 
-        Page<ItemSearchResponseDto> dtoList = itemRepository.findInShop(member, pageable)
+        Page<ItemSearchResponseDto> dtoList = itemRepository.findInShop(shop.getMember(), pageable)
                 .map(ItemSearchResponseDto::new);
         return ResponseEntity.ok(dtoList);
     }

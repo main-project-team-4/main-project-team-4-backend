@@ -13,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,10 +29,10 @@ public class ItemController implements ItemDocs {
 
 //    @Secured("ROLE_USER")
     @PostMapping
-    public ResponseEntity<MessageResponseDto> createItem(
+    public ResponseEntity<ItemResponseDto> createItem(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Valid @RequestParam("main_image") MultipartFile main_image,
-            @Valid @RequestParam("sub_image") List<MultipartFile> sub_images,
+            @Valid @RequestParam(value = "sub_image", required = false) List<MultipartFile> sub_images,
             @RequestPart(value = "requestDto", required = false) itemRequestDto requestDto
             ) throws IOException {
         Member member = userDetails.getMember();
@@ -44,8 +43,8 @@ public class ItemController implements ItemDocs {
     public ResponseEntity<MessageResponseDto> updateItem(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable Long id,
-            @Valid @RequestParam("main_image") MultipartFile new_mainImage,
-            @Valid @RequestParam("sub_image") List<MultipartFile> new_subImages,
+            @Valid @RequestParam(value = "main_image", required = false) MultipartFile new_mainImage,
+            @Valid @RequestParam(value = "sub_image", required = false) List<MultipartFile> new_subImages,
             @RequestPart(value = "requestDto", required = false) itemRequestDto requestDto
             ) throws IOException {
         Member member = userDetails.getMember();

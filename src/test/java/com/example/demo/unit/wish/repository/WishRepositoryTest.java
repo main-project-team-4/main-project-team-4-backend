@@ -2,7 +2,7 @@ package com.example.demo.unit.wish.repository;
 
 import com.example.demo.member.entity.Member;
 import com.example.demo.utils.EnableQuerydslTest;
-import com.example.demo.utils.LoadTeatCaseWish;
+import com.example.demo.utils.testcase.LoadTeatCaseWish;
 import com.example.demo.wish.entity.Wish;
 import com.example.demo.wish.repository.WishRepository;
 import lombok.extern.slf4j.Slf4j;
