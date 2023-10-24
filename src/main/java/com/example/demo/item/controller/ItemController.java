@@ -32,7 +32,7 @@ public class ItemController implements ItemDocs {
     public ResponseEntity<MessageResponseDto> createItem(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Valid @RequestParam("main_image") MultipartFile main_image,
-            @Valid @RequestParam("sub_image") List<MultipartFile> sub_images,
+            @Valid @RequestParam(value = "sub_image", required = false) List<MultipartFile> sub_images,
             @RequestPart(value = "requestDto", required = false) itemRequestDto requestDto
             ) throws IOException {
         Member member = userDetails.getMember();
@@ -43,8 +43,8 @@ public class ItemController implements ItemDocs {
     public ResponseEntity<MessageResponseDto> updateItem(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable Long id,
-            @Valid @RequestParam("main_image") MultipartFile new_mainImage,
-            @Valid @RequestParam("sub_image") List<MultipartFile> new_subImages,
+            @Valid @RequestParam(value = "main_image", required = false) MultipartFile new_mainImage,
+            @Valid @RequestParam(value = "sub_image", required = false) List<MultipartFile> new_subImages,
             @RequestPart(value = "requestDto", required = false) itemRequestDto requestDto
             ) throws IOException {
         Member member = userDetails.getMember();
