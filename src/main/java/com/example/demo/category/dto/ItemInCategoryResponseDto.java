@@ -24,6 +24,11 @@ public class ItemInCategoryResponseDto {
     @JsonProperty(ParameterNameConfig.Item.MAIN_IMAGE)
     private String imageUrl;
 
+    @Schema(description = "상품 상태", example = "SELLING")
+    @JsonProperty(ParameterNameConfig.Item.STATE)
+    private String state;
+
+
     public ItemInCategoryResponseDto(Item entity) {
         this.id = entity.getId();
         this.name = entity.getName();
@@ -32,5 +37,6 @@ public class ItemInCategoryResponseDto {
                 .map(Item::getMain_image)
                 .map(Object::toString)
                 .orElse(null);
+        this.state = entity.getState().name();
     }
 }
