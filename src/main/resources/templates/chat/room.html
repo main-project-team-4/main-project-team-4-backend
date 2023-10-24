@@ -20,8 +20,8 @@
         </div>
     </div>
     <ul class="list-group">
-        <li class="list-group-item list-group-item-action" v-for="item in chatrooms" v-bind:key="item.roomId" v-on:click="enterRoom(item.roomId)">
-            {{item.name}}
+        <li class="list-group-item list-group-item-action" v-for="item in chatrooms" v-bind:key="item.roomId" v-on:click="enterRoom(item.roomId, item.roomName, item.sender)">
+            {{item.roomName}}
         </li>
     </ul>
 </div>
@@ -29,13 +29,14 @@
 <script src="/webjars/vue/2.5.16/dist/vue.min.js"></script>
 <script src="/webjars/axios/0.17.1/dist/axios.min.js"></script>
 <script>
-    var vm = new Vue({
+    let vm = new Vue({
         el: '#app',
         data: {
-            room_name : '',
+            roomName : '',
             roomId: '',
+            sender: '',
             chatrooms: [
-            ]
+            ],
         },
         created() {
             this.findAllRoom();
@@ -44,17 +45,12 @@
             findAllRoom: function() {
                 axios.get('/chat/rooms').then(response => { this.chatrooms = response.data; });
             },
-            enterRoom: function(roomId) {
-                this.roomId = roomId;
+            enterRoom: function(roomId, roomName, sender) {
                 axios.get(`/chat/room/${roomId}`).then(response => {
-                    this.chatrooms = response.data;
-                    var sender = response.data.loginMember;
-
-                    if (sender != "") {
-                        localStorage.setItem('wschat.sender', sender);
-                        localStorage.setItem('wschat.roomId', roomId);
-                        location.href = "/chat/room/enter/" + roomId;
-                    }
+                    localStorage.setItem('wschat.roomId', roomId);
+                    localStorage.setItem('wschat.roomName', roomName);
+                    localStorage.setItem('wschat.sender', sender);
+                    location.href = "/chat/room/" + roomId;
                 });
             }
         }

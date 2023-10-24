@@ -25,6 +25,14 @@ public class MemberService {
     private final ShopRepository shopRepository;
     private final S3Uploader s3Uploader;
 
+    // userId 로 userName 추축
+    public String getNickNameByUserId(String userId){
+        Member member = memberRepository.findNickNameById(userId).orElseThrow(() ->
+                new IllegalArgumentException("해당 유저는 존재하지 않습니다."));
+        String nickname = member.getNickname();
+        return nickname;
+    }
+
      public ResponseEntity<MessageResponseDto> deleteMember(Member member) {
         memberRepository.delete(member);
 
