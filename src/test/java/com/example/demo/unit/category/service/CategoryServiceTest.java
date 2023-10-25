@@ -10,6 +10,10 @@ import com.example.demo.item.entity.Item;
 import com.example.demo.item.repository.ItemRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -59,16 +63,18 @@ class CategoryServiceTest {
         int layer = 1;
 
         Item itemEntity = mock(Item.class);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Item> itemPage = new PageImpl<>(List.of(itemEntity));
 
-        when(itemRepository.findByCategoryLargeId(any()))
-                .thenReturn(List.of(itemEntity));
+        when(itemRepository.findByCategoryLargeId(any(), any()))
+                .thenReturn(itemPage);
 
         // when
-        categoryService.readChildItem(categoryId, layer);
+        categoryService.readChildItem(categoryId, layer, pageable);
 
         // then
         verify(itemRepository, times(1))
-                .findByCategoryLargeId(any());
+                .findByCategoryLargeId(any(), any());
 
     }
 
@@ -80,16 +86,18 @@ class CategoryServiceTest {
         int layer = 2;
 
         Item itemEntity = mock(Item.class);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Item> itemPage = new PageImpl<>(List.of(itemEntity));
 
-        when(itemRepository.findByCategoryMiddleId(any()))
-                .thenReturn(List.of(itemEntity));
+        when(itemRepository.findByCategoryMiddleId(any(), any()))
+                .thenReturn(itemPage);
 
         // when
-        categoryService.readChildItem(categoryId, layer);
+        categoryService.readChildItem(categoryId, layer, pageable);
 
         // then
         verify(itemRepository, times(1))
-                .findByCategoryMiddleId(any());
+                .findByCategoryMiddleId(any(), any());
 
     }
 
@@ -101,16 +109,18 @@ class CategoryServiceTest {
         int layer = 1;
 
         Item itemEntity = mock(Item.class);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Item> itemPage = new PageImpl<>(List.of(itemEntity));
 
-        when(itemRepository.findByCategoryLargeId(any()))
-                .thenReturn(List.of(itemEntity));
+        when(itemRepository.findByCategoryLargeId(any(), any()))
+                .thenReturn(itemPage);
 
         // when
-        categoryService.readChildItem(categoryId, layer);
+        categoryService.readChildItem(categoryId, layer, pageable);
 
         // then
         verify(itemRepository, times(1))
-                .findByCategoryLargeId(any());
+                .findByCategoryLargeId(any(), any());
 
     }
 
@@ -122,16 +132,18 @@ class CategoryServiceTest {
         int layer = 2;
 
         Item itemEntity = mock(Item.class);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Item> itemPage = new PageImpl<>(List.of(itemEntity));
 
-        when(itemRepository.findByCategoryMiddleId(any()))
-                .thenReturn(List.of(itemEntity));
+        when(itemRepository.findByCategoryMiddleId(any(), any()))
+                .thenReturn(itemPage);
 
         // when
-        categoryService.readChildItem(categoryId, layer);
+        categoryService.readChildItem(categoryId, layer, pageable);
 
         // then
         verify(itemRepository, times(1))
-                .findByCategoryMiddleId(any());
+                .findByCategoryMiddleId(any(), any());
 
     }
 }

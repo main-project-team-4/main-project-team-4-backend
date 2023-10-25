@@ -37,6 +37,9 @@ public class ItemInCategoryResponseDto {
                 .map(Item::getMain_image)
                 .map(Object::toString)
                 .orElse(null);
-        this.state = entity.getState().name();
+        this.state = Optional.of(entity)
+                .map(Item::getState)
+                .map(Enum::name)
+                .orElse(null);
     }
 }
