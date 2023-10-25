@@ -6,6 +6,8 @@ import com.example.demo.category.dto.ItemInCategoryResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -114,9 +116,10 @@ public interface CategoryDocs {
                     schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorResponse.class)
             )
     )
-    ResponseEntity<List<ItemInCategoryResponseDto>> readChildItem(
+    ResponseEntity<Page<ItemInCategoryResponseDto>> readChildItem(
             @PathVariable Long categoryId,
-            @RequestParam(defaultValue = "2") int layer
+            @RequestParam(defaultValue = "2") int layer,
+            Pageable pageable
     );
 
     @Operation(

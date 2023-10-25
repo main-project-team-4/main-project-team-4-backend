@@ -9,6 +9,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -27,13 +30,14 @@ class ItemRepositoryTest {
     void findByCategoryLargeId() {
         // given
         Long id = 1L;
+        Pageable pageable = PageRequest.of(0, 10);
 
         // when
-        List<Item> items = itemRepository.findByCategoryLargeId(id);
+        Page<Item> items = itemRepository.findByCategoryLargeId(id, pageable);
 
         // then
         items.stream().map(Item::getComment).forEach(log::info);
-        assertThat(items.size()).isEqualTo(4);
+        assertThat(items.getTotalElements()).isEqualTo(4);
         for (Item item : items) {
             assertThat(item.getComment().contains("man")).isTrue();
         }
@@ -45,13 +49,14 @@ class ItemRepositoryTest {
     void findByCategoryMiddleId() {
         // given
         Long id = 1L;
+        Pageable pageable = PageRequest.of(0, 10);
 
         // when
-        List<Item> items = itemRepository.findByCategoryMiddleId(id);
+        Page<Item> items = itemRepository.findByCategoryMiddleId(id, pageable);
 
         // then
         items.stream().map(Item::getComment).forEach(log::info);
-        assertThat(items.size()).isEqualTo(2);
+        assertThat(items.getTotalElements()).isEqualTo(2);
         for (Item item : items) {
             assertThat(item.getComment().contains("man shirt")).isTrue();
         }

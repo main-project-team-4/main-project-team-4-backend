@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -93,8 +95,10 @@ public class CategoryAuthTest {
         MockHttpServletRequestBuilder request = get("/api/categories/1/items")
                 .param("layer", "1");
 
-        ResponseEntity<List<ItemInCategoryResponseDto>> result = ResponseEntity.ok(List.of(new ItemInCategoryResponseDto()));
-        when(categoryService.readChildItem(any(), anyInt()))
+        List<ItemInCategoryResponseDto> dtoList = List.of(new ItemInCategoryResponseDto());
+        Page<ItemInCategoryResponseDto> dtoPage = new PageImpl<>(dtoList);
+        ResponseEntity<Page<ItemInCategoryResponseDto>> result = ResponseEntity.ok(dtoPage);
+        when(categoryService.readChildItem(any(), anyInt(), any()))
                 .thenReturn(result);
 
         // when & then
@@ -109,8 +113,10 @@ public class CategoryAuthTest {
         // given
         MockHttpServletRequestBuilder request = get("/api/categories/1/items");
 
-        ResponseEntity<List<ItemInCategoryResponseDto>> result = ResponseEntity.ok(List.of(new ItemInCategoryResponseDto()));
-        when(categoryService.readChildItem(any(), anyInt()))
+        List<ItemInCategoryResponseDto> dtoList = List.of(new ItemInCategoryResponseDto());
+        Page<ItemInCategoryResponseDto> dtoPage = new PageImpl<>(dtoList);
+        ResponseEntity<Page<ItemInCategoryResponseDto>> result = ResponseEntity.ok(dtoPage);
+        when(categoryService.readChildItem(any(), anyInt(), any()))
                 .thenReturn(result);
 
         // when & then
