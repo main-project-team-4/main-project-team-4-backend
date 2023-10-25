@@ -18,6 +18,7 @@ import java.util.List;
 import static com.example.demo.item.entity.QItem.item;
 import static com.example.demo.location.entity.QItemLocation.itemLocation;
 import static com.example.demo.location.entity.QMemberLocation.memberLocation;
+import static com.example.demo.shop.entity.QShop.shop;
 import static com.example.demo.trade.entity.QTrade.trade;
 import static com.example.demo.wish.entity.QWish.wish;
 
@@ -164,7 +165,7 @@ public class ItemRepositoryImpl implements
                 .from(item)
                 .join(trade).on(trade.item.id.eq(item.id))
 
-                .where(trade.sellerId.id.eq(id))
+                .where(item.shop.member.id.eq(id))
 
                 .orderBy(
                         QueryBuilder.extractOrder(new ItemMapper(), pageable)
