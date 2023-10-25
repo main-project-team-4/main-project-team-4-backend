@@ -27,6 +27,9 @@ public class WishListResponseDto {
     @Schema(description = "상품 코멘트", example = "친칠라가 좋아해요!")
     @JsonProperty(ParameterNameConfig.Item.COMMENT)
     private String comment;
+    @Schema(description = "상품 가격", example = "14630")
+    @JsonProperty(ParameterNameConfig.Item.PRICE)
+    private Integer price;
 
     public WishListResponseDto(Wish entity) {
         Optional<Item> optionalItem = Optional.of(entity).map(Wish::getItem);
@@ -47,6 +50,9 @@ public class WishListResponseDto {
                 .orElse(null);
         this.comment = optionalItem
                 .map(Item::getComment)
+                .orElse(null);
+        this.price = optionalItem
+                .map(Item::getPrice)
                 .orElse(null);
     }
 }
