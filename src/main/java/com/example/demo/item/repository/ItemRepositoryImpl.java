@@ -4,7 +4,9 @@ import com.example.demo.item.entity.Item;
 import com.example.demo.item.repository.mapper.ItemMapper;
 import com.example.demo.location.entity.Location;
 import com.example.demo.member.entity.Member;
+import com.example.demo.trade.type.State;
 import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,9 +18,7 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 
 import static com.example.demo.item.entity.QItem.item;
-import static com.example.demo.location.entity.QItemLocation.itemLocation;
 import static com.example.demo.location.entity.QMemberLocation.memberLocation;
-import static com.example.demo.shop.entity.QShop.shop;
 import static com.example.demo.trade.entity.QTrade.trade;
 import static com.example.demo.wish.entity.QWish.wish;
 
@@ -137,7 +137,10 @@ public class ItemRepositoryImpl implements
                 .from(item)
                 .join(trade).on(trade.item.id.eq(item.id))
 
-                .where(trade.member.id.eq(id))
+                .where(
+                        trade.item.state.eq(State.SOLDOUT),
+                        trade.member.id.eq(id)
+                )
 
                 .orderBy(
                         QueryBuilder.extractOrder(new ItemMapper(), pageable)
@@ -165,7 +168,10 @@ public class ItemRepositoryImpl implements
                 .from(item)
                 .join(trade).on(trade.item.id.eq(item.id))
 
-                .where(item.shop.member.id.eq(id))
+                .where(
+                        trade.item.state.eq(State.SOLDOUT),
+                        item.shop.member.id.eq(id)
+                )
 
                 .orderBy(
                         QueryBuilder.extractOrder(new ItemMapper(), pageable)
