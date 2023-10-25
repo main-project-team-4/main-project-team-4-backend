@@ -5,16 +5,14 @@ import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.security.UserDetailsImpl;
 import com.example.demo.trade.dto.TradeRequestDto;
 import com.example.demo.trade.service.TradeService;
+import com.example.demo.trade.type.State;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.AccessDeniedException;
 
@@ -26,17 +24,19 @@ public class TradeController implements TradeDocs {
     @GetMapping("/api/mypages/orders")
     public ResponseEntity<Page<ItemSearchResponseDto>> readMyPageOrders(
             @AuthenticationPrincipal UserDetailsImpl principal,
+            @RequestParam(defaultValue = "SOLDOUT") State[] stateList,
             @PageableDefault Pageable pageable
             ) {
-        return tradeService.readOrders(principal.getMember(), pageable);
+        return tradeService.readOrders(principal.getMember(), stateList, pageable);
     }
 
     @GetMapping("/api/mypages/sales")
     public ResponseEntity<Page<ItemSearchResponseDto>> readMyPageSales(
             @AuthenticationPrincipal UserDetailsImpl principal,
+            @RequestParam(defaultValue = "SOLDOUT") State[] stateList,
             @PageableDefault Pageable pageable
     ) {
-        return tradeService.readSales(principal.getMember(), pageable);
+        return tradeService.readSales(principal.getMember(), stateList, pageable);
     }
 
     @PostMapping("/api/trades")

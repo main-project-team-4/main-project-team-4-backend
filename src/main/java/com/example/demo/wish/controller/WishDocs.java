@@ -3,6 +3,7 @@ package com.example.demo.wish.controller;
 
 import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.security.UserDetailsImpl;
+import com.example.demo.trade.type.State;
 import com.example.demo.wish.dto.WishListResponseDto;
 import com.example.demo.wish.dto.WishReadResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -98,7 +99,9 @@ public interface WishDocs {
     @Operation(
             summary = "인기순 목록 조회 API",
             description = """
-                    인기순 목록 조회 API.
+                    인기순 목록 조회 API.<br>
+                    만약 특정 판매 완료 상태를 제외하고 필터링을 하고 싶다면 아래와 같이 호출하시면 됩니다.<br>
+                    /api/top-items?state=SELLING&state=RESERVED
                     """
     )
     @ApiResponse(
@@ -110,6 +113,7 @@ public interface WishDocs {
             )
     )
     ResponseEntity<Page<ItemSearchResponseDto>> readPopularItems(
+            State[] stateList,
             Pageable pageable
     );
 }

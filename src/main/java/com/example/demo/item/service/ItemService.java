@@ -12,6 +12,7 @@ import com.example.demo.location.entity.Location;
 import com.example.demo.member.entity.Member;
 import com.example.demo.shop.entity.Shop;
 import com.example.demo.shop.repository.ShopRepository;
+import com.example.demo.trade.type.State;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -142,9 +143,10 @@ public class ItemService {
     @Transactional
     public ResponseEntity<Page<ItemSearchResponseDto>> searchItem(
             String keyword,
+            State[] stateList,
             Pageable pageable
     ) {
-        Page<ItemSearchResponseDto> dtoList = itemRepository.searchBy(keyword, pageable)
+        Page<ItemSearchResponseDto> dtoList = itemRepository.searchBy(keyword, stateList, pageable)
                 .map(ItemSearchResponseDto::new);
         return ResponseEntity.ok(dtoList);
     }
@@ -160,8 +162,8 @@ public class ItemService {
         return new ItemResponseDto(item);
     }
 
-    public ResponseEntity<Page<ItemSearchResponseDto>> readPopularItems(Pageable pageable) {
-        Page<ItemSearchResponseDto> dtoList = itemRepository.findPopularItems(pageable)
+    public ResponseEntity<Page<ItemSearchResponseDto>> readPopularItems(State[] stateList, Pageable pageable) {
+        Page<ItemSearchResponseDto> dtoList = itemRepository.findPopularItems(stateList, pageable)
                 .map(ItemSearchResponseDto::new);
         return ResponseEntity.ok(dtoList);
     }

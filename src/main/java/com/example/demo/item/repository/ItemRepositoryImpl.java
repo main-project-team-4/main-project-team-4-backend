@@ -32,9 +32,11 @@ public class ItemRepositoryImpl implements
     @Override
     public Page<Item> searchBy(
             String keyword,
+            State[] stateList,
             Pageable pageable
     ) {
         Predicate[] predicates = {
+                filterByState(stateList),
                 keywordWhereQuery(keyword)
         };
 
@@ -56,16 +58,24 @@ public class ItemRepositoryImpl implements
         return new PageImpl<>(result, pageable, count);
     }
 
+    private Predicate filterByState(State[] stateList) {
+        return stateList != null && stateList.length != 0 ? item.state.in(stateList) : null;
+    }
+
     public Predicate keywordWhereQuery(String keyword) {
         return StringUtils.hasText(keyword) ? item.name.containsIgnoreCase(keyword) : null;
     }
 
     @Override
-    public Page<Item> findPopularItems(Pageable pageable) {
+    public Page<Item> findPopularItems(State[] stateList, Pageable pageable) {
         List<Item> result = jpaQueryFactory
                 .select(item)
                 .from(item)
                 .leftJoin(wish).on(item.id.eq(wish.item.id))
+
+                .where(
+                        filterByState(stateList)
+                )
 
                 .groupBy(item.id)
                 .orderBy(wish.count().desc())
@@ -131,14 +141,14 @@ public class ItemRepositoryImpl implements
     }
 
     @Override
-    public Page<Item> findPurchaseItemByMember_id(Long id, Pageable pageable) {
+    public Page<Item> findPurchaseItemByMember_id(Long id, State[] stateList, Pageable pageable) {
         List<Item> result = jpaQueryFactory
                 .select(item)
                 .from(item)
                 .join(trade).on(trade.item.id.eq(item.id))
 
                 .where(
-                        trade.item.state.eq(State.SOLDOUT),
+                        filterTradeByState(stateList),
                         trade.member.id.eq(id)
                 )
 
@@ -162,14 +172,14 @@ public class ItemRepositoryImpl implements
     }
 
     @Override
-    public Page<Item> findSellingItemByMember_id(Long id, Pageable pageable) {
+    public Page<Item> findSellingItemByMember_id(Long id, State[] stateList, Pageable pageable) {
         List<Item> result = jpaQueryFactory
                 .select(item)
                 .from(item)
                 .join(trade).on(trade.item.id.eq(item.id))
 
                 .where(
-                        trade.item.state.eq(State.SOLDOUT),
+                        filterTradeByState(stateList),
                         item.shop.member.id.eq(id)
                 )
 
@@ -190,5 +200,9 @@ public class ItemRepositoryImpl implements
                 .fetchOne();
 
         return new PageImpl<>(result, pageable, count);
+    }
+
+    private static BooleanExpression filterTradeByState(State[] stateList) {
+        return stateList != null && stateList.length != 0 ? trade.item.state.in(stateList) : null;
     }
 }
