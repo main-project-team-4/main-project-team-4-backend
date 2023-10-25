@@ -22,6 +22,9 @@ public class ItemResponseDto {
     @Schema(description = "상품의 가게(상점) id", example = "1")
     @JsonProperty(ParameterNameConfig.Shop.ID)
     private Long shopId;
+    @Schema(description = "상품의 판매자 ID", example = "1")
+    @JsonProperty(ParameterNameConfig.Member.ID)
+    private Long sellerId;
     @Schema(description = "상품의 이름", example = "아비렉스 가죽자켓")
     @JsonProperty(ParameterNameConfig.Item.NAME)
     private String name;
@@ -51,6 +54,7 @@ public class ItemResponseDto {
     public ItemResponseDto(Item item) {
         this.id = item.getId();
         this.shopId = item.getShop().getId();
+        this.sellerId = item.getShop().getMember().getId();
         this.name = item.getName();
         this.price = item.getPrice();
         this.comment = item.getComment();

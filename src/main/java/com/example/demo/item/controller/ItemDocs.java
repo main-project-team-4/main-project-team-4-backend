@@ -163,28 +163,8 @@ public interface ItemDocs {
                     schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ItemResponseDto.class)
             )
     )
-    @ApiResponse(
-            responseCode = "404",
-            description = "'~~'번 상품은 존재하지 않음.",
-            content = @io.swagger.v3.oas.annotations.media.Content(
-                    mediaType = "application/json",
-                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorResponse.class)
-            )
-    )
-    @ApiResponse(
-            responseCode = "500",
-            description = "서버 에러",
-            content = @io.swagger.v3.oas.annotations.media.Content(
-                    mediaType = "application/json",
-                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ErrorResponse.class)
-            )
-    )
     ItemResponseDto showItem(
-            @Parameter(
-                    description = "상품 조회 시, 필요한 정보들.",
-                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ItemResponseDto.class)
-            )
-            @PathVariable Long item_id
+            Long item_id
     );
 
    @Operation(
