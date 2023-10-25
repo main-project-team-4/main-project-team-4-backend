@@ -5,6 +5,7 @@ import com.example.demo.item.repository.ItemRepositoryImpl;
 import com.example.demo.location.entity.Location;
 import com.example.demo.location.entity.MemberLocation;
 import com.example.demo.member.entity.Member;
+import com.example.demo.trade.type.State;
 import com.example.demo.utils.*;
 import com.example.demo.utils.testcase.LoadTeatCaseCategory;
 import com.example.demo.utils.testcase.LoadTeatCaseLocation;
@@ -37,10 +38,11 @@ class ItemRepositoryImplTest {
     void searchBy_loadAllItem() {
         // given
         String keyword = null;
+        State[] stateList = new State[]{};
         Pageable pageable = PageRequest.of(0, 10);
 
         // when
-        Page<Item> items = itemRepository.searchBy(keyword, pageable);
+        Page<Item> items = itemRepository.searchBy(keyword, stateList, pageable);
 
         // then
         int numExpected = 8;
@@ -55,10 +57,11 @@ class ItemRepositoryImplTest {
     void searchBy_loadWithKeyword() {
         // given
         String keyword = "ean";
+        State[] stateList = new State[]{};
         Pageable pageable = PageRequest.of(0, 10);
 
         // when
-        Page<Item> items = itemRepository.searchBy(keyword, pageable);
+        Page<Item> items = itemRepository.searchBy(keyword, stateList, pageable);
 
         // then
         int numExpected = 4;
@@ -76,10 +79,11 @@ class ItemRepositoryImplTest {
     void searchBy_pagination() {
         // given
         String keyword = null;
+        State[] stateList = new State[]{};
         Pageable pageable = PageRequest.of(3, 2);
 
         // when
-        Page<Item> items = itemRepository.searchBy(keyword, pageable);
+        Page<Item> items = itemRepository.searchBy(keyword, stateList, pageable);
 
         // then
         Item item = items.getContent().get(0);
@@ -92,9 +96,10 @@ class ItemRepositoryImplTest {
     void findPopularItems() {
         // given
         Pageable pageable = PageRequest.of(0, 4);
+        State[] stateList = {};
 
         // when
-        Page<Item> items = itemRepository.findPopularItems(pageable);
+        Page<Item> items = itemRepository.findPopularItems(stateList, pageable);
 
         // then
         List<Long> expected = List.of(1L, 3L, 5L, 6L);

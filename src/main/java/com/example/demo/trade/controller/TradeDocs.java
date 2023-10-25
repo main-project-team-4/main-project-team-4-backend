@@ -4,6 +4,7 @@ import com.example.demo.dto.MessageResponseDto;
 import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.security.UserDetailsImpl;
 import com.example.demo.trade.dto.TradeRequestDto;
+import com.example.demo.trade.type.State;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
@@ -27,6 +28,7 @@ public interface TradeDocs {
     )
     ResponseEntity<Page<ItemSearchResponseDto>> readMyPageOrders(
             UserDetailsImpl principal,
+            State[] stateList,
             Pageable pageable
     );
 
@@ -38,6 +40,7 @@ public interface TradeDocs {
     )
     ResponseEntity<Page<ItemSearchResponseDto>> readMyPageSales(
             UserDetailsImpl principal,
+            State[] stateList,
             Pageable pageable
     );
 

@@ -39,3 +39,4 @@ out/
 # Project Gitignore
 src/main/resources/application-local.properties
 /src/test/resources/.env
+/src/main/resources/application-local.yml
