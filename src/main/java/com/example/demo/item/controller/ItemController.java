@@ -7,6 +7,7 @@ import com.example.demo.item.dto.itemRequestDto;
 import com.example.demo.item.service.ItemService;
 import com.example.demo.member.entity.Member;
 import com.example.demo.security.UserDetailsImpl;
+import com.example.demo.trade.type.State;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -72,9 +73,10 @@ public class ItemController implements ItemDocs {
     @GetMapping
     public ResponseEntity<Page<ItemSearchResponseDto>> searchItem(
             @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) State[] state,
             Pageable pageable
     ) {
-        return itemService.searchItem(keyword, pageable);
+        return itemService.searchItem(keyword, state, pageable);
     }
 
 }

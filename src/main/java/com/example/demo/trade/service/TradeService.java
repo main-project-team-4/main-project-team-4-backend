@@ -30,15 +30,15 @@ public class TradeService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public ResponseEntity<Page<ItemSearchResponseDto>> readOrders(Member member, Pageable pageable) {
-        Page<ItemSearchResponseDto> dtoPage = itemRepository.findPurchaseItemByMember_id(member.getId(), pageable)
+    public ResponseEntity<Page<ItemSearchResponseDto>> readOrders(Member member, State[] stateList, Pageable pageable) {
+        Page<ItemSearchResponseDto> dtoPage = itemRepository.findPurchaseItemByMember_id(member.getId(), stateList, pageable)
                 .map(ItemSearchResponseDto::new);
         return ResponseEntity.ok(dtoPage);
     }
 
     @Transactional
-    public ResponseEntity<Page<ItemSearchResponseDto>> readSales(Member member, Pageable pageable) {
-        Page<ItemSearchResponseDto> dtoPage = itemRepository.findSellingItemByMember_id(member.getId(), pageable)
+    public ResponseEntity<Page<ItemSearchResponseDto>> readSales(Member member, State[] stateList, Pageable pageable) {
+        Page<ItemSearchResponseDto> dtoPage = itemRepository.findSellingItemByMember_id(member.getId(), stateList, pageable)
                 .map(ItemSearchResponseDto::new);
         return ResponseEntity.ok(dtoPage);
     }
