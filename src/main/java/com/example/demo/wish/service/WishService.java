@@ -42,7 +42,7 @@ public class WishService {
 
     @Transactional
     public ResponseEntity<List<WishListResponseDto>> readMyWishLists(Member member) {
-        List<WishListResponseDto> dtoList = wishRepository.findByMember(member).stream()
+        List<WishListResponseDto> dtoList = wishRepository.findByMemberOrderByItem_CreatedAt(member).stream()
                 .map(WishListResponseDto::new)
                 .toList();
         return ResponseEntity.ok(dtoList);
