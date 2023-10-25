@@ -10,6 +10,8 @@ import com.example.demo.category.repository.CategoryMRepository;
 import com.example.demo.category.type.CategoryType;
 import com.example.demo.item.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -32,21 +34,19 @@ public class CategoryService {
         return ResponseEntity.ok(dtoList);
     }
 
-    public ResponseEntity<List<ItemInCategoryResponseDto>> readChildItem(
-            Long categoryId, int layer
-    ) {
+    public ResponseEntity<Page<ItemInCategoryResponseDto>> readChildItem(
+            Long categoryId, int layer,
+            Pageable pageable) {
         CategoryType categoryType = getTypeByLayer(layer);
 
-        List<ItemInCategoryResponseDto> response = null;
+        Page<ItemInCategoryResponseDto> response = null;
         if (categoryType == CategoryType.LARGE) {
-            response = itemRepository.findByCategoryLargeId(categoryId).stream()
-                    .map(ItemInCategoryResponseDto::new)
-                    .toList();
+            response = itemRepository.findByCategoryLargeId(categoryId, pageable)
+                    .map(ItemInCategoryResponseDto::new);
 
         } else if (categoryType == CategoryType.MIDDLE) {
-            response = itemRepository.findByCategoryMiddleId(categoryId).stream()
-                    .map(ItemInCategoryResponseDto::new)
-                    .toList();
+            response = itemRepository.findByCategoryMiddleId(categoryId, pageable)
+                    .map(ItemInCategoryResponseDto::new);
 
         }
 
