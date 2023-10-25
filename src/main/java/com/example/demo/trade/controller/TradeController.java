@@ -43,7 +43,7 @@ public class TradeController implements TradeDocs {
     public ResponseEntity<MessageResponseDto> updateTradeRecord(
             @AuthenticationPrincipal UserDetailsImpl principal,
             @RequestBody TradeRequestDto tradeRequestDto
-    ) throws AccessDeniedException {
+    ) {
         return tradeService.updateTradeRecord(principal.getMember(), tradeRequestDto);
     }
 }
