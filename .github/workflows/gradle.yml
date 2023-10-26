@@ -9,9 +9,9 @@ name: Deploy to Main-chanStar Server
 
 on:
   push:
-    branches: [ release ] # chanStar branch로 push 될 때 실행됩니다. ////
+    branches: [ chanStar ] # chanStar branch로 push 될 때 실행됩니다. ////
   pull_request:
-    branches: [ release ]  # chanStar branch로 pull request될 때 실행됩니다. //
+    branches: [ chanStar ]  # chanStar branch로 pull request될 때 실행됩니다. //
 
 
 env:
