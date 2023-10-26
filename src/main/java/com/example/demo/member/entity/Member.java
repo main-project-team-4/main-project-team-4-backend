@@ -1,19 +1,23 @@
 package com.example.demo.member.entity;
 
+import com.example.demo.chat.entity.ChatMessage;
 import com.example.demo.chat.entity.ChatRoom;
 import com.example.demo.follow.entity.Follow;
 import com.example.demo.location.entity.MemberLocation;
 import com.example.demo.shop.entity.Shop;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity @Table
 @Getter @Setter @NoArgsConstructor
-public class Member {
+public class Member implements Serializable {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -46,6 +50,9 @@ public class Member {
 
     @OneToMany(mappedBy = "consumer")
     private List<ChatRoom> consumerChatRoomList = new ArrayList<>();
+
+//    @OneToOne(mappedBy = "sender")
+//    private ChatMessage chatMessage;
 
     public Member(String username, String nickname) {
         this.username = username;

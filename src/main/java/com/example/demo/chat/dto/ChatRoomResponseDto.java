@@ -12,28 +12,32 @@ public class ChatRoomResponseDto {
     @Schema(description = "채팅방 아이디", example = "1")
     private Long roomId;
     @Schema(description = "채팅방 이름", example = "고기닭고기")
-    private String name;
+    private String roomName;
     @Schema(description = "판매자 이름", example = "고기닭고기")
     private String sellerName;
     @Schema(description = "구매자 이름", example = "고기쇠고기")
     private String consumerName;
     @Schema(description = "아이템 이름", example = "아비렉스 가죽자켓")
     private String itemName;
+    private Long itemId;
 
     @Schema(description = "로그인한 멤버 닉네임", example = "고기닭고기")
-    private String loginMember;
+    private String sender;
 
-    public ChatRoomResponseDto(ChatRoom chatRoom){
+    public ChatRoomResponseDto(ChatRoom chatRoom, Item item){
         this.roomId = chatRoom.getId();
-        this.name = chatRoom.getRoomName();
-    }
-
-    public ChatRoomResponseDto(ChatRoom chatRoom, Item item, Member member){
-        this.roomId = chatRoom.getId();
-        this.name = chatRoom.getRoomName();
+        this.roomName = chatRoom.getRoomName();
         this.sellerName = chatRoom.getSeller().getNickname();
         this.consumerName = chatRoom.getConsumer().getNickname();
+        this.itemId = item.getId();
         this.itemName = item.getName();
-        this.loginMember = member.getNickname();
+    }
+
+    public ChatRoomResponseDto(ChatRoom chatRoom, Member member) {
+        this.roomId = chatRoom.getId();
+        this.roomName = chatRoom.getRoomName();
+        this.sellerName = chatRoom.getSeller().getNickname();
+        this.consumerName = chatRoom.getConsumer().getNickname();
+        this.sender = member.getNickname();
     }
 }

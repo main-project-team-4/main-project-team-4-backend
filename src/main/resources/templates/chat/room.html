@@ -20,45 +20,85 @@
         </div>
     </div>
     <ul class="list-group">
-        <li class="list-group-item list-group-item-action" v-for="item in chatrooms" v-bind:key="item.roomId" v-on:click="enterRoom(item.roomId)">
-            {{item.name}}
+        <li class="list-group-item list-group-item-action" v-for="item in chatrooms" v-bind:key="item.roomId" v-on:click="enterRoom(item.roomId, item.roomName, item.sender)">
+            {{item.roomName}}
         </li>
     </ul>
 </div>
 <!-- JavaScript -->
 <script src="/webjars/vue/2.5.16/dist/vue.min.js"></script>
 <script src="/webjars/axios/0.17.1/dist/axios.min.js"></script>
+<script src="/webjars/sockjs-client/1.1.2/sockjs.min.js"></script>
+<script src="/webjars/stomp-websocket/2.3.3-1/stomp.min.js"></script>
 <script>
-    var vm = new Vue({
+    // websocket & stomp initialize
+    var sock = new SockJS("/ws-stomp");
+    var ws = Stomp.over(sock);
+    var reconnect = 0;
+
+    let vm = new Vue({
         el: '#app',
         data: {
-            room_name : '',
+            roomName: '',
             roomId: '',
-            chatrooms: [
-            ]
+            sender: '',
+            chatrooms: [],
         },
         created() {
             this.findAllRoom();
+            ws.connect({}, function(frame){
+                this.subscribeAllRooms();
+            }.bind(this));
         },
         methods: {
-            findAllRoom: function() {
-                axios.get('/chat/rooms').then(response => { this.chatrooms = response.data; });
-            },
-            enterRoom: function(roomId) {
-                this.roomId = roomId;
-                axios.get(`/chat/room/${roomId}`).then(response => {
+            findAllRoom: function () {
+                axios.get('/chat/rooms').then(response => {
                     this.chatrooms = response.data;
-                    var sender = response.data.loginMember;
-
-                    if (sender != "") {
-                        localStorage.setItem('wschat.sender', sender);
-                        localStorage.setItem('wschat.roomId', roomId);
-                        location.href = "/chat/room/enter/" + roomId;
-                    }
                 });
+            },
+            enterRoom: function (roomId, roomName, sender) {
+                axios.get(`/chat/room/${roomId}`).then(response => {
+                    localStorage.setItem('wschat.roomId', roomId);
+                    localStorage.setItem('wschat.roomName', roomName);
+                    localStorage.setItem('wschat.sender', sender);
+                    location.href = "/chat/room/" + roomId;
+                });
+            },
+            subscribeAllRooms: function () {
+                this.chatrooms.forEach(room => {
+                    const roomId = room.roomId;
+
+                    ws.subscribe("/sub/chat/room/" + roomId, function (message) {
+                        var recv = JSON.parse(message.body);
+                        vm.recvMessage(recv);
+                    });
+                })
             }
         }
-    });
+    })
+    function connect() {
+        // pub/sub event
+        ws.connect({}, function(frame) {
+            this.chatrooms.forEach(room => {
+                const roomId = room.roomId;
+                ws.subscribe("/sub/chat/room/"+roomId, function(message) {
+                    var recv = JSON.parse(message.body);
+                    vm.recvMessage(recv);
+                })
+            });
+            // ws.send("/pub/chat/message", {}, JSON.stringify({type:'ENTER', roomId:vm.$data.roomId, sender:vm.$data.sender, message:''}));
+        }, function(error) {
+            if(reconnect++ <= 5) {
+                setTimeout(function() {
+                    console.log("connection reconnect");
+                    sock = new SockJS("/ws-stomp");
+                    ws = Stomp.over(sock);
+                    connect();
+                },10*1000);
+            }
+        });
+    }
+    //connect();
 </script>
 </body>
 </html>

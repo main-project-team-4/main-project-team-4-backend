@@ -5,6 +5,9 @@ import com.example.demo.category.dto.CategoryResponseDto;
 import com.example.demo.category.dto.ItemInCategoryResponseDto;
 import com.example.demo.category.service.CategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,11 +37,12 @@ public class CategoryController implements CategoryDocs{
     }
 
     @GetMapping("/api/categories/{categoryId}/items")
-    public ResponseEntity<List<ItemInCategoryResponseDto>> readChildItem(
+    public ResponseEntity<Page<ItemInCategoryResponseDto>> readChildItem(
             @PathVariable Long categoryId,
-            @RequestParam(defaultValue = "2") int layer
+            @RequestParam(defaultValue = "2") int layer,
+            @PageableDefault Pageable pageable
     ) {
-        return categoryService.readChildItem(categoryId, layer);
+        return categoryService.readChildItem(categoryId, layer, pageable);
     }
 
     @GetMapping("/api/categories")

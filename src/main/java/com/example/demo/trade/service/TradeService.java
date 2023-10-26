@@ -19,7 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.nio.file.AccessDeniedException;
+import org.springframework.security.access.AccessDeniedException;
 import java.util.Optional;
 
 @Service
@@ -30,15 +30,15 @@ public class TradeService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public ResponseEntity<Page<ItemSearchResponseDto>> readOrders(Member member, Pageable pageable) {
-        Page<ItemSearchResponseDto> dtoPage = itemRepository.findPurchaseItemByMember_id(member.getId(), pageable)
+    public ResponseEntity<Page<ItemSearchResponseDto>> readOrders(Member member, State[] stateList, Pageable pageable) {
+        Page<ItemSearchResponseDto> dtoPage = itemRepository.findPurchaseItemByMember_id(member.getId(), stateList, pageable)
                 .map(ItemSearchResponseDto::new);
         return ResponseEntity.ok(dtoPage);
     }
 
     @Transactional
-    public ResponseEntity<Page<ItemSearchResponseDto>> readSales(Member member, Pageable pageable) {
-        Page<ItemSearchResponseDto> dtoPage = itemRepository.findSellingItemByMember_id(member.getId(), pageable)
+    public ResponseEntity<Page<ItemSearchResponseDto>> readSales(Member member, State[] stateList, Pageable pageable) {
+        Page<ItemSearchResponseDto> dtoPage = itemRepository.findSellingItemByMember_id(member.getId(), stateList, pageable)
                 .map(ItemSearchResponseDto::new);
         return ResponseEntity.ok(dtoPage);
     }
@@ -66,7 +66,7 @@ public class TradeService {
         // Item 상태 변경.
         item.setState(state);
 
-        MessageResponseDto msg = new MessageResponseDto("회원탈퇴에 성공하였습니다.", HttpStatus.OK.value());
+        MessageResponseDto msg = new MessageResponseDto("거래 상태 변화에 성공했습니다.", HttpStatus.OK.value());
         return ResponseEntity.status(HttpStatus.OK).body(msg);
     }
 
@@ -76,10 +76,11 @@ public class TradeService {
     }
 
     private boolean validateOwnerOfItem(Member memberWhoAccessToTrade, Item item) {
-        return Optional.of(item.getShop())
-                .map(Shop::getMember)
-                .map(Member::getId)
-                .filter(memberIdWhoOwnItem -> memberWhoAccessToTrade.getId().equals(memberIdWhoOwnItem))
-                .isPresent();
+        Shop shop = item.getShop();
+        Member seller = shop.getMember();
+
+        Long sellerId = seller.getId();
+        Long memberIdWhoAccessToTradeId = memberWhoAccessToTrade.getId();
+        return sellerId.equals(memberIdWhoAccessToTradeId);
     }
 }

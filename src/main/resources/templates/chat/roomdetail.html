@@ -22,12 +22,15 @@
         <div class="input-group-prepend">
             <label class="input-group-text">내용</label>
         </div>
-        <input type="text" class="form-control" v-model="message" v-on:keypress.enter="sendMessage">
+        <input type="text" class="form-control" v-model="message" v-on:keypress.enter="">
         <div class="input-group-append">
-            <button class="btn btn-primary" type="button" @click="sendMessage">보내기</button>
+            <button class="btn btn-primary" type="button" @click="sendMessage('TALK')">보내기</button>
         </div>
     </div>
     <ul class="list-group">
+        <li class="list-group-item" v-for="message in chatMessages">
+            {{ message.sender }} - {{ message.message }}
+        </li>
         <li class="list-group-item" v-for="message in messages">
             {{message.sender}} - {{message.message}}</a>
         </li>
@@ -40,7 +43,6 @@
 <script src="/webjars/sockjs-client/1.1.2/sockjs.min.js"></script>
 <script src="/webjars/stomp-websocket/2.3.3-1/stomp.min.js"></script>
 <script>
-    //alert(document.title);
     // websocket & stomp initialize
     var sock = new SockJS("/ws-stomp");
     var ws = Stomp.over(sock);
@@ -53,23 +55,32 @@
             room: {},
             sender: '',
             message: '',
-            messages: []
+            messages: [],
+            chatMessages: [],
+            token: ''
         },
         created() {
             this.roomId = localStorage.getItem('wschat.roomId');
+            this.roomName = localStorage.getItem('wschat.roomName');
             this.sender = localStorage.getItem('wschat.sender');
             this.findRoom();
+            this.getMessages();
         },
         methods: {
             findRoom: function() {
                 axios.get('/chat/room/'+this.roomId).then(response => { this.room = response.data; });
             },
+            getMessages: function(){
+                axios.get('/message/'+this.roomId).then(response => {this.chatMessages = response.data; });
+            },
             sendMessage: function() {
-                ws.send("/pub/chat/message", {}, JSON.stringify({type:'TALK', roomId:this.roomId, sender:this.sender, message:this.message}));
+                // ws.send("/pub/chat/message", {}, JSON.stringify({type:'TALK', roomId:this.roomId, sender:this.sender, message:this.message}));
+                ws.send("/pub/chat/message", {}, JSON.stringify({
+                    type:'TALK', sender:this.sender, roomId:this.roomId, message:this.message, roomName:this.roomName}));
                 this.message = '';
             },
             recvMessage: function(recv) {
-                this.messages.unshift({"type":recv.type,"sender":recv.type=='ENTER'?'[알림]':recv.sender,"message":recv.message})
+                this.messages.unshift({"type":recv.type,"sender":recv.sender,"message":recv.message})
             }
         }
     });
@@ -80,7 +91,7 @@
                 var recv = JSON.parse(message.body);
                 vm.recvMessage(recv);
             });
-            ws.send("/pub/chat/message", {}, JSON.stringify({type:'ENTER', roomId:vm.$data.roomId, sender:vm.$data.sender}));
+            // ws.send("/pub/chat/message", {}, JSON.stringify({type:'ENTER', roomId:vm.$data.roomId, sender:vm.$data.sender, message:''}));
         }, function(error) {
             if(reconnect++ <= 5) {
                 setTimeout(function() {
