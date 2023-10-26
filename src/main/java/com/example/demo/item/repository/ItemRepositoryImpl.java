@@ -124,11 +124,16 @@ public class ItemRepositoryImpl implements
     }
 
     @Override
-    public Page<Item> findInShop(Member member, Pageable pageable) {
+    public Page<Item> findInShop(Member member, Long[] exclude, Pageable pageable) {
+        Predicate[] predicates = {
+                item.shop.member.id.eq(member.getId()),
+                item.id.notIn(exclude)
+        };
+
         List<Item> result = jpaQueryFactory
                 .select(item)
                 .from(item)
-                .where(item.shop.member.id.eq(member.getId()))
+                .where(predicates)
 
                 .orderBy(
                         QueryBuilder.extractOrder(new ItemMapper(), pageable)
@@ -141,6 +146,7 @@ public class ItemRepositoryImpl implements
         Long count = jpaQueryFactory
                 .select(item.count())
                 .from(item)
+                .where(predicates)
                 .fetchOne();
 
         return new PageImpl<>(result, pageable, count);

@@ -61,9 +61,10 @@ public class ShopController implements ShopDocs{
     @GetMapping("/shops/{shopId}/items")
     public ResponseEntity<Page<ItemSearchResponseDto>> readItemsOfShop(
             @PathVariable Long shopId,
+            @RequestParam(required = false) Long[] exclude,
             @PageableDefault Pageable pageable
             ) {
-        return itemService.readItemsOfShop(shopId, pageable);
+        return itemService.readItemsOfShop(shopId, exclude, pageable);
     }
 
 }

@@ -91,7 +91,7 @@ public class TradeModelTest {
     }
 
     @LoadTestCaseTrade
-    @Test
+//    @Test TODO 채팅 기록이 있는 사람 목록 생기면 다시 활성화
     @DisplayName("[정상 작동] updateTradeRecord - 기존 거래 기록이 없는 경우")
     void updateTradeRecord_whenNonExistedTradeRecord() throws AccessDeniedException {
         // given

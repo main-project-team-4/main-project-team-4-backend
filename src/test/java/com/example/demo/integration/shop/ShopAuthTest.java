@@ -48,7 +48,7 @@ public class ShopAuthTest {
                 .param("sort", "createdAt,desc");
 
         ResponseEntity<Page<ItemSearchResponseDto>> result = ResponseEntity.ok(Page.empty());
-        when(itemService.readItemsOfShop(any(), any()))
+        when(itemService.readItemsOfShop(any(), any(), any()))
                 .thenReturn(result);
 
         // when & then

@@ -74,10 +74,11 @@ public class ShopModelTest {
     void readItemsOfShop() {
         // given
         Long shopId = 1L;
+        Long[] exclude = {};
         Pageable pageable = PageRequest.of(0, 10);
 
         // when
-        ResponseEntity<Page<ItemSearchResponseDto>> result = itemService.readItemsOfShop(shopId, pageable);
+        ResponseEntity<Page<ItemSearchResponseDto>> result = itemService.readItemsOfShop(shopId, exclude, pageable);
 
         // then
         assertThat(result.getBody().getContent())
@@ -92,10 +93,11 @@ public class ShopModelTest {
     void readItemsOfShop_whenGivenNonExistedShopId() {
         // given
         Long shopId = 100000L;
+        Long[] exclude = {};
         Pageable pageable = PageRequest.of(0, 10);
 
         // when
-        Executable func = () -> itemService.readItemsOfShop(shopId, pageable);
+        Executable func = () -> itemService.readItemsOfShop(shopId, exclude, pageable);
 
         // then
         assertThrows(Throwable.class, func);
