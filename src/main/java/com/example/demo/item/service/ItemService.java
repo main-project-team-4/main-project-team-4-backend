@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -51,12 +52,13 @@ public class ItemService {
         URL main_imageUrl = new URL(mainImage);
 
         // 다중이미지 S3에 업로드 하기
-
-        List<String> subImages = s3Uploader.uploadMultiple(sub_images, "sub_images");
         List<URL> sub_imageUrls = new ArrayList<>();
+        if(sub_images != null && !sub_images.isEmpty()) {
+            List<String> subImages = s3Uploader.uploadMultiple(sub_images, "sub_images");
 
-        for (String multipartFile : subImages) {
-            sub_imageUrls.add(new URL(multipartFile));
+            for (String multipartFile : subImages) {
+                sub_imageUrls.add(new URL(multipartFile));
+            }
         }
 
         // 카테고리 설정
