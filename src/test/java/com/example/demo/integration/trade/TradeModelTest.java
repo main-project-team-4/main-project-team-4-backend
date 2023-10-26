@@ -60,10 +60,11 @@ public class TradeModelTest {
     void readOrders() {
         // given
         Member member = memberRepository.findById(1L).orElseThrow();
+        State[] states = {};
         Pageable pageable = PageRequest.of(0, 10);
 
         // when
-        ResponseEntity<Page<ItemSearchResponseDto>> result = tradeService.readOrders(member, pageable);
+        ResponseEntity<Page<ItemSearchResponseDto>> result = tradeService.readOrders(member, states, pageable);
 
         // then
         assertThat(result.getBody().getContent())
@@ -77,10 +78,11 @@ public class TradeModelTest {
     void readSales() {
         // given
         Member member = memberRepository.findById(1L).orElseThrow();
+        State[] states = {};
         Pageable pageable = PageRequest.of(0, 10);
 
         // when
-        ResponseEntity<Page<ItemSearchResponseDto>> result = tradeService.readSales(member, pageable);
+        ResponseEntity<Page<ItemSearchResponseDto>> result = tradeService.readSales(member, states, pageable);
 
         // then
         assertThat(result.getBody().getContent())

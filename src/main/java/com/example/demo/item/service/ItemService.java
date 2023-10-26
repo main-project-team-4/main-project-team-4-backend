@@ -12,6 +12,7 @@ import com.example.demo.location.entity.Location;
 import com.example.demo.member.entity.Member;
 import com.example.demo.shop.entity.Shop;
 import com.example.demo.shop.repository.ShopRepository;
+import com.example.demo.trade.type.State;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -50,12 +52,13 @@ public class ItemService {
         URL main_imageUrl = new URL(mainImage);
 
         // 다중이미지 S3에 업로드 하기
-
-        List<String> subImages = s3Uploader.uploadMultiple(sub_images, "sub_images");
         List<URL> sub_imageUrls = new ArrayList<>();
+        if(sub_images != null && !sub_images.isEmpty()) {
+            List<String> subImages = s3Uploader.uploadMultiple(sub_images, "sub_images");
 
-        for (String multipartFile : subImages) {
-            sub_imageUrls.add(new URL(multipartFile));
+            for (String multipartFile : subImages) {
+                sub_imageUrls.add(new URL(multipartFile));
+            }
         }
 
         // 카테고리 설정
@@ -142,9 +145,10 @@ public class ItemService {
     @Transactional
     public ResponseEntity<Page<ItemSearchResponseDto>> searchItem(
             String keyword,
+            State[] stateList,
             Pageable pageable
     ) {
-        Page<ItemSearchResponseDto> dtoList = itemRepository.searchBy(keyword, pageable)
+        Page<ItemSearchResponseDto> dtoList = itemRepository.searchBy(keyword, stateList, pageable)
                 .map(ItemSearchResponseDto::new);
         return ResponseEntity.ok(dtoList);
     }
@@ -160,8 +164,8 @@ public class ItemService {
         return new ItemResponseDto(item);
     }
 
-    public ResponseEntity<Page<ItemSearchResponseDto>> readPopularItems(Pageable pageable) {
-        Page<ItemSearchResponseDto> dtoList = itemRepository.findPopularItems(pageable)
+    public ResponseEntity<Page<ItemSearchResponseDto>> readPopularItems(State[] stateList, Pageable pageable) {
+        Page<ItemSearchResponseDto> dtoList = itemRepository.findPopularItems(stateList, pageable)
                 .map(ItemSearchResponseDto::new);
         return ResponseEntity.ok(dtoList);
     }

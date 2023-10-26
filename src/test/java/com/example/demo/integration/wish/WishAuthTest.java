@@ -50,12 +50,14 @@ public class WishAuthTest {
     void readPopularItems_run() throws Exception {
         // given
         MockHttpServletRequestBuilder request = get("/api/top-items")
+                .param("state", "SELLING")
+                .param("state", "RESERVED")
                 .param("page", "0")
                 .param("size", "10")
                 .param("sort", "createdAt,desc");
 
         ResponseEntity<Page<ItemSearchResponseDto>> result = ResponseEntity.ok(Page.empty());
-        when(itemService.readPopularItems(any()))
+        when(itemService.readPopularItems(any(), any()))
                 .thenReturn(result);
 
         // when & then
