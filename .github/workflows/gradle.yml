@@ -15,7 +15,7 @@ on:
 
 
 env:
-  S3_BUCKET_NAME: job-chan-cicd-bucket #
+  S3_BUCKET_NAME: job-chan-cicd-bucket
   PROJECT_NAME: demo
 
 jobs:
