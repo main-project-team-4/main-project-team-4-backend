@@ -127,7 +127,7 @@ public class ItemRepositoryImpl implements
     public Page<Item> findInShop(Member member, Long[] exclude, Pageable pageable) {
         Predicate[] predicates = {
                 item.shop.member.id.eq(member.getId()),
-                item.id.notIn(exclude)
+                exclude != null ? item.id.notIn(exclude) : null
         };
 
         List<Item> result = jpaQueryFactory
