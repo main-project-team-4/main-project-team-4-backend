@@ -3,6 +3,7 @@ package com.example.demo.wish.controller;
 import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.item.service.ItemService;
 import com.example.demo.security.UserDetailsImpl;
+import com.example.demo.trade.type.State;
 import com.example.demo.wish.dto.WishListResponseDto;
 import com.example.demo.wish.dto.WishReadResponseDto;
 import com.example.demo.wish.service.WishService;
@@ -12,10 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -50,8 +48,9 @@ public class WishController implements WishDocs{
 
     @GetMapping("/api/top-items")
     public ResponseEntity<Page<ItemSearchResponseDto>> readPopularItems(
+            @RequestParam(required = false) State[] state,
             @PageableDefault Pageable pageable
             ) {
-        return itemService.readPopularItems(pageable);
+        return itemService.readPopularItems(state, pageable);
     }
 }

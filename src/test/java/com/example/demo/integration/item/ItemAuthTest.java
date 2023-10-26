@@ -42,12 +42,15 @@ public class ItemAuthTest {
         // given
         MockHttpServletRequestBuilder request = get("/api/items")
                 .param("keyword", "shirt")
+                .param("state", "SOLDOUT")
+                .param("state", "RESERVED")
+                .param("state", "SELLING")
                 .param("page", "0")
                 .param("size", "10")
                 .param("sort", "createdAt,desc");
 
         ResponseEntity<Page<ItemSearchResponseDto>> result = ResponseEntity.ok(Page.empty());
-        when(itemService.searchItem(any(), any()))
+        when(itemService.searchItem(any(), any(), any()))
                 .thenReturn(result);
 
         // when & then

@@ -58,7 +58,7 @@ public class TradeAuthTest {
         request = authTestUtil.setAccessToken(request);
 
         ResponseEntity<Page<ItemSearchResponseDto>> result = ResponseEntity.ok(Page.empty());
-        when(tradeService.readOrders(any(), any()))
+        when(tradeService.readOrders(any(), any(), any()))
                 .thenReturn(result);
 
         // when & then
@@ -78,7 +78,7 @@ public class TradeAuthTest {
                 .param("sort", "createdAt,desc");
 
         ResponseEntity<Page<ItemSearchResponseDto>> result = ResponseEntity.ok(Page.empty());
-        when(tradeService.readOrders(any(), any()))
+        when(tradeService.readOrders(any(), any(), any()))
                 .thenReturn(result);
 
         // when & then
@@ -99,7 +99,7 @@ public class TradeAuthTest {
         request = authTestUtil.setAccessToken(request);
 
         ResponseEntity<Page<ItemSearchResponseDto>> result = ResponseEntity.ok(Page.empty());
-        when(tradeService.readOrders(any(), any()))
+        when(tradeService.readOrders(any(), any(), any()))
                 .thenReturn(result);
 
         // when & then
@@ -119,7 +119,7 @@ public class TradeAuthTest {
                 .param("sort", "createdAt,desc");
 
         ResponseEntity<Page<ItemSearchResponseDto>> result = ResponseEntity.ok(Page.empty());
-        when(tradeService.readOrders(any(), any()))
+        when(tradeService.readOrders(any(), any(), any()))
                 .thenReturn(result);
 
         // when & then

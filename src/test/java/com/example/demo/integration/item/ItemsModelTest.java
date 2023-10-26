@@ -6,6 +6,7 @@ import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.item.service.ItemService;
 import com.example.demo.location.entity.Location;
 import com.example.demo.location.entity.MemberLocation;
+import com.example.demo.trade.type.State;
 import com.example.demo.utils.LoadEnvironmentVariables;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -87,10 +88,11 @@ public class ItemsModelTest {
     void searchItem_whenGivenKeyword() {
         // given
         String keyword = "cket";
+        State[] stateList = new State[]{};
         Pageable pageable = PageRequest.of(0, 10);
 
         // when
-        ResponseEntity<Page<ItemSearchResponseDto>> result = itemService.searchItem(keyword, pageable);
+        ResponseEntity<Page<ItemSearchResponseDto>> result = itemService.searchItem(keyword, stateList, pageable);
 
         // then
         assertThat(result.getBody())
@@ -107,10 +109,11 @@ public class ItemsModelTest {
     void searchItem_whenSortedByCreated() {
         // given
         String keyword = null;
+        State[] stateList = new State[]{};
         Pageable pageable = PageRequest.of(0, 8, Sort.by(Sort.Direction.DESC, "createdAt"));
 
         // when
-        ResponseEntity<Page<ItemSearchResponseDto>> result = itemService.searchItem(keyword, pageable);
+        ResponseEntity<Page<ItemSearchResponseDto>> result = itemService.searchItem(keyword, stateList, pageable);
 
         // then
         assertThat(result.getBody().getContent())
@@ -119,16 +122,36 @@ public class ItemsModelTest {
                 .isEqualTo(List.of(6L, 5L, 4L, 1L, 2L, 3L, 8L, 7L));
     }
 
+    @LoadTestCaseSearch
+    @Test
+    @DisplayName("[정상 작동] searchItem - filtered by State")
+    void searchItem_whenFilteredByStateList() {
+        // given
+        String keyword = null;
+        State[] stateList = new State[]{State.SELLING, State.RESERVED};
+        Pageable pageable = PageRequest.of(0, 8, Sort.by(Sort.Direction.DESC, "createdAt"));
+
+        // when
+        ResponseEntity<Page<ItemSearchResponseDto>> result = itemService.searchItem(keyword, stateList, pageable);
+
+        // then
+        assertThat(result.getBody().getContent())
+                .hasSize(6)
+                .extracting(ItemSearchResponseDto::getItemId)
+                .isEqualTo(List.of(6L, 5L, 4L, 1L, 2L, 3L));
+    }
+
     @LoadTestCasePopular
     @Test
     @DisplayName("[정상 작동] readPopularItems")
     void readPopularItems() {
         // given
         int num = 4;
+        State[] stateList = {};
         Pageable pageable = PageRequest.of(0, num);
 
         // when
-        ResponseEntity<Page<ItemSearchResponseDto>> result = itemService.readPopularItems(pageable);
+        ResponseEntity<Page<ItemSearchResponseDto>> result = itemService.readPopularItems(stateList, pageable);
 
         // then
         assertThat(result.getBody())
