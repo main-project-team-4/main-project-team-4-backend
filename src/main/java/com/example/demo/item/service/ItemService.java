@@ -8,7 +8,6 @@ import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.item.dto.itemRequestDto;
 import com.example.demo.item.entity.Item;
 import com.example.demo.item.repository.ItemRepository;
-import com.example.demo.location.entity.Location;
 import com.example.demo.member.entity.Member;
 import com.example.demo.shop.entity.Shop;
 import com.example.demo.shop.repository.ShopRepository;
@@ -26,7 +25,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -178,11 +176,11 @@ public class ItemService {
     }
 
     @Transactional
-    public ResponseEntity<Page<ItemSearchResponseDto>> readItemsOfShop(Long shopId, Pageable pageable) {
+    public ResponseEntity<Page<ItemSearchResponseDto>> readItemsOfShop(Long shopId, Long[] exclude, Pageable pageable) {
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 상점은 존재하지 않습니다."));
 
-        Page<ItemSearchResponseDto> dtoList = itemRepository.findInShop(shop.getMember(), pageable)
+        Page<ItemSearchResponseDto> dtoList = itemRepository.findInShop(shop.getMember(), exclude, pageable)
                 .map(ItemSearchResponseDto::new);
         return ResponseEntity.ok(dtoList);
     }
