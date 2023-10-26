@@ -64,11 +64,20 @@
             this.roomName = localStorage.getItem('wschat.roomName');
             this.sender = localStorage.getItem('wschat.sender');
             this.findRoom();
+            this.findAllRoom();
+            ws.connect({}, function(frame){
+                this.subscribeAllRooms();
+            }.bind(this));
             this.getMessages();
         },
         methods: {
             findRoom: function() {
                 axios.get('/chat/room/'+this.roomId).then(response => { this.room = response.data; });
+            },
+            findAllRoom: function () {
+                axios.get('/chat/rooms').then(response => {
+                    this.chatrooms = response.data;
+                });
             },
             getMessages: function(){
                 axios.get('/message/'+this.roomId).then(response => {this.chatMessages = response.data; });
@@ -81,6 +90,16 @@
             },
             recvMessage: function(recv) {
                 this.messages.unshift({"type":recv.type,"sender":recv.sender,"message":recv.message})
+            },
+            subscribeAllRooms: function () {
+                this.chatrooms.forEach(room => {
+                    const roomId = room.roomId;
+
+                    ws.subscribe("/sub/chat/room/" + roomId, function (message) {
+                        var recv = JSON.parse(message.body);
+                        vm.recvMessage(recv);
+                    });
+                })
             }
         }
     });
@@ -103,7 +122,7 @@
             }
         });
     }
-    connect();
+    //connect();
 </script>
 </body>
 </html>
