@@ -36,7 +36,7 @@ public class ItemService {
     private final S3Uploader s3Uploader;
 
     public ResponseEntity<ItemResponseDto> createItem(Member member, MultipartFile main_image, List<MultipartFile> sub_images, itemRequestDto requestDto) throws IOException {
-        postBlankCheck(main_image);
+
 
         Shop shop = shopRepository.findById(member.getShop().getId()).orElseThrow(
                 () -> new IllegalArgumentException("상점을 찾을 수 없습니다"));
@@ -48,6 +48,8 @@ public class ItemService {
         // 이미지 S3에 업로드 및 URL 가져오기
         String mainImage = s3Uploader.upload(main_image, "main_image");
         URL main_imageUrl = new URL(mainImage);
+
+        postBlankCheck(main_imageUrl);
 
         // 다중이미지 S3에 업로드 하기
         List<URL> sub_imageUrls = new ArrayList<>();
@@ -71,7 +73,7 @@ public class ItemService {
 
     }
 
-    private void postBlankCheck(MultipartFile imgPaths) {
+    private void postBlankCheck(URL imgPaths) {
         if (imgPaths == null) {
             throw new IllegalArgumentException("메인 이미지는 필수입니다.");
         }
@@ -79,7 +81,6 @@ public class ItemService {
 
     @Transactional
     public ResponseEntity<MessageResponseDto> updateItem(Member member, Long id, MultipartFile new_mainImage, List<MultipartFile> new_subImages, itemRequestDto requestDto) throws IOException {
-        postBlankCheck(new_mainImage);
 
         Item item = findItem(id);
         Shop shop = item.getShop();
@@ -98,6 +99,8 @@ public class ItemService {
         if(updatedMainImageUrlObject!=null) {
             mainImageURL = updatedMainImageUrlObject;
         }
+
+        postBlankCheck(mainImageURL);
 
         // 대표이미지 안건들면 그대로 원래 있던거 URL 반환하고, 대표 이미지 수정하면 수정한 이미지로 반환하게 file형식말고 URL로
 
