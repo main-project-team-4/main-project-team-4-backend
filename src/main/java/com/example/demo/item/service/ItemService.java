@@ -170,6 +170,10 @@ public class ItemService {
 
     @Transactional
     public ResponseEntity<Page<ItemSearchResponseDto>> readNearbyItems(Member member, Pageable pageable) {
+        if(member.getLocation() == null) {
+            return ResponseEntity.ok(Page.empty());
+        }
+
         Page<ItemSearchResponseDto> dtoList = itemRepository.findNearbyItems(member.getLocation(), member, pageable)
                 .map(ItemSearchResponseDto::new);
         return ResponseEntity.ok(dtoList);
