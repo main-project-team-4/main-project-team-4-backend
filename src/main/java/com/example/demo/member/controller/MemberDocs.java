@@ -64,7 +64,7 @@ public interface MemberDocs {
             responseCode = "200",
             description = "정상 작동",
             content = @Content(
-                    mediaType = MediaType.TEXT_PLAIN_VALUE
+                    mediaType = MediaType.APPLICATION_JSON_VALUE
             )
     )
     @ApiResponse(

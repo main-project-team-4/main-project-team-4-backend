@@ -8,7 +8,6 @@ import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.item.dto.itemRequestDto;
 import com.example.demo.item.entity.Item;
 import com.example.demo.item.repository.ItemRepository;
-import com.example.demo.location.entity.Location;
 import com.example.demo.member.entity.Member;
 import com.example.demo.shop.entity.Shop;
 import com.example.demo.shop.repository.ShopRepository;
@@ -51,12 +50,13 @@ public class ItemService {
         URL main_imageUrl = new URL(mainImage);
 
         // 다중이미지 S3에 업로드 하기
-
-        List<String> subImages = s3Uploader.uploadMultiple(sub_images, "sub_images");
         List<URL> sub_imageUrls = new ArrayList<>();
+        if(sub_images != null && !sub_images.isEmpty()) {
+            List<String> subImages = s3Uploader.uploadMultiple(sub_images, "sub_images");
 
-        for (String multipartFile : subImages) {
-            sub_imageUrls.add(new URL(multipartFile));
+            for (String multipartFile : subImages) {
+                sub_imageUrls.add(new URL(multipartFile));
+            }
         }
 
         // 카테고리 설정
@@ -83,32 +83,60 @@ public class ItemService {
 
         Item item = findItem(id);
         Shop shop = item.getShop();
-
         // 상품을 올린 유저와 수정하려는 유저가 다를 경우
         if (!shop.getMember().getId().equals(member.getId())) {
             throw new IllegalArgumentException("해당 상품을 올린 유저만 상품을 수정 할 수 있습니다.");
         }
 
+        URL mainImageURL = item.getMain_image();
+
+        if(mainImageURL!=null) {
+            item.updateMainImage(mainImageURL);
+        }
+
         // 새로운 메인 이미지 업로드 및 URL 얻기
         String updatedMainImageUrl = s3Uploader.upload(new_mainImage, "images");
         URL updatedMainImageUrlObject = new URL(updatedMainImageUrl);
+        
+        List<URL> old_subImageURLs = item.getSub_images();
 
-        // 새로운 서브 이미지 업로드 및 URL 얻기
-        List<URL> updatedSubImageUrls = new ArrayList<>();
-        if (new_subImages != null && !new_subImages.isEmpty()) {
-            for (MultipartFile newSubImage : new_subImages) {
-                String updatedSubImageUrl = s3Uploader.upload(newSubImage, "images");
-                URL updatedSubImageUrlObject = new URL(updatedSubImageUrl);
-                updatedSubImageUrls.add(updatedSubImageUrlObject);
+        List<URL> new_subImageURLs = new ArrayList<>();
+        if(new_subImages != null && !new_subImages.isEmpty()) {
+            List<String> subImages = s3Uploader.uploadMultiple(new_subImages, "sub_images");
+
+            for (String multipartFile : subImages) {
+                new_subImageURLs.add(new URL(multipartFile));
             }
         }
 
+        for(URL old_subImageURL : old_subImageURLs) {
+            for(URL new_subImageURL : new_subImageURLs) {
+                if(old_subImageURL.toString().equals(new_subImageURL.toString())){
+                    new_subImageURLs.remove(new_subImageURL);
+                }
+            }
+        }
+
+//        // 새로운 서브 이미지 업로드 및 URL 얻기
+//        List<URL> updatedSubImageUrls = new ArrayList<>();
+//        if (new_subImages != null && !new_subImages.isEmpty()) {
+//            for (MultipartFile newSubImage : new_subImages) {
+//                String updatedSubImageUrl = s3Uploader.upload(newSubImage, "images");
+//                URL updatedSubImageUrlObject = new URL(updatedSubImageUrl);
+//                updatedSubImageUrls.add(updatedSubImageUrlObject);
+//            }
+//        } else {
+//            // 기존 서브 이미지를 유지하는 경우, 기존 URL을 그대로 사용
+//            updatedSubImageUrls.addAll(subImageURLs);
+//        }
+
         // 기존 서브 이미지 목록과 새로운 서브 이미지 목록을 합치기
         List<URL> combinedSubImages = new ArrayList<>(item.getSub_images());
+        combinedSubImages.addAll(new_subImageURLs);
+
         if(combinedSubImages.size()>=6) {
             throw new IllegalArgumentException("사진은 최대 6장까지 올릴 수 있습니다.");
         }
-        combinedSubImages.addAll(updatedSubImageUrls);
 
         // 아이템 업데이트
         item.update(requestDto.getName(), requestDto.getPrice(), requestDto.getComment(), updatedMainImageUrlObject, combinedSubImages);
@@ -134,8 +162,8 @@ public class ItemService {
 
         String filePathInS3 = item.getMain_image().getPath().substring(1);
         s3Uploader.deleteFile(filePathInS3);
-        itemRepository.delete(item);
 
+        itemRepository.delete(item);
         MessageResponseDto msg = new MessageResponseDto("상품이 삭제되었습니다.", HttpStatus.OK.value());
         return ResponseEntity.status(HttpStatus.OK).body(msg);
     }
@@ -169,18 +197,22 @@ public class ItemService {
     }
 
     @Transactional
-    public ResponseEntity<Page<ItemSearchResponseDto>> readNearbyItems(Location location, Pageable pageable) {
-        Page<ItemSearchResponseDto> dtoList = itemRepository.findNearbyItems(location, pageable)
+    public ResponseEntity<Page<ItemSearchResponseDto>> readNearbyItems(Member member, Pageable pageable) {
+        if(member.getLocation() == null) {
+            return ResponseEntity.ok(Page.empty());
+        }
+
+        Page<ItemSearchResponseDto> dtoList = itemRepository.findNearbyItems(member.getLocation(), member, pageable)
                 .map(ItemSearchResponseDto::new);
         return ResponseEntity.ok(dtoList);
     }
 
     @Transactional
-    public ResponseEntity<Page<ItemSearchResponseDto>> readItemsOfShop(Long shopId, Pageable pageable) {
+    public ResponseEntity<Page<ItemSearchResponseDto>> readItemsOfShop(Long shopId, Long[] exclude, Pageable pageable) {
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 상점은 존재하지 않습니다."));
 
-        Page<ItemSearchResponseDto> dtoList = itemRepository.findInShop(shop.getMember(), pageable)
+        Page<ItemSearchResponseDto> dtoList = itemRepository.findInShop(shop.getMember(), exclude, pageable)
                 .map(ItemSearchResponseDto::new);
         return ResponseEntity.ok(dtoList);
     }

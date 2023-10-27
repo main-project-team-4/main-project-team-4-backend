@@ -6,5 +6,5 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface ShopDisplayRepository {
-    Page<Item> findInShop(Member member, Pageable pageable);
+    Page<Item> findInShop(Member member, Long[] exclude, Pageable pageable);
 }
