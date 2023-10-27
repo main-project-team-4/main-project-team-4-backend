@@ -90,13 +90,17 @@ public class ItemService {
 
         URL mainImageURL = item.getMain_image();
 
-        if(mainImageURL!=null) {
-            item.updateMainImage(mainImageURL);
-        }
-
         // 새로운 메인 이미지 업로드 및 URL 얻기
         String updatedMainImageUrl = s3Uploader.upload(new_mainImage, "images");
         URL updatedMainImageUrlObject = new URL(updatedMainImageUrl);
+
+        // 대표 이미지 변경시
+        if(updatedMainImageUrlObject!=null) {
+            mainImageURL = updatedMainImageUrlObject;
+        }
+
+        // 대표이미지 안건들면 그대로 원래 있던거 URL 반환하고, 대표 이미지 수정하면 수정한 이미지로 반환하게 file형식말고 URL로
+
         
         List<URL> old_subImageURLs = item.getSub_images();
 
