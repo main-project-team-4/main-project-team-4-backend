@@ -57,11 +57,11 @@ public class TradeService {
 
         State state = tradeRequestDto.getState();
 
-        // 없으면 거래 기록 남기기.
-        tradeRepository.findByMember_IdAndItem_Id(
-                tradeRequestDto.getConsumerId(),
-                tradeRequestDto.getItemId()
-        ).orElseGet(() -> saveTrade(consumer, item, state));
+        // 없으면 거래 기록 남기기. TODO 채팅 기록이 있는 사람 목록 생기면 다시 활성화
+//        tradeRepository.findByMember_IdAndItem_Id(
+//                tradeRequestDto.getConsumerId(),
+//                tradeRequestDto.getItemId()
+//        ).orElseGet(() -> saveTrade(consumer, item, state));
 
         // Item 상태 변경.
         item.setState(state);

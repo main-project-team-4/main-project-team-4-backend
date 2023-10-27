@@ -40,8 +40,7 @@ public class LocationController implements LocationDocs{
             @PageableDefault Pageable pageable
     ) {
         Member member = principal.getMember();
-        Location trgLocation = member.getLocation();
-        return itemService.readNearbyItems(trgLocation, pageable);
+        return itemService.readNearbyItems(member, pageable);
     }
 }
 

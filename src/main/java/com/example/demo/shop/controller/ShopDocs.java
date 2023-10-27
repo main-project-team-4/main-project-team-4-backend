@@ -137,7 +137,9 @@ public interface ShopDocs {
     @Operation(
             summary = "상점 페이지 판매 상품 목록 조회 API",
             description = """
-                    상점 페이지 판매 상품 목록 조회 API
+                    상점 페이지 판매 상품 목록 조회 API<br>
+                    포함시키고 싶지 않은 아이템 ID를 다음과 같이 기입할 수 있습니다.<br>
+                    /shops/{shopId}/items?exclude=2&exclude=5&...
                     """
     )
     @ApiResponse(
@@ -150,6 +152,7 @@ public interface ShopDocs {
     )
     ResponseEntity<Page<ItemSearchResponseDto>> readItemsOfShop(
             Long shopId,
+            Long[] exclude,
             Pageable pageable
     );
 
