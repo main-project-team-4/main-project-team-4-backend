@@ -44,7 +44,7 @@ jobs:
        # shell: bash #
 
       - name: Make zip file
-        run: zip -r job-cat.zip build/libs/demo-0.0.1-SNAPSHOT.jar appspec.yml scripts
+        run: zip -r job-cat.zip $(pwd)/build/libs/demo-0.0.1-SNAPSHOT.jar $(pwd)/appspec.yml $(pwd)/scripts
         shell: bash
 
       - name: Configure AWS credentials
