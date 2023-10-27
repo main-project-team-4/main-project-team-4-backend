@@ -34,6 +34,9 @@ public class ItemResponseDto {
     @Schema(description = "상품 설명", example = "친칠라들이 좋아합니다!")
     @JsonProperty(ParameterNameConfig.Item.COMMENT)
     private String comment;
+    @Schema(description = "상품 거래 상태", example = "친칠라들이 좋아합니다!")
+    @JsonProperty(ParameterNameConfig.Item.STATE)
+    private String state;
     @Schema(description = "상품의 이미지들", example = "[https://m.hoopbro.co.kr/web/product/big/202308/68034e9c48fe22a0aab33bb52b9b0f4c.jpg]")
     @JsonProperty(ParameterNameConfig.Item.IMAGES)
     private List<URL> sub_images;
@@ -58,6 +61,7 @@ public class ItemResponseDto {
         this.name = item.getName();
         this.price = item.getPrice();
         this.comment = item.getComment();
+        this.state = item.getState().name();
         this.sub_images = getImageTotalImages(item);
 
         Optional<CategoryM> middleCategory = Optional.of(item.getCategoryMidId());
