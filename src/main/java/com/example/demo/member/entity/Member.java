@@ -5,6 +5,8 @@ import com.example.demo.chat.entity.ChatRoom;
 import com.example.demo.follow.entity.Follow;
 import com.example.demo.location.entity.MemberLocation;
 import com.example.demo.shop.entity.Shop;
+import com.example.demo.trade.entity.Trade;
+import com.example.demo.wish.entity.Wish;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -50,6 +52,15 @@ public class Member implements Serializable {
 
     @OneToMany(mappedBy = "consumer")
     private List<ChatRoom> consumerChatRoomList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "sellerId", cascade = {CascadeType.REMOVE})
+    private List<Trade> tradeAsSellerList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = {CascadeType.REMOVE})
+    private List<Trade> tradeAsConsumerList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = {CascadeType.REMOVE})
+    private List<Wish> wishList = new ArrayList<>();
 
 //    @OneToOne(mappedBy = "sender")
 //    private ChatMessage chatMessage;

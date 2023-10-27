@@ -43,7 +43,7 @@ public class Shop implements Serializable {
     @JoinColumn(name = "seller_id")
     private Member member;
 
-    @OneToMany(mappedBy = "shop")
+    @OneToMany(mappedBy = "shop", cascade = {CascadeType.REMOVE})
     private List<Follow> follows = new ArrayList<>();
 
     public Shop(SignupRequestDto requestDto, Member member){
