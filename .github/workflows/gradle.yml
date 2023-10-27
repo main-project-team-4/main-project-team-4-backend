@@ -19,9 +19,9 @@ env:
   PROJECT_NAME: demo
 
 jobs:
-  build:
-
+  deploy:
     runs-on: ubuntu-latest
+
 
     steps:
       - name: Check
