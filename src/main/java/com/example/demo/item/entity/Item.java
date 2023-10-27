@@ -4,7 +4,9 @@ import com.example.demo.category.entity.CategoryM;
 import com.example.demo.chat.entity.ChatRoom;
 import com.example.demo.entity.TimeStamp;
 import com.example.demo.location.entity.ItemLocation;
+import com.example.demo.review.entity.Review;
 import com.example.demo.shop.entity.Shop;
+import com.example.demo.trade.entity.Trade;
 import com.example.demo.trade.type.State;
 import com.example.demo.wish.entity.Wish;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -66,8 +68,14 @@ public class Item extends TimeStamp implements Serializable {
     @OneToMany(mappedBy = "item")
     private List<ChatRoom> itemChatRoom = new ArrayList<>();
 
-    @OneToOne(mappedBy = "item", cascade = CascadeType.PERSIST)
+    @OneToOne(mappedBy = "item", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private ItemLocation itemLocation;
+
+    @OneToMany(mappedBy = "item", cascade = {CascadeType.REMOVE})
+    private List<Trade> tradeList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "item", orphanRemoval = true)
+    private List<Review> reviewList = new ArrayList<>();
 
     public Item(String name, int price, String comment, URL main_image, List<URL> sub_images, Shop shop, Boolean withDeliveryFee, CategoryM categoryM) {
         this.id = getId();

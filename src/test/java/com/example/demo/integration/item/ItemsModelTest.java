@@ -1,11 +1,13 @@
 package com.example.demo.integration.item;
 
-import com.example.demo.integration.member.MemberModelTest;
 import com.example.demo.item.dto.ItemResponseDto;
 import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.item.service.ItemService;
+import com.example.demo.location.dto.CoordinateVo;
 import com.example.demo.location.entity.Location;
 import com.example.demo.location.entity.MemberLocation;
+import com.example.demo.member.entity.Member;
+import com.example.demo.member.repository.MemberRepository;
 import com.example.demo.trade.type.State;
 import com.example.demo.utils.LoadEnvironmentVariables;
 import org.junit.jupiter.api.DisplayName;
@@ -33,6 +35,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class ItemsModelTest {
     @Autowired
     private ItemService itemService;
+    @Autowired
+    private MemberRepository memberRepository;
 
     @Retention(RetentionPolicy.RUNTIME)
     @SqlGroup({
@@ -165,20 +169,19 @@ public class ItemsModelTest {
     @DisplayName("[정상 작동] readNearbyItems")
     void readNearbyItems() {
         // given
-        int num = 8;
-        Location location = new MemberLocation();
-        location.setLatitude(0L);
-        location.setLongitude(0L);
+        int num = 7;
+        Member member = memberRepository.findById(1L).orElseThrow();
+        member.getLocation().setCoordinates(new CoordinateVo(0L, 0L));
         Pageable pageable = PageRequest.of(0, num);
 
         // when
-        ResponseEntity<Page<ItemSearchResponseDto>> result = itemService.readNearbyItems(location, pageable);
+        ResponseEntity<Page<ItemSearchResponseDto>> result = itemService.readNearbyItems(member, pageable);
 
         // then
         assertThat(result.getBody())
                 .hasSize(num)
                 .extracting(ItemSearchResponseDto::getItemId)
-                .isEqualTo(List.of(1L, 5L, 2L, 6L, 3L, 7L, 4L, 8L));
+                .isEqualTo(List.of(5L, 2L, 6L, 3L, 7L, 4L, 8L));
     }
 
     @LoadTestCaseItem

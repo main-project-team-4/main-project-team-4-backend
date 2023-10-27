@@ -8,7 +8,6 @@ import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.item.dto.itemRequestDto;
 import com.example.demo.item.entity.Item;
 import com.example.demo.item.repository.ItemRepository;
-import com.example.demo.location.entity.Location;
 import com.example.demo.member.entity.Member;
 import com.example.demo.shop.entity.Shop;
 import com.example.demo.shop.repository.ShopRepository;
@@ -51,12 +50,13 @@ public class ItemService {
         URL main_imageUrl = new URL(mainImage);
 
         // 다중이미지 S3에 업로드 하기
-
-        List<String> subImages = s3Uploader.uploadMultiple(sub_images, "sub_images");
         List<URL> sub_imageUrls = new ArrayList<>();
+        if(sub_images != null && !sub_images.isEmpty()) {
+            List<String> subImages = s3Uploader.uploadMultiple(sub_images, "sub_images");
 
-        for (String multipartFile : subImages) {
-            sub_imageUrls.add(new URL(multipartFile));
+            for (String multipartFile : subImages) {
+                sub_imageUrls.add(new URL(multipartFile));
+            }
         }
 
         // 카테고리 설정
@@ -169,18 +169,22 @@ public class ItemService {
     }
 
     @Transactional
-    public ResponseEntity<Page<ItemSearchResponseDto>> readNearbyItems(Location location, Pageable pageable) {
-        Page<ItemSearchResponseDto> dtoList = itemRepository.findNearbyItems(location, pageable)
+    public ResponseEntity<Page<ItemSearchResponseDto>> readNearbyItems(Member member, Pageable pageable) {
+        if(member.getLocation() == null) {
+            return ResponseEntity.ok(Page.empty());
+        }
+
+        Page<ItemSearchResponseDto> dtoList = itemRepository.findNearbyItems(member.getLocation(), member, pageable)
                 .map(ItemSearchResponseDto::new);
         return ResponseEntity.ok(dtoList);
     }
 
     @Transactional
-    public ResponseEntity<Page<ItemSearchResponseDto>> readItemsOfShop(Long shopId, Pageable pageable) {
+    public ResponseEntity<Page<ItemSearchResponseDto>> readItemsOfShop(Long shopId, Long[] exclude, Pageable pageable) {
         Shop shop = shopRepository.findById(shopId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 상점은 존재하지 않습니다."));
 
-        Page<ItemSearchResponseDto> dtoList = itemRepository.findInShop(shop.getMember(), pageable)
+        Page<ItemSearchResponseDto> dtoList = itemRepository.findInShop(shop.getMember(), exclude, pageable)
                 .map(ItemSearchResponseDto::new);
         return ResponseEntity.ok(dtoList);
     }
