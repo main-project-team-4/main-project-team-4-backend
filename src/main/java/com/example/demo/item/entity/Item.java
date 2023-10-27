@@ -100,4 +100,8 @@ public class Item extends TimeStamp implements Serializable {
         this.main_image = main_image;
         this.sub_images.addAll(sub_images);
     }
+
+    public void updateMainImage(URL main_image) {
+        this.main_image = main_image;
+    }
 }
