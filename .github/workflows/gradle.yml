@@ -9,13 +9,13 @@ name: Deploy to Main-chanStar Server
 
 on:
   push:
-    branches: [ release ] # chanStar branch로 push 될 때 실행됩니다. ////./
+    branches: [ release ] # chanStar branch로 push 될 때 실행됩니다. ////
   pull_request:
     branches: [ release ]  # chanStar branch로 pull request될 때 실행됩니다. //
 
 
 env:
-  S3_BUCKET_NAME: job-chan-cicd-bucket #
+  S3_BUCKET_NAME: job-chan-cicd-bucket
   PROJECT_NAME: demo
 
 jobs:
@@ -39,9 +39,9 @@ jobs:
           ./gradlew clean bootJar
         shell: bash
 
-      - name: Build with Gradle
-        run: ./gradlew build
-        shell: bash
+      - name: Build with Gradle #
+        run: ./gradlew build #
+        shell: bash #
 
       - name: Make zip file
         run: zip -r job-cat.zip build/libs/demo-0.0.1-SNAPSHOT.jar appspec.yml scripts
