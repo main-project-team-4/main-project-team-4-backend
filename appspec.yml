@@ -2,23 +2,23 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /home/ubuntu/demo
+    destination: /home/ubuntu
     overwrite: yes
 
 permissions:
-  - object: /
+  - object: /home/ubuntu
     pattern: "**"
     owner: ubuntu
     group: ubuntu
 
 hooks:
   ApplicationStart:
-    - location: scripts/run_new_process.sh
-      timeout: 300
+    - location: script/run_new_process.sh
+      timeout: 180
       runas: ubuntu
-    - location: scripts/health_check.sh
-      timeout: 300
+    - location: script/health_check.sh
+      timeout: 180
       runas: ubuntu
-    - location: scripts/switch.sh
-      timeout: 300
+    - location: script/switch.sh
+      timeout: 180
       runas: ubuntu
