@@ -2,7 +2,7 @@ name: deploy -test - chan - GukJang
 
 on:
   push:
-    branches: [ release ] # chanStar branch로 push 될 때 실행됩니다. //////
+    branches: [ release ] # chanStar branch로 push 될 때 실행됩니다. ///////
 
 env:
   AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
