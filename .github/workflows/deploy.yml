@@ -48,7 +48,7 @@ jobs:
 
       - name: Code Deploy
         run: aws deploy create-deployment
-          --application-name job-cat
-          --deployment-config-name CodeDeployDefault.OneAtATime
-          --deployment-group-name job-cat-deploy-group
-          --s3-location bucket=$AWS_S3_BUCKET,bundleType=zip,key=job-cat.zip
+            --application-name job-cat
+            --deployment-config-name CodeDeployDefault.OneAtATime
+            --deployment-group-name job-cat-deploy-group
+            --s3-location bucket=$AWS_S3_BUCKET,bundleType=zip,key=job-cat.zip
