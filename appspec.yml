@@ -6,19 +6,19 @@ files:
     overwrite: yes
 
 permissions:
-  - object: /home/ubuntu
+  - object: /
     pattern: "**"
     owner: ubuntu
     group: ubuntu
 
 hooks:
   ApplicationStart:
-    - location: run_new_process.sh
+    - location: /home/ubuntu/scripts/run_new_process.sh
       timeout: 180
       runas: ubuntu
-    - location: health_check.sh
+    - location: /home/ubuntu/scripts/health_check.sh
       timeout: 180
       runas: ubuntu
-    - location: switch.sh
+    - location: /home/ubuntu/scripts/switch.sh
       timeout: 180
       runas: ubuntu
