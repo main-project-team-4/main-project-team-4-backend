@@ -13,12 +13,12 @@ permissions:
 
 hooks:
   ApplicationStart:
-    - location: script/run_new_process.sh
+    - location: run_new_process.sh
       timeout: 180
       runas: ubuntu
-    - location: script/health_check.sh
+    - location: health_check.sh
       timeout: 180
       runas: ubuntu
-    - location: script/switch.sh
+    - location: switch.sh
       timeout: 180
       runas: ubuntu
