@@ -1,7 +1,6 @@
 #nohup java -jar ./script/build/libs/demo-0.0.1-SNAPSHOT.jar &
 # run_new_was.sh
 
-#!/bin/bash
 
 CURRENT_PORT=$(cat /etc/nginx/conf.d/service-url.inc | grep -Po '[0-9]+' | tail -1)
 TARGET_PORT=0
