@@ -11,13 +11,11 @@ elif [ ${CURRENT_PORT} -eq 8082 ]; then
 else
     echo "> Nginx가 현재 어떤 WAS에 연결되어 있지 않습니다."
 fi
-# 현재 실행 중인 이전 WAS 프로세스 종료
-if [ ${TARGET_PORT} -ne 0 ]; then
-    PREVIOUS_PID=$(lsof -Fp -i TCP:${TARGET_PORT} | grep -Po 'p[0-9]+' | grep -Po '[0-9]+')
-    if [ ! -z ${PREVIOUS_PID} ]; then
-        echo "> 이전에 실행 중인 WAS를 ${TARGET_PORT} 포트에서 종료합니다."
-        sudo kill ${PREVIOUS_PID}
-    fi
+
+TARGET_PID=$(lsof -Fp -i TCP:${TARGET_PORT} | grep -Po 'p[0-9]+' | grep -Po '[0-9]+')
+if [ ! -z ${TARGET_PID} ]; then
+  echo "> Kill WAS running at ${TARGET_PORT}."
+  sudo kill ${TARGET_PID}
 fi
 # 새로운 WAS 프로세스 시작
 nohup java -jar -Dserver.port=${TARGET_PORT} /home/ubuntu/app/demo-0.0.1-SNAPSHOT.jar > /home/ubuntu/nohup.out 2>&1 &
