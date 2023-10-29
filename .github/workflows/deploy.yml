@@ -1,50 +1,57 @@
-name: deploy -test - chan - GukJang
-
+name: deploy -test - here
 on:
   push:
     branches: [ release ] # chanStar branch로 push 될 때 실행됩니다. ////////
-
 env:
   AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
-
+  RESOURCE_PATH: ./src/main/resources/application.properties
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
-#      - name: create secret files
-#        working-directory: src/main/resources
-#        run: |
-#          touch application-prod.properties
-#          echo "${{ secrets.APPLICATION_YML }}" >> application-prod.properties
-
+      #      - name: create secret files
+      #        working-directory: src/main/resources
+      #        run: |
+      #          touch application-prod.properties
+      #          echo "${{ secrets.APPLICATION_YML }}" >> application-prod.properties
       - name:  Set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
-
+      - name: 빌드 전 환경변수 주입
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: ${{ env.RESOURCE_PATH }}
+        env:
+          spring.datasource.url: ${{ secrets.MYSQL_DATABASE_URL }}
+          spring.datasource.username: ${{ secrets.MYSQL_DATABASE_USERNAME }}
+          spring.datasource.password: ${{ secrets.MYSQL_DATABASE_PASSWORD }}
+          jwt.secret.key: ${{ secrets.JWT_SECRET_KEY }}
+          cloud.aws.credentials.accessKey: ${{ secrets.S3_ACCESS_KEY }}
+          cloud.aws.credentials.secretKey: ${{ secrets.S3_SECRET_KEY }}
+          cloud.aws.region.static: ${{ secrets.S3_REGION_STATIC }}
+          cloud.aws.s3.bucket: ${{ secrets.S3_BUCKET_NAME }}
+          auth.oauth2.kakao.redirect-url: ${{ secrets.OAUTH2_KAKAO_REDIRECT_URL }}
+          spring.data.redis.host: ${{ secrets.REDIS_HOST }}
+          spring.data.redis.password: ${{ secrets.REDIS_PASSWORD }}
+          
       - name: Build Project With Gradle
         run: |
           chmod +x ./gradlew
           ./gradlew clean bootJar
-
       - name: Make zip file
         run: zip -r ./job-cat.zip ./build/libs/*.jar ./scripts/* -j ./appspec.yml
         shell: bash
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
-
       - name: Upload to S3
         run: aws s3 cp --region ap-northeast-2 ./job-cat.zip s3://$AWS_S3_BUCKET/job-cat.zip
-
       - name: Code Deploy
         run: aws deploy create-deployment --application-name job-cat --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name job-cat-deploy-group --s3-location bucket=$AWS_S3_BUCKET,bundleType=zip,key=job-cat.zip
