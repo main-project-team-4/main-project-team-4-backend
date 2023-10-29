@@ -4,7 +4,7 @@ on:
     branches: [ release ] # chanStar branch로 push 될 때 실행됩니다. ////////
 env:
   AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
-  RESOURCE_PATH: ./src/main/resources/application.properties
+  RESOURCE_PATH: ./src/main/resources/application.yml
 jobs:
   build:
     runs-on: ubuntu-latest

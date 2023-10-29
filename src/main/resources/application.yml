@@ -1,0 +1,38 @@
+cloud:
+  aws:
+    s3:
+      bucket: ${S3_BUCKET_NAME}
+    credentials:
+      accessKey: ${S3_ACCESS_KEY}
+      secretKey: ${S3_SECRET_KEY}
+    region:
+      static: ${S3_REGION_STATIC}
+    stack:
+      auto: 'false'
+spring:
+  data:
+    redis:
+      password: ${REDIS_PASSWORD}
+      port: '14859'
+      host: ${REDIS_HOST}
+  jpa:
+    properties:
+      hibernate:
+        use_sql_comments: 'true'
+        format_sql: 'true'
+        show_sql: 'true'
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    password: ${MYSQL_DATABASE_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${MYSQL_DATABASE_USERNAME}
+    url: ${MYSQL_DATABASE_URL}
+auth:
+  oauth2:
+    kakao:
+      client-id: 851d6c649ed19d32afa2743c91134e57
+      redirect-url: ${OAUTH2_KAKAO_REDIRECT_URL}
+jwt:
+  secret:
+    key: ${JWT_SECRET_KEY}
