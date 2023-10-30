@@ -93,12 +93,14 @@ public class Item extends TimeStamp implements Serializable {
         this.sub_images.addAll(sub_images);
     }
 
-    public void update(String name, int price, String comment, URL main_image, List<URL> sub_images) {
+    public void update(String name, int price, String comment, URL main_image, List<URL> sub_images, Boolean withDeliveryFee, CategoryM categoryM) {
         this.name = name;
         this.price = price;
         this.comment = comment;
         this.main_image = main_image;
         this.sub_images.addAll(sub_images);
+        this.withDeliveryFee = withDeliveryFee;
+        this.categoryMidId = categoryM;
     }
 
     public void updateMainImage(URL main_image) {
