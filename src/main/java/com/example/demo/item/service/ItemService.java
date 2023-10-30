@@ -91,14 +91,19 @@ public class ItemService {
 
         URL mainImageURL = item.getMain_image();
 
-        // 새로운 메인 이미지 업로드 및 URL 얻기
-        String updatedMainImageUrl = s3Uploader.upload(new_mainImage, "images");
-        URL updatedMainImageUrlObject = new URL(updatedMainImageUrl);
-
-        // 대표 이미지 변경시
-        if(updatedMainImageUrlObject!=null) {
+        if(new_mainImage!=null) {
+            String filePathInS3 = item.getMain_image().getPath().substring(1);
+            s3Uploader.deleteFile(filePathInS3);
+            // 새로운 메인 이미지 업로드 및 URL 얻기
+            String updatedMainImageUrl = s3Uploader.upload(new_mainImage, "main_image");
+            URL updatedMainImageUrlObject = new URL(updatedMainImageUrl);
             mainImageURL = updatedMainImageUrlObject;
         }
+
+//        // 대표 이미지 변경시
+//        if(updatedMainImageUrlObject!=null) {
+//
+//        }
 
         postBlankCheck(mainImageURL);
 
@@ -107,20 +112,21 @@ public class ItemService {
         
         List<URL> old_subImageURLs = item.getSub_images();
 
+        // 새로운 서브 이미지 업로드 및 URL 얻기
         List<URL> new_subImageURLs = new ArrayList<>();
-        if(new_subImages != null && !new_subImages.isEmpty()) {
-            List<String> subImages = s3Uploader.uploadMultiple(new_subImages, "sub_images");
 
-            for (String multipartFile : subImages) {
-                new_subImageURLs.add(new URL(multipartFile));
+        if(new_subImages != null && !new_subImages.isEmpty()) {
+            for (MultipartFile newSubImage : new_subImages) {
+                String updatedSubImageUrl = s3Uploader.upload(newSubImage, "sub_images");
+                URL updatedSubImageUrlObject = new URL(updatedSubImageUrl);
+                new_subImageURLs.add(updatedSubImageUrlObject);
             }
         }
 
-        for(URL old_subImageURL : old_subImageURLs) {
-            for(URL new_subImageURL : new_subImageURLs) {
-                if(old_subImageURL.toString().equals(new_subImageURL.toString())){
-                    new_subImageURLs.remove(new_subImageURL);
-                }
+//        for(URL old_subImageURL : old_subImageURLs) {
+        for(int i=0; i<old_subImageURLs.size(); i++) {
+            if(old_subImageURLs.get(i)==null) {
+                old_subImageURLs.remove(i);
             }
         }
 
@@ -139,11 +145,17 @@ public class ItemService {
 
         // 기존 서브 이미지 목록과 새로운 서브 이미지 목록을 합치기
         List<URL> combinedSubImages = new ArrayList<>(item.getSub_images());
-        combinedSubImages.addAll(new_subImageURLs);
+        for(URL image: new_subImageURLs) {
+            combinedSubImages.add(image);
+        }
 
         if(combinedSubImages.size()>=6) {
             throw new IllegalArgumentException("사진은 최대 6장까지 올릴 수 있습니다.");
         }
+
+        // 카테고리 설정
+        CategoryM categoryM = categoryMRepository.findById(requestDto.getMiddleCategoryId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 카테고리는 존재하지 않습니다."));
 
         // 아이템 업데이트
         item.update(requestDto.getName(), requestDto.getPrice(), requestDto.getComment(), updatedMainImageUrlObject, combinedSubImages);
