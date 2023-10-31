@@ -66,6 +66,7 @@ public class ItemResponseDto {
         this.comment = item.getComment();
         this.state = item.getState().name();
         this.sub_images = getImageTotalImages(item);
+        this.withDeliveryFee = item.getWithDeliveryFee();
 
         Optional<CategoryM> middleCategory = Optional.of(item.getCategoryMidId());
         this.middleCategoryId = middleCategory.map(CategoryM::getId).orElse(null);
