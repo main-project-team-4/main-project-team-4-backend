@@ -148,6 +148,7 @@ public class ItemService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID의 카테고리는 존재하지 않습니다."));
 
         // 아이템 업데이트
+
         item.update(requestDto.getName(), requestDto.getPrice(), requestDto.getComment(), requestDto.getIsContainingDeliveryFee(), categoryM);
 
         itemRepository.save(item);
