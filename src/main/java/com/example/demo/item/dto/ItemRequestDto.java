@@ -7,8 +7,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
-public class itemRequestDto {
+public class ItemRequestDto {
 
     @Schema(description = "상품의 이름", example = "아비렉스 가죽자켓")
     @NotBlank(message = "상품의 이름을 입력해 주세요")
@@ -26,6 +28,9 @@ public class itemRequestDto {
     @Size(min = 1,max = 100,message = "상품의 설명은 1~100자로 입력해 주세요")
     @JsonProperty(ParameterNameConfig.Item.COMMENT)
     private String comment;
+
+    @JsonProperty(ParameterNameConfig.Item.SUB_IMAGE)
+    private List<String> sub_images;
 
     @Schema(description = "배송비 포함여부", example = "true")
     @JsonProperty(ParameterNameConfig.Item.WITH_DELIVERY_FEE)

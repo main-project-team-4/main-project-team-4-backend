@@ -4,7 +4,7 @@ package com.example.demo.item.controller;
 import com.example.demo.dto.MessageResponseDto;
 import com.example.demo.item.dto.ItemResponseDto;
 import com.example.demo.item.dto.ItemSearchResponseDto;
-import com.example.demo.item.dto.itemRequestDto;
+import com.example.demo.item.dto.ItemRequestDto;
 import com.example.demo.security.UserDetailsImpl;
 import com.example.demo.trade.type.State;
 import io.swagger.v3.oas.annotations.Operation;
@@ -65,12 +65,12 @@ public interface ItemDocs {
     ResponseEntity<ItemResponseDto> createItem(
             @Parameter(
                     description = "상품 생성 시, 필요한 정보들.",
-                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = itemRequestDto.class)
+                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ItemRequestDto.class)
             )
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Valid @RequestParam("main_image") MultipartFile main_image,
             @Valid @RequestParam("sub_image") List<MultipartFile> sub_images,
-            @RequestPart(value = "requestDto", required = false) itemRequestDto requestDto
+            @RequestPart(value = "requestDto", required = false) ItemRequestDto requestDto
     ) throws IOException;
 
     @Operation(
@@ -106,13 +106,13 @@ public interface ItemDocs {
     ResponseEntity<MessageResponseDto> updateItem(
             @Parameter(
                     description = "상품 수정 시, 필요한 정보들.",
-                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = itemRequestDto.class)
+                    schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ItemRequestDto.class)
             )
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable Long id,
             @Valid @RequestParam("main_image") MultipartFile new_mainImage,
             @Valid @RequestParam("sub_image") List<MultipartFile> new_subImages,
-            @RequestPart(value = "requestDto", required = false) itemRequestDto requestDto
+            @RequestPart(value = "requestDto", required = false) ItemRequestDto requestDto
     ) throws IOException;
 
     @Operation(
