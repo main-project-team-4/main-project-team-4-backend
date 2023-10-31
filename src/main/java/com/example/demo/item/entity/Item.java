@@ -90,15 +90,15 @@ public class Item extends TimeStamp implements Serializable {
     }
 
     public void updateSubImage(List<URL> sub_images) {
-        this.sub_images.addAll(sub_images);
+        this.sub_images = sub_images;
     }
 
-    public void update(String name, int price, String comment, URL main_image, List<URL> sub_images, Boolean withDeliveryFee, CategoryM categoryM) {
+    public void update(String name, int price, String comment, Boolean withDeliveryFee, CategoryM categoryM) {
         this.name = name;
         this.price = price;
         this.comment = comment;
-        this.main_image = main_image;
-        this.sub_images.addAll(sub_images);
+//        this.main_image = main_image;
+//        this.sub_images.addAll(sub_images);
         this.withDeliveryFee = withDeliveryFee;
         this.categoryMidId = categoryM;
     }
@@ -106,4 +106,5 @@ public class Item extends TimeStamp implements Serializable {
     public void updateMainImage(URL main_image) {
         this.main_image = main_image;
     }
+
 }

@@ -3,7 +3,7 @@ package com.example.demo.item.controller;
 import com.example.demo.dto.MessageResponseDto;
 import com.example.demo.item.dto.ItemResponseDto;
 import com.example.demo.item.dto.ItemSearchResponseDto;
-import com.example.demo.item.dto.itemRequestDto;
+import com.example.demo.item.dto.ItemRequestDto;
 import com.example.demo.item.service.ItemService;
 import com.example.demo.member.entity.Member;
 import com.example.demo.security.UserDetailsImpl;
@@ -34,7 +34,7 @@ public class ItemController implements ItemDocs {
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @Valid @RequestParam("main_image") MultipartFile main_image,
             @Valid @RequestParam(value = "sub_image", required = false) List<MultipartFile> sub_images,
-            @RequestPart(value = "requestDto", required = false) itemRequestDto requestDto
+            @RequestPart(value = "requestDto", required = false) ItemRequestDto requestDto
             ) throws IOException {
         Member member = userDetails.getMember();
         return itemService.createItem(member, main_image, sub_images, requestDto);
@@ -46,7 +46,7 @@ public class ItemController implements ItemDocs {
             @PathVariable Long id,
             @Valid @RequestParam(value = "main_image", required = false) MultipartFile new_mainImage,
             @Valid @RequestParam(value = "sub_image", required = false) List<MultipartFile> new_subImages,
-            @RequestPart(value = "requestDto", required = false) itemRequestDto requestDto
+            @RequestPart(value = "requestDto", required = false) ItemRequestDto requestDto
             ) throws IOException {
         Member member = userDetails.getMember();
         return itemService.updateItem(member, id, new_mainImage, new_subImages, requestDto);
