@@ -35,6 +35,9 @@ public class CorsInProdConfig {
         configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Authorization_Refresh", "Cache-Control", "Content-Type"));
         configuration.setExposedHeaders(Arrays.asList("Authorization", "Authorization_Refresh"));
+        configuration.addAllowedOrigin("https://main-project-team-4-frontend.vercel.app");
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

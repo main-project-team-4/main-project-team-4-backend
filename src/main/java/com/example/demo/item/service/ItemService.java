@@ -158,7 +158,7 @@ public class ItemService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID의 카테고리는 존재하지 않습니다."));
 
         // 아이템 업데이트
-        item.update(requestDto.getName(), requestDto.getPrice(), requestDto.getComment(), updatedMainImageUrlObject, combinedSubImages);
+        //item.update(requestDto.getName(), requestDto.getPrice(), requestDto.getComment(), updatedMainImageUrlObject, combinedSubImages);
 
         MessageResponseDto msg = new MessageResponseDto("상품이 수정되었습니다.", HttpStatus.OK.value());
         return ResponseEntity.status(HttpStatus.OK).body(msg);
