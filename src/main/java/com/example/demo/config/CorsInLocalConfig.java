@@ -14,10 +14,10 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
-@Profile({"prod"})
+@Profile({"local"})
 @Configuration
 @RequiredArgsConstructor
-public class CorsInProdConfig {
+public class CorsInLocalConfig {
     @Bean
     public FilterChainRing configureCorsConfig() {
         return http -> http
@@ -31,11 +31,11 @@ public class CorsInProdConfig {
     @Bean
     public Customizer<CorsConfigurer<HttpSecurity>> corsConfigurationSourceForTest() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("https://main-project-team-4-frontend.vercel.app"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:3000", "https://chanyoungkang.com"));
         configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Authorization_Refresh", "Cache-Control", "Content-Type"));
         configuration.setExposedHeaders(Arrays.asList("Authorization", "Authorization_Refresh"));
-        configuration.addAllowedOrigin("https://main-project-team-4-frontend.vercel.app");
+        configuration.addAllowedOrigin("http://localhost:5173");
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);
