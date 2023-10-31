@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
 
@@ -27,6 +28,7 @@ import java.util.List;
 public class ItemController implements ItemDocs {
 
     private final ItemService itemService;
+    private final ItemRequestDto requestDto;
 
 //    @Secured("ROLE_USER")
     @PostMapping
@@ -49,7 +51,8 @@ public class ItemController implements ItemDocs {
             @RequestPart(value = "requestDto", required = false) ItemRequestDto requestDto
             ) throws IOException {
         Member member = userDetails.getMember();
-        return itemService.updateItem(member, id, new_mainImage, new_subImages, requestDto);
+        itemService.updateImage(member, id, new_mainImage, new_subImages, requestDto.getSub_images());
+        return itemService.updateItem(member, id, requestDto);
     }
 
     @DeleteMapping("/{id}")

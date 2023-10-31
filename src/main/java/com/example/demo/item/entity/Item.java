@@ -40,6 +40,7 @@ public class Item extends TimeStamp implements Serializable {
     @Column(name = "mainImage_url")
     private URL main_image;
 
+    @OrderColumn
     @ElementCollection
     @CollectionTable(name = "item_sub_images", joinColumns = @JoinColumn(name = "item_id"))
     @Column(name = "subImage_url")

@@ -79,18 +79,16 @@ public class ItemService {
         }
     }
 
-    @Transactional
-    public ResponseEntity<MessageResponseDto> updateItem(Member member, Long id, MultipartFile new_mainImage, List<MultipartFile> new_subImages, ItemRequestDto requestDto) throws IOException {
+    public void updateImage(Member member, Long id, MultipartFile new_mainImage, List<MultipartFile> new_subImages, List<String> old_subImages) throws IOException {
 
         Item item = findItem(id);
         Shop shop = item.getShop();
-        // 상품을 올린 유저와 수정하려는 유저가 다를 경우
+
         if (!shop.getMember().getId().equals(member.getId())) {
             throw new IllegalArgumentException("해당 상품을 올린 유저만 상품을 수정 할 수 있습니다.");
         }
 
         URL mainImageURL = item.getMain_image();
-
 
         if (new_mainImage != null) {
             String filePathInS3 = item.getMain_image().getPath().substring(1);
@@ -102,13 +100,12 @@ public class ItemService {
             item.updateMainImage(mainImageURL);
         }
 
-
         postBlankCheck(item.getMain_image());
 
         // 대표이미지 안건들면 그대로 원래 있던거 URL 반환하고, 대표 이미지 수정하면 수정한 이미지로 반환하게 file형식말고 URL로
 
         List<URL> old_subImageURLs = item.getSub_images();
-        List<String> update_old_subImageURLs = requestDto.getSub_images();
+        List<String> update_old_subImageURLs = old_subImages;
 
         if(update_old_subImageURLs==null) {
             update_old_subImageURLs = new ArrayList<>();
@@ -123,6 +120,7 @@ public class ItemService {
         // 새로운 서브 이미지 업로드 및 URL 얻기
         List<URL> new_subImageURLs = new ArrayList<>();
 
+        // 기존에 저장되있던 이미지와 수정될 당시 저장된 이미지 비교
         if (old_subImageURLs != null) {
             for (URL old_subImageURL : old_subImageURLs) {
                 for (URL update_old_subImageURL : url) {
@@ -133,6 +131,7 @@ public class ItemService {
             }
         }
 
+        // 새 이미지 S3에 업로드 + DB에 S3 주소(URL) 저장
         if (new_subImages != null) {
             for (MultipartFile newSubImage : new_subImages) {
                 String updatedSubImageUrl = s3Uploader.upload(newSubImage, "sub_images");
@@ -141,14 +140,39 @@ public class ItemService {
             }
         }
 
+        List<URL> combinedImages = new_subImageURLs;
+
+
+        combinedImages.get(1);
+
         item.updateSubImage(new_subImageURLs);
+    }
+
+
+    @Transactional
+    public ResponseEntity<MessageResponseDto> updateItem(Member member, Long id, ItemRequestDto requestDto) throws IOException {
+
+        Item item = findItem(id);
+        Shop shop = item.getShop();
+        // 상품을 올린 유저와 수정하려는 유저가 다를 경우
+        if (!shop.getMember().getId().equals(member.getId())) {
+            throw new IllegalArgumentException("해당 상품을 올린 유저만 상품을 수정 할 수 있습니다.");
+        }
+
+        // 이미지 순서 변경하기
+
+//        List<String> imageString = new ArrayList<>();
+//
+//        List<URL> images = item.getSub_images();
+//        for(URL image : images) {
+//            imageString.add(image);
+//        }
 
         // 카테고리 설정
         CategoryM categoryM = categoryMRepository.findById(requestDto.getMiddleCategoryId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID의 카테고리는 존재하지 않습니다."));
 
         // 아이템 업데이트
-
         item.update(requestDto.getName(), requestDto.getPrice(), requestDto.getComment(), requestDto.getIsContainingDeliveryFee(), categoryM);
 
         itemRepository.save(item);
@@ -157,7 +181,7 @@ public class ItemService {
         }
 
 
-
+        // 상품 찾기
         private Item findItem (Long id){
             return itemRepository.findById(id).orElseThrow(() ->
                     new IllegalArgumentException("선택한 상품은 존재하지 않습니다."));
@@ -229,7 +253,7 @@ public class ItemService {
                     .map(ItemSearchResponseDto::new);
             return ResponseEntity.ok(dtoList);
         }
-    }
+}
 
 
 

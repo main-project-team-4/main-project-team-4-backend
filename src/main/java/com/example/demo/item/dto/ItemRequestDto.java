@@ -6,10 +6,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Getter
+@Component
 public class ItemRequestDto {
 
     @Schema(description = "상품의 이름", example = "아비렉스 가죽자켓")
