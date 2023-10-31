@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,11 +41,8 @@ public class Item extends TimeStamp implements Serializable {
     @Column(name = "mainImage_url")
     private URL main_image;
 
-    @OrderColumn
-    @ElementCollection
-    @CollectionTable(name = "item_sub_images", joinColumns = @JoinColumn(name = "item_id"))
-    @Column(name = "subImage_url")
-    private List<URL> sub_images = new ArrayList<>(); // 리스트 필드 초기화
+    @OneToMany(mappedBy = "item", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    private List<SubImage> subImageList = new ArrayList<>();
 
     @Column(name = "state")
     private State state = State.SELLING;
@@ -85,13 +83,32 @@ public class Item extends TimeStamp implements Serializable {
         this.price = price;
         this.comment = comment;
         this.main_image = main_image;
-        this.sub_images.addAll(sub_images);
+        this.addAllSubImagesUrl(sub_images);
         this.withDeliveryFee = withDeliveryFee;
         this.categoryMidId = categoryM;
     }
 
-    public void updateSubImage(List<URL> sub_images) {
-        this.sub_images = sub_images;
+    public List<URL> getSub_images() {
+        return this.getSubImageList().stream()
+                .map(SubImage::getUrl)
+                .toList();
+    }
+
+    public void addSubImage(URL subImageUrl) {
+        SubImage subImage = new SubImage(this, subImageUrl);
+        this.getSubImageList().add(subImage);
+    }
+
+    public void addAllSubImages(List<String> subImageUrlList) throws MalformedURLException {
+        for (String subImageUrl : subImageUrlList) {
+            this.addSubImage(new URL(subImageUrl));
+        }
+    }
+
+    public void addAllSubImagesUrl(List<URL> subImageUrlList) {
+        for (URL subImageUrl : subImageUrlList) {
+            this.addSubImage(subImageUrl);
+        }
     }
 
     public void update(String name, int price, String comment, Boolean withDeliveryFee, CategoryM categoryM) {

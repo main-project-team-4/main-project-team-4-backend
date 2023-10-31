@@ -102,50 +102,14 @@ public class ItemService {
 
         postBlankCheck(item.getMain_image());
 
-        // 대표이미지 안건들면 그대로 원래 있던거 URL 반환하고, 대표 이미지 수정하면 수정한 이미지로 반환하게 file형식말고 URL로
-
-        List<URL> old_subImageURLs = item.getSub_images();
-        List<String> update_old_subImageURLs = old_subImages;
-
-        if(update_old_subImageURLs==null) {
-            update_old_subImageURLs = new ArrayList<>();
-        }
-
-        List<URL> url = new ArrayList<>();
-
-        for (String multipartFile : update_old_subImageURLs) {
-            url.add(new URL(multipartFile));
-        }
-
-        // 새로운 서브 이미지 업로드 및 URL 얻기
-        List<URL> new_subImageURLs = new ArrayList<>();
-
-        // 기존에 저장되있던 이미지와 수정될 당시 저장된 이미지 비교
-        if (old_subImageURLs != null) {
-            for (URL old_subImageURL : old_subImageURLs) {
-                for (URL update_old_subImageURL : url) {
-                    if (old_subImageURL.equals(update_old_subImageURL)) {
-                        new_subImageURLs.add(old_subImageURL);
-                    }
-                }
-            }
-        }
-
         // 새 이미지 S3에 업로드 + DB에 S3 주소(URL) 저장
-        if (new_subImages != null) {
-            for (MultipartFile newSubImage : new_subImages) {
-                String updatedSubImageUrl = s3Uploader.upload(newSubImage, "sub_images");
-                URL updatedSubImageUrlObject = new URL(updatedSubImageUrl);
-                new_subImageURLs.add(updatedSubImageUrlObject);
-            }
-        }
+        item.getSubImageList().clear();
+        item.addAllSubImages(old_subImages);
 
-        List<URL> combinedImages = new_subImageURLs;
+        List<String> new_subImagesURLs = s3Uploader.uploadMultiple(new_subImages, "sub_images");
+        item.addAllSubImages(new_subImagesURLs);
 
-
-        combinedImages.get(1);
-
-        item.updateSubImage(new_subImageURLs);
+        itemRepository.save(item);
     }
 
 
