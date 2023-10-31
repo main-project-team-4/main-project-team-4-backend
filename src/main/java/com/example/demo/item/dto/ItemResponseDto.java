@@ -44,7 +44,6 @@ public class ItemResponseDto {
     @Schema(description = "배송비 포함 여부", example = "true")
     @JsonProperty(ParameterNameConfig.Item.WITH_DELIVERY_FEE)
     private Boolean withDeliveryFee;
-
     @Schema(description = "대분류 카테고리 ID", example = "1")
     @JsonProperty(ParameterNameConfig.CategoryLarge.ID)
     private Long largeCategoryId;
@@ -67,7 +66,6 @@ public class ItemResponseDto {
         this.comment = item.getComment();
         this.state = item.getState().name();
         this.sub_images = getImageTotalImages(item);
-        this.withDeliveryFee = item.getWithDeliveryFee();
 
         Optional<CategoryM> middleCategory = Optional.of(item.getCategoryMidId());
         this.middleCategoryId = middleCategory.map(CategoryM::getId).orElse(null);
