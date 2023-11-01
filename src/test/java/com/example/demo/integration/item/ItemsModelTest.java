@@ -244,7 +244,7 @@ public class ItemsModelTest {
         );
 
         // when
-        itemService.updateImage(member, id, new_mainImage, new_subImages, old_subImages);
+        itemService.updateImage(member, id, new_mainImage, old_subImages);
 
         // then
         Item item = itemRepository.findById(1L).orElseThrow();

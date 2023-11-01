@@ -3,6 +3,7 @@ package com.example.demo.item.service;
 import com.example.demo.category.entity.CategoryM;
 import com.example.demo.category.repository.CategoryMRepository;
 import com.example.demo.dto.MessageResponseDto;
+import com.example.demo.item.dto.ImageUrlPackageDto;
 import com.example.demo.item.dto.ItemRequestDto;
 import com.example.demo.item.dto.ItemResponseDto;
 import com.example.demo.item.dto.ItemSearchResponseDto;
@@ -79,7 +80,7 @@ public class ItemService {
         }
     }
 
-    public void updateImage(Member member, Long id, MultipartFile new_mainImage, List<MultipartFile> new_subImages, List<String> old_subImages) throws IOException {
+    public void updateImage(Member member, Long id, MultipartFile new_mainImage, List<String> old_subImages) throws IOException {
 
         Item item = findItem(id);
         Shop shop = item.getShop();
@@ -104,13 +105,27 @@ public class ItemService {
 
         // 새 이미지 S3에 업로드 + DB에 S3 주소(URL) 저장
         item.getSubImageList().clear();
-        item.addAllSubImages(old_subImages);
-//
+        item.addAllSubImagesString(old_subImages);
+
 //        List<String> new_subImagesURLs = s3Uploader.uploadMultiple(new_subImages, "sub_images");
 //        item.addAllSubImages(new_subImagesURLs);
 
         itemRepository.save(item);
     }
+
+    public ImageUrlPackageDto imageOrdering(List<MultipartFile> new_subImages) throws IOException {
+//        List<URL> sub_images = new ArrayList<>();
+        List<String> new_subImagesURLs = new ArrayList<>();
+        if(new_subImages != null) {
+            new_subImagesURLs = s3Uploader.uploadMultiple(new_subImages, "sub_images");
+//            for(String image : new_subImagesURLs) {
+//                sub_images.add(new URL(image));
+//            }
+        }
+        return new ImageUrlPackageDto(new_subImagesURLs);
+    }
+
+
 
 
     @Transactional
@@ -122,15 +137,6 @@ public class ItemService {
         if (!shop.getMember().getId().equals(member.getId())) {
             throw new IllegalArgumentException("해당 상품을 올린 유저만 상품을 수정 할 수 있습니다.");
         }
-
-        // 이미지 순서 변경하기
-
-//        List<String> imageString = new ArrayList<>();
-//
-//        List<URL> images = item.getSub_images();
-//        for(URL image : images) {
-//            imageString.add(image);
-//        }
 
         // 카테고리 설정
         CategoryM categoryM = categoryMRepository.findById(requestDto.getMiddleCategoryId())
@@ -217,6 +223,8 @@ public class ItemService {
                     .map(ItemSearchResponseDto::new);
             return ResponseEntity.ok(dtoList);
         }
+
+
 }
 
 

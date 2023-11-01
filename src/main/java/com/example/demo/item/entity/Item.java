@@ -99,7 +99,7 @@ public class Item extends TimeStamp implements Serializable {
         this.getSubImageList().add(subImage);
     }
 
-    public void addAllSubImages(List<String> subImageUrlList) throws MalformedURLException {
+    public void addAllSubImagesString(List<String> subImageUrlList) throws MalformedURLException {
         for (String subImageUrl : subImageUrlList) {
             this.addSubImage(new URL(subImageUrl));
         }
