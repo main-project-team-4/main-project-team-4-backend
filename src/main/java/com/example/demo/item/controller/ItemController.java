@@ -1,6 +1,7 @@
 package com.example.demo.item.controller;
 
 import com.example.demo.dto.MessageResponseDto;
+import com.example.demo.item.dto.ImageUrlPackageDto;
 import com.example.demo.item.dto.ItemResponseDto;
 import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.item.dto.ItemRequestDto;
@@ -18,15 +19,17 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/items")
-public class ItemController implements ItemDocs {
+public class ItemController {
 
     private final ItemService itemService;
+    private final ItemRequestDto requestDto;
 
 //    @Secured("ROLE_USER")
     @PostMapping
@@ -45,11 +48,19 @@ public class ItemController implements ItemDocs {
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable Long id,
             @Valid @RequestParam(value = "main_image", required = false) MultipartFile new_mainImage,
-            @Valid @RequestParam(value = "sub_image", required = false) List<MultipartFile> new_subImages,
+//            @Valid @RequestParam(value = "sub_image", required = false) List<MultipartFile> new_subImages,
             @RequestPart(value = "requestDto", required = false) ItemRequestDto requestDto
             ) throws IOException {
         Member member = userDetails.getMember();
-        return itemService.updateItem(member, id, new_mainImage, new_subImages, requestDto);
+        itemService.updateImage(member, id, new_mainImage, requestDto.getSub_images());
+        return itemService.updateItem(member, id, requestDto);
+    }
+
+    @PostMapping("/images")
+    public ImageUrlPackageDto imageOrdering(
+            @Valid @RequestParam(value = "sub_image", required = false) List<MultipartFile> new_subImages
+    ) throws IOException {
+        return itemService.imageOrdering(new_subImages);
     }
 
     @DeleteMapping("/{id}")

@@ -2,6 +2,9 @@ package com.example.demo.integration.item;
 
 import com.example.demo.item.dto.ItemResponseDto;
 import com.example.demo.item.dto.ItemSearchResponseDto;
+import com.example.demo.item.entity.Item;
+import com.example.demo.item.entity.SubImage;
+import com.example.demo.item.repository.ItemRepository;
 import com.example.demo.item.service.ItemService;
 import com.example.demo.location.dto.CoordinateVo;
 import com.example.demo.location.entity.Location;
@@ -20,11 +23,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.net.URL;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,6 +45,8 @@ public class ItemsModelTest {
     private ItemService itemService;
     @Autowired
     private MemberRepository memberRepository;
+    @Autowired
+    private ItemRepository itemRepository;
 
     @Retention(RetentionPolicy.RUNTIME)
     @SqlGroup({
@@ -213,4 +223,41 @@ public class ItemsModelTest {
         // then
         assertThrows(Throwable.class, func);
     }
+
+    @Transactional
+    @LoadTestCaseItem
+    @Test
+    @DisplayName("[정상 작동] updateImage")
+    void updateImage() throws IOException {
+        // given
+        Member member = memberRepository.findById(1L).orElseThrow();
+        Long id = 1L;
+        MultipartFile new_mainImage = getFixtureAsMockMultipart("1");
+        List<MultipartFile> new_subImages = List.of(
+                getFixtureAsMockMultipart("2"),
+                getFixtureAsMockMultipart("3")
+        );
+        List<String> old_subImages = List.of(
+                "https://cdn.pixabay.com/photo/2023/10/23/13/20/abstract-8336084_640.png",
+                "https://cdn.pixabay.com/photo/2023/10/23/13/20/abstract-8336084_640.png",
+                "https://cdn.pixabay.com/photo/2023/10/23/13/20/abstract-8336084_640.png"
+        );
+
+        // when
+        itemService.updateImage(member, id, new_mainImage, old_subImages);
+
+        // then
+        Item item = itemRepository.findById(1L).orElseThrow();
+        assertThat(item.getSub_images())
+                .hasSize(5)
+                .allSatisfy(
+                        url -> assertThat(url).isNotNull()
+                );
+    }
+
+    private MockMultipartFile getFixtureAsMockMultipart(String id) throws IOException {
+        URL url = new URL("https://cdn.pixabay.com/photo/2023/09/30/09/12/dachshund-8285220_640.jpg");
+        return new MockMultipartFile("mock " + id, url.openStream());
+    }
+
 }
