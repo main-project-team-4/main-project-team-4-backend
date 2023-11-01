@@ -17,7 +17,7 @@ public class SubImage {
     @JoinColumn(name = "item_id")
     private Item item;
 
-    @Column(name = "item_image_url")
+    @Column(name = "sub_image_url")
     private URL url;
 
     @Column(name = "sub_images_order")

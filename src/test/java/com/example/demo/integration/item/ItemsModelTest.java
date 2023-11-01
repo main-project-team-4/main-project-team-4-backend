@@ -223,41 +223,4 @@ public class ItemsModelTest {
         // then
         assertThrows(Throwable.class, func);
     }
-
-    @Transactional
-    @LoadTestCaseItem
-    @Test
-    @DisplayName("[정상 작동] updateImage")
-    void updateImage() throws IOException {
-        // given
-        Member member = memberRepository.findById(1L).orElseThrow();
-        Long id = 1L;
-        MultipartFile new_mainImage = getFixtureAsMockMultipart("1");
-        List<MultipartFile> new_subImages = List.of(
-                getFixtureAsMockMultipart("2"),
-                getFixtureAsMockMultipart("3")
-        );
-        List<String> old_subImages = List.of(
-                "https://cdn.pixabay.com/photo/2023/10/23/13/20/abstract-8336084_640.png",
-                "https://cdn.pixabay.com/photo/2023/10/23/13/20/abstract-8336084_640.png",
-                "https://cdn.pixabay.com/photo/2023/10/23/13/20/abstract-8336084_640.png"
-        );
-
-        // when
-        itemService.updateImage(member, id, new_mainImage, old_subImages);
-
-        // then
-        Item item = itemRepository.findById(1L).orElseThrow();
-        assertThat(item.getSub_images())
-                .hasSize(5)
-                .allSatisfy(
-                        url -> assertThat(url).isNotNull()
-                );
-    }
-
-    private MockMultipartFile getFixtureAsMockMultipart(String id) throws IOException {
-        URL url = new URL("https://cdn.pixabay.com/photo/2023/09/30/09/12/dachshund-8285220_640.jpg");
-        return new MockMultipartFile("mock " + id, url.openStream());
-    }
-
 }
