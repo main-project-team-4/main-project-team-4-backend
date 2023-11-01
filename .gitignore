@@ -40,3 +40,4 @@ out/
 src/main/resources/application-local.properties
 /src/test/resources/.env
 /src/main/resources/application-local.yml
+/src/main/resources/prod.env
