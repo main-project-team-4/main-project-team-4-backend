@@ -55,6 +55,15 @@ public class ItemController implements ItemDocs {
         return itemService.updateItem(member, id, requestDto);
     }
 
+//    @PostMapping("/images")
+//    public ResponseEntity<IMageUrlPackageDto> registerImage(
+//            @Valid @RequestParam(value = "sub_image", required = false) List<MultipartFile> new_subImages,
+//    ) throws IOException {
+//        Member member = userDetails.getMember();
+//        itemService.updateImage(member, id, new_mainImage, new_subImages, requestDto.getSub_images());
+//        return itemService.updateItem(member, id, requestDto);
+//    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<MessageResponseDto> deleteItem(
             @AuthenticationPrincipal UserDetailsImpl userDetails,

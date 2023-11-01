@@ -3,6 +3,7 @@ package com.example.demo.integration.item;
 import com.example.demo.item.dto.ItemResponseDto;
 import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.item.entity.Item;
+import com.example.demo.item.entity.SubImage;
 import com.example.demo.item.repository.ItemRepository;
 import com.example.demo.item.service.ItemService;
 import com.example.demo.location.dto.CoordinateVo;

@@ -105,9 +105,9 @@ public class ItemService {
         // 새 이미지 S3에 업로드 + DB에 S3 주소(URL) 저장
         item.getSubImageList().clear();
         item.addAllSubImages(old_subImages);
-
-        List<String> new_subImagesURLs = s3Uploader.uploadMultiple(new_subImages, "sub_images");
-        item.addAllSubImages(new_subImagesURLs);
+//
+//        List<String> new_subImagesURLs = s3Uploader.uploadMultiple(new_subImages, "sub_images");
+//        item.addAllSubImages(new_subImagesURLs);
 
         itemRepository.save(item);
     }
