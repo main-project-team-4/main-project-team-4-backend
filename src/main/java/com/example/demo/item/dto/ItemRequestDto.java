@@ -31,6 +31,9 @@ public class ItemRequestDto {
     @JsonProperty(ParameterNameConfig.Item.COMMENT)
     private String comment;
 
+    @JsonProperty(ParameterNameConfig.Item.MAIN_IMAGE)
+    private String main_image;
+
     @JsonProperty(ParameterNameConfig.Item.SUB_IMAGE)
     private List<String> sub_images;
 

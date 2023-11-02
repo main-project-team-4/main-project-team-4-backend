@@ -80,7 +80,7 @@ public class ItemService {
         }
     }
 
-    public void updateImage(Member member, Long id, MultipartFile new_mainImage, List<String> old_subImages) throws IOException {
+    public void updateImage(Member member, Long id, String main_image, List<String> old_subImages, ItemRequestDto requestDto) throws IOException {
 
         Item item = findItem(id);
         Shop shop = item.getShop();
@@ -89,19 +89,24 @@ public class ItemService {
             throw new IllegalArgumentException("해당 상품을 올린 유저만 상품을 수정 할 수 있습니다.");
         }
 
-        URL mainImageURL = item.getMain_image();
+//        URL mainImageURL = item.getMain_image();
 
-        if (new_mainImage != null) {
-            String filePathInS3 = item.getMain_image().getPath().substring(1);
-            s3Uploader.deleteFile(filePathInS3);
-            // 새로운 메인 이미지 업로드 및 URL 얻기
-            String updatedMainImageUrl = s3Uploader.upload(new_mainImage, "main_image");
-            URL updatedMainImageUrlObject = new URL(updatedMainImageUrl);
-            mainImageURL = updatedMainImageUrlObject;
-            item.updateMainImage(mainImageURL);
-        }
+//        if (new_mainImage != null) {
+//            String filePathInS3 = item.getMain_image().getPath().substring(1);
+//            s3Uploader.deleteFile(filePathInS3);
+//            // 새로운 메인 이미지 업로드 및 URL 얻기
+//            String updatedMainImageUrl = s3Uploader.upload(new_mainImage, "main_image");
+//            URL updatedMainImageUrlObject = new URL(updatedMainImageUrl);
+//            mainImageURL = updatedMainImageUrlObject;
+//            item.updateMainImage(mainImageURL);
+//        }
 
-        postBlankCheck(item.getMain_image());
+
+        main_image = requestDto.getMain_image();
+
+        URL new_mainImage = new URL(main_image);
+
+        item.setMain_image(new_mainImage);
 
         // 새 이미지 S3에 업로드 + DB에 S3 주소(URL) 저장
         item.getSubImageList().clear();
@@ -110,10 +115,15 @@ public class ItemService {
 //        List<String> new_subImagesURLs = s3Uploader.uploadMultiple(new_subImages, "sub_images");
 //        item.addAllSubImages(new_subImagesURLs);
 
+        postBlankCheck(item.getMain_image());
+
         itemRepository.save(item);
     }
 
-    public ImageResponseDto imageOrdering(List<MultipartFile> new_subImages) throws IOException {
+    public ImageResponseDto imageOrdering(Long id, MultipartFile new_mainImage, List<MultipartFile> new_subImages) throws IOException {
+
+        Item item = findItem(id);
+
 //        List<URL> sub_images = new ArrayList<>();
         List<String> new_subImagesString = new ArrayList<>();
         if(new_subImages != null) {
@@ -122,7 +132,15 @@ public class ItemService {
 //                sub_images.add(new URL(image));
 //            }
         }
-        return new ImageResponseDto(new_subImagesString);
+
+        String new_mainImageString = item.getMain_image().toString();
+
+        if (new_mainImage != null) {
+            String filePathInS3 = item.getMain_image().getPath().substring(1);
+            s3Uploader.deleteFile(filePathInS3);
+            new_mainImageString = s3Uploader.upload(new_mainImage, "main_image");
+        }
+        return new ImageResponseDto(new_mainImageString, new_subImagesString);
     }
 
 
