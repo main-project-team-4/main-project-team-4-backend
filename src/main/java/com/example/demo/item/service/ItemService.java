@@ -3,7 +3,7 @@ package com.example.demo.item.service;
 import com.example.demo.category.entity.CategoryM;
 import com.example.demo.category.repository.CategoryMRepository;
 import com.example.demo.dto.MessageResponseDto;
-import com.example.demo.item.dto.ImageUrlPackageDto;
+import com.example.demo.item.dto.ImageResponseDto;
 import com.example.demo.item.dto.ItemRequestDto;
 import com.example.demo.item.dto.ItemResponseDto;
 import com.example.demo.item.dto.ItemSearchResponseDto;
@@ -113,16 +113,16 @@ public class ItemService {
         itemRepository.save(item);
     }
 
-    public ImageUrlPackageDto imageOrdering(List<MultipartFile> new_subImages) throws IOException {
+    public ImageResponseDto imageOrdering(List<MultipartFile> new_subImages) throws IOException {
 //        List<URL> sub_images = new ArrayList<>();
-        List<String> new_subImagesURLs = new ArrayList<>();
+        List<String> new_subImagesString = new ArrayList<>();
         if(new_subImages != null) {
-            new_subImagesURLs = s3Uploader.uploadMultiple(new_subImages, "sub_images");
+            new_subImagesString = s3Uploader.uploadMultiple(new_subImages, "sub_images");
 //            for(String image : new_subImagesURLs) {
 //                sub_images.add(new URL(image));
 //            }
         }
-        return new ImageUrlPackageDto(new_subImagesURLs);
+        return new ImageResponseDto(new_subImagesString);
     }
 
 

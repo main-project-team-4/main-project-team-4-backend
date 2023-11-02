@@ -1,7 +1,7 @@
 package com.example.demo.item.controller;
 
 import com.example.demo.dto.MessageResponseDto;
-import com.example.demo.item.dto.ImageUrlPackageDto;
+import com.example.demo.item.dto.ImageResponseDto;
 import com.example.demo.item.dto.ItemResponseDto;
 import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.item.dto.ItemRequestDto;
@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.List;
 
 
@@ -57,7 +56,7 @@ public class ItemController {
     }
 
     @PostMapping("/images")
-    public ImageUrlPackageDto imageOrdering(
+    public ImageResponseDto imageOrdering(
             @Valid @RequestParam(value = "sub_image", required = false) List<MultipartFile> new_subImages
     ) throws IOException {
         return itemService.imageOrdering(new_subImages);
