@@ -46,20 +46,22 @@ public class ItemController {
     public ResponseEntity<MessageResponseDto> updateItem(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable Long id,
-            @Valid @RequestParam(value = "main_image", required = false) MultipartFile new_mainImage,
+//            @Valid @RequestParam(value = "main_image", required = false) MultipartFile new_mainImage,
 //            @Valid @RequestParam(value = "sub_image", required = false) List<MultipartFile> new_subImages,
             @RequestPart(value = "requestDto", required = false) ItemRequestDto requestDto
             ) throws IOException {
         Member member = userDetails.getMember();
-        itemService.updateImage(member, id, new_mainImage, requestDto.getSub_images());
+        itemService.updateImage(member, id, requestDto.getMain_image(), requestDto.getSub_images(), requestDto);
         return itemService.updateItem(member, id, requestDto);
     }
 
-    @PostMapping("/images")
+    @PostMapping("/{id}/images")
     public ImageResponseDto imageOrdering(
+            @PathVariable Long id,
+            @Valid @RequestParam(value = "main_image", required = false) MultipartFile new_mainImage,
             @Valid @RequestParam(value = "sub_image", required = false) List<MultipartFile> new_subImages
     ) throws IOException {
-        return itemService.imageOrdering(new_subImages);
+        return itemService.imageOrdering(id, new_mainImage, new_subImages);
     }
 
     @DeleteMapping("/{id}")
