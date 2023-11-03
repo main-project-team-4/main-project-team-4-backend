@@ -16,6 +16,10 @@ public class LoginResponseDto {
     @JsonProperty(ParameterNameConfig.Message.TOkEN)
     private String token;
 
+    @Schema(description = "REFRESH_TOKEN 토큰", example = "dio21o312oksalmdlkmdlio1md12d")
+    @JsonProperty(ParameterNameConfig.Message.REFRESH_TOKEN)
+    private String refreshToken;
+
     @Schema(description = "최초 회원 가입 여부", example = "true")
     @JsonProperty(ParameterNameConfig.Message.IS_FIRST)
     private boolean first;

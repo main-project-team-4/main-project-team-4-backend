@@ -27,7 +27,7 @@ public class StompHandler implements ChannelInterceptor {
         if (StompCommand.CONNECT == accessor.getCommand()) {
             final String authorization = jwtUtil.extractJwt(accessor);
 
-            jwtUtil.validateToken(authorization);
+            jwtUtil.validateTokenWebsocket(authorization);
         }
         return message;
     }
