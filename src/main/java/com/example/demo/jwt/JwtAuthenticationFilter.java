@@ -2,6 +2,7 @@ package com.example.demo.jwt;
 
 import com.example.demo.member.dto.LoginRequestDto;
 import com.example.demo.dto.MessageResponseDto;
+import com.example.demo.refreshToken.RefreshTokenService;
 import com.example.demo.security.UserDetailsImpl;
 import com.example.demo.security.UserRoleEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,9 +23,12 @@ import java.nio.charset.StandardCharsets;
 @Slf4j(topic = "로그인 및 JWT 생성")
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final JwtUtil jwtUtil;
+    private final RefreshTokenService refreshTokenService;
+    private static final ObjectMapper mapper = new ObjectMapper();
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil) {
+    public JwtAuthenticationFilter(JwtUtil jwtUtil, RefreshTokenService refreshTokenService) {
         this.jwtUtil = jwtUtil;
+        this.refreshTokenService = refreshTokenService;
         setFilterProcessesUrl("/api/auth/login");
     }
 
@@ -52,6 +56,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         String token = jwtUtil.createToken(username, UserRoleEnum.USER);
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
+
+        // 리프레시 토큰
+        String refreshToken = refreshTokenService.createRefreshToken(username);
+        response.addHeader(JwtUtil.REFRESH_HEADER, refreshToken);
+
 
         // 상태 코드 명시.
         response.setStatus(HttpStatus.OK.value());
