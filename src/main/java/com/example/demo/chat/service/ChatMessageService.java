@@ -1,5 +1,6 @@
 package com.example.demo.chat.service;
 
+import com.example.demo.chat.dto.ChatMessageRequestDto;
 import com.example.demo.chat.dto.ChatMessageResponseDto;
 import com.example.demo.chat.entity.ChatMessage;
 import com.example.demo.chat.entity.MessageType;
@@ -34,7 +35,8 @@ public class ChatMessageService {
     private final ChannelTopic channelTopic;
 
     // 새 메세지 전송 및 저장
-    public ChatMessageResponseDto sendMessages(ChatMessage message, Member member) {
+    public ChatMessageResponseDto sendMessages(ChatMessageRequestDto requestDto, Member member) {
+        ChatMessage message = requestDto.toEntity();
         if (MessageType.ENTER.equals(message.getType())) {
             chatRoomService.getRoom(message.getRoomId(), member);
             // message.setMessage(message.getSender() + "님이 입장하셨습니다.");
