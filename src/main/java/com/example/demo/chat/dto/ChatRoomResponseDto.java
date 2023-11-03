@@ -43,6 +43,9 @@ public class ChatRoomResponseDto {
     @JsonProperty(ParameterNameConfig.Member.IMAGE)
     private URL profileImage;
 
+    @JsonProperty(ParameterNameConfig.Item.MAIN_IMAGE)
+    private URL itemImage;
+
     public ChatRoomResponseDto(ChatRoom chatRoom, Item item){
         this.roomId = chatRoom.getId();
         this.roomName = chatRoom.getRoomName();
@@ -58,6 +61,8 @@ public class ChatRoomResponseDto {
         this.sellerName = chatRoom.getSeller().getNickname();
         this.consumerName = chatRoom.getConsumer().getNickname();
         this.sender = member.getNickname();
-        this.profileImage = member.getImage();
+        this.itemId = chatRoom.getItem().getId();
+        this.profileImage = chatRoom.getConsumer().getImage();
+        this.itemImage = chatRoom.getItem().getMain_image();
     }
 }
