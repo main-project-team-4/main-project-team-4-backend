@@ -73,4 +73,18 @@ public class ParameterNameConfig {
         public static final String LATITUDE = "location_latitude";
         public static final String LONGITUDE = "location_longitude";
     }
+
+    public static class ChatRoom {
+        public static final String ID = "chatroom_id";
+        public static final String NAME = "chatroom_name";
+        public static final String SENDER = "chatroom_sender";
+        public static final String SELLER = "chatroom_seller_name";
+        public static final String CONSUMER = "chatroom_consumer_name";
+    }
+
+    public static class ChatMessage {
+        public static final String CHATMESSAGE = "chat_message";
+        public static final String TYPE = "chat_type";
+        public static final String CREATED_AT = "chat_created_at";
+    }
 }
