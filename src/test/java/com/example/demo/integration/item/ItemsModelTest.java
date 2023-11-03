@@ -2,6 +2,9 @@ package com.example.demo.integration.item;
 
 import com.example.demo.item.dto.ItemResponseDto;
 import com.example.demo.item.dto.ItemSearchResponseDto;
+import com.example.demo.item.entity.Item;
+import com.example.demo.item.entity.SubImage;
+import com.example.demo.item.repository.ItemRepository;
 import com.example.demo.item.service.ItemService;
 import com.example.demo.location.dto.CoordinateVo;
 import com.example.demo.location.entity.Location;
@@ -20,11 +23,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlGroup;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.net.URL;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,6 +45,8 @@ public class ItemsModelTest {
     private ItemService itemService;
     @Autowired
     private MemberRepository memberRepository;
+    @Autowired
+    private ItemRepository itemRepository;
 
     @Retention(RetentionPolicy.RUNTIME)
     @SqlGroup({

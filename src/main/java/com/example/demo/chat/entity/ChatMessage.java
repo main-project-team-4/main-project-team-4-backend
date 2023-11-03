@@ -4,13 +4,14 @@ import com.example.demo.entity.TimeStamp;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 @Slf4j
 @Getter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@Component
 public class ChatMessage extends TimeStamp {
 
     @Id

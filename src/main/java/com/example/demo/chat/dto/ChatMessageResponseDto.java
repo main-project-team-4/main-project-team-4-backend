@@ -24,7 +24,7 @@ public class ChatMessageResponseDto {
     private LocalDateTime created_at;
 
     public ChatMessageResponseDto(ChatMessage chatMessage) {
-        this.roomId = chatMessage.getId();
+        this.roomId = chatMessage.getRoomId();
         this.sender = chatMessage.getSender();
         this.message = chatMessage.getMessage();
         this.type = chatMessage.getType();

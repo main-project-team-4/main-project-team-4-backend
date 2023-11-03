@@ -3,6 +3,7 @@ package com.example.demo.item.service;
 import com.example.demo.category.entity.CategoryM;
 import com.example.demo.category.repository.CategoryMRepository;
 import com.example.demo.dto.MessageResponseDto;
+import com.example.demo.item.dto.ImageResponseDto;
 import com.example.demo.item.dto.ItemRequestDto;
 import com.example.demo.item.dto.ItemResponseDto;
 import com.example.demo.item.dto.ItemSearchResponseDto;
@@ -79,8 +80,74 @@ public class ItemService {
         }
     }
 
+    public void updateImage(Member member, Long id, String main_image, List<String> old_subImages, ItemRequestDto requestDto) throws IOException {
+
+        Item item = findItem(id);
+        Shop shop = item.getShop();
+
+        if (!shop.getMember().getId().equals(member.getId())) {
+            throw new IllegalArgumentException("해당 상품을 올린 유저만 상품을 수정 할 수 있습니다.");
+        }
+
+//        URL mainImageURL = item.getMain_image();
+
+//        if (new_mainImage != null) {
+//            String filePathInS3 = item.getMain_image().getPath().substring(1);
+//            s3Uploader.deleteFile(filePathInS3);
+//            // 새로운 메인 이미지 업로드 및 URL 얻기
+//            String updatedMainImageUrl = s3Uploader.upload(new_mainImage, "main_image");
+//            URL updatedMainImageUrlObject = new URL(updatedMainImageUrl);
+//            mainImageURL = updatedMainImageUrlObject;
+//            item.updateMainImage(mainImageURL);
+//        }
+
+
+        main_image = requestDto.getMain_image();
+
+        URL new_mainImage = new URL(main_image);
+
+        item.setMain_image(new_mainImage);
+
+        // 새 이미지 S3에 업로드 + DB에 S3 주소(URL) 저장
+        item.getSubImageList().clear();
+        item.addAllSubImagesString(old_subImages);
+
+//        List<String> new_subImagesURLs = s3Uploader.uploadMultiple(new_subImages, "sub_images");
+//        item.addAllSubImages(new_subImagesURLs);
+
+        postBlankCheck(item.getMain_image());
+
+        itemRepository.save(item);
+    }
+
+    public ImageResponseDto imageOrdering(Long id, MultipartFile new_mainImage, List<MultipartFile> new_subImages) throws IOException {
+
+        Item item = findItem(id);
+
+//        List<URL> sub_images = new ArrayList<>();
+        List<String> new_subImagesString = new ArrayList<>();
+        if(new_subImages != null) {
+            new_subImagesString = s3Uploader.uploadMultiple(new_subImages, "sub_images");
+//            for(String image : new_subImagesURLs) {
+//                sub_images.add(new URL(image));
+//            }
+        }
+
+        String new_mainImageString = item.getMain_image().toString();
+
+        if (new_mainImage != null) {
+            String filePathInS3 = item.getMain_image().getPath().substring(1);
+            s3Uploader.deleteFile(filePathInS3);
+            new_mainImageString = s3Uploader.upload(new_mainImage, "main_image");
+        }
+        return new ImageResponseDto(new_mainImageString, new_subImagesString);
+    }
+
+
+
+
     @Transactional
-    public ResponseEntity<MessageResponseDto> updateItem(Member member, Long id, MultipartFile new_mainImage, List<MultipartFile> new_subImages, ItemRequestDto requestDto) throws IOException {
+    public ResponseEntity<MessageResponseDto> updateItem(Member member, Long id, ItemRequestDto requestDto) throws IOException {
 
         Item item = findItem(id);
         Shop shop = item.getShop();
@@ -89,66 +156,11 @@ public class ItemService {
             throw new IllegalArgumentException("해당 상품을 올린 유저만 상품을 수정 할 수 있습니다.");
         }
 
-        URL mainImageURL = item.getMain_image();
-
-
-        if (new_mainImage != null) {
-            String filePathInS3 = item.getMain_image().getPath().substring(1);
-            s3Uploader.deleteFile(filePathInS3);
-            // 새로운 메인 이미지 업로드 및 URL 얻기
-            String updatedMainImageUrl = s3Uploader.upload(new_mainImage, "main_image");
-            URL updatedMainImageUrlObject = new URL(updatedMainImageUrl);
-            mainImageURL = updatedMainImageUrlObject;
-            item.updateMainImage(mainImageURL);
-        }
-
-
-        postBlankCheck(item.getMain_image());
-
-        // 대표이미지 안건들면 그대로 원래 있던거 URL 반환하고, 대표 이미지 수정하면 수정한 이미지로 반환하게 file형식말고 URL로
-
-        List<URL> old_subImageURLs = item.getSub_images();
-        List<String> update_old_subImageURLs = requestDto.getSub_images();
-
-        if(update_old_subImageURLs==null) {
-            update_old_subImageURLs = new ArrayList<>();
-        }
-
-        List<URL> url = new ArrayList<>();
-
-        for (String multipartFile : update_old_subImageURLs) {
-            url.add(new URL(multipartFile));
-        }
-
-        // 새로운 서브 이미지 업로드 및 URL 얻기
-        List<URL> new_subImageURLs = new ArrayList<>();
-
-        if (old_subImageURLs != null) {
-            for (URL old_subImageURL : old_subImageURLs) {
-                for (URL update_old_subImageURL : url) {
-                    if (old_subImageURL.equals(update_old_subImageURL)) {
-                        new_subImageURLs.add(old_subImageURL);
-                    }
-                }
-            }
-        }
-
-        if (new_subImages != null) {
-            for (MultipartFile newSubImage : new_subImages) {
-                String updatedSubImageUrl = s3Uploader.upload(newSubImage, "sub_images");
-                URL updatedSubImageUrlObject = new URL(updatedSubImageUrl);
-                new_subImageURLs.add(updatedSubImageUrlObject);
-            }
-        }
-
-        item.updateSubImage(new_subImageURLs);
-
         // 카테고리 설정
         CategoryM categoryM = categoryMRepository.findById(requestDto.getMiddleCategoryId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID의 카테고리는 존재하지 않습니다."));
 
         // 아이템 업데이트
-
         item.update(requestDto.getName(), requestDto.getPrice(), requestDto.getComment(), requestDto.getIsContainingDeliveryFee(), categoryM);
 
         itemRepository.save(item);
@@ -157,7 +169,7 @@ public class ItemService {
         }
 
 
-
+        // 상품 찾기
         private Item findItem (Long id){
             return itemRepository.findById(id).orElseThrow(() ->
                     new IllegalArgumentException("선택한 상품은 존재하지 않습니다."));
@@ -229,7 +241,9 @@ public class ItemService {
                     .map(ItemSearchResponseDto::new);
             return ResponseEntity.ok(dtoList);
         }
-    }
+
+
+}
 
 
 

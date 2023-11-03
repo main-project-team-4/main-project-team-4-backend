@@ -6,10 +6,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Getter
+@Component
 public class ItemRequestDto {
 
     @Schema(description = "상품의 이름", example = "아비렉스 가죽자켓")
@@ -28,6 +30,9 @@ public class ItemRequestDto {
     @Size(min = 1,max = 100,message = "상품의 설명은 1~100자로 입력해 주세요")
     @JsonProperty(ParameterNameConfig.Item.COMMENT)
     private String comment;
+
+    @JsonProperty(ParameterNameConfig.Item.MAIN_IMAGE)
+    private String main_image;
 
     @JsonProperty(ParameterNameConfig.Item.SUB_IMAGE)
     private List<String> sub_images;

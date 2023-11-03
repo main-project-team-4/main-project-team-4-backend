@@ -1047,3 +1047,8 @@ insert into wish (item_id, member_id) values (108, 1);
 insert into wish (item_id, member_id) values (109, 1);
 insert into wish (item_id, member_id) values (110, 1);
 insert into wish (item_id, member_id) values (111, 1);
+
+insert into chatroom (room_name, consumer_id, item_id, seller_id) values ('채팅방1', 2, 8, 1);
+insert into chatroom (room_name, consumer_id, item_id, seller_id) values ('채팅방2', 3, 15, 1);
+insert into chatroom (room_name, consumer_id, item_id, seller_id) values ('채팅방3', 1, 1, 2);
+insert into chatroom (room_name, consumer_id, item_id, seller_id) values ('채팅방4', 1, 7, 3);

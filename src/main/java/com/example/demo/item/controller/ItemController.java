@@ -1,6 +1,7 @@
 package com.example.demo.item.controller;
 
 import com.example.demo.dto.MessageResponseDto;
+import com.example.demo.item.dto.ImageResponseDto;
 import com.example.demo.item.dto.ItemResponseDto;
 import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.item.dto.ItemRequestDto;
@@ -24,9 +25,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/items")
-public class ItemController implements ItemDocs {
+public class ItemController {
 
     private final ItemService itemService;
+    private final ItemRequestDto requestDto;
 
 //    @Secured("ROLE_USER")
     @PostMapping
@@ -44,12 +46,22 @@ public class ItemController implements ItemDocs {
     public ResponseEntity<MessageResponseDto> updateItem(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable Long id,
-            @Valid @RequestParam(value = "main_image", required = false) MultipartFile new_mainImage,
-            @Valid @RequestParam(value = "sub_image", required = false) List<MultipartFile> new_subImages,
+//            @Valid @RequestParam(value = "main_image", required = false) MultipartFile new_mainImage,
+//            @Valid @RequestParam(value = "sub_image", required = false) List<MultipartFile> new_subImages,
             @RequestPart(value = "requestDto", required = false) ItemRequestDto requestDto
             ) throws IOException {
         Member member = userDetails.getMember();
-        return itemService.updateItem(member, id, new_mainImage, new_subImages, requestDto);
+        itemService.updateImage(member, id, requestDto.getMain_image(), requestDto.getSub_images(), requestDto);
+        return itemService.updateItem(member, id, requestDto);
+    }
+
+    @PostMapping("/{id}/images")
+    public ImageResponseDto imageOrdering(
+            @PathVariable Long id,
+            @Valid @RequestParam(value = "main_image", required = false) MultipartFile new_mainImage,
+            @Valid @RequestParam(value = "sub_image", required = false) List<MultipartFile> new_subImages
+    ) throws IOException {
+        return itemService.imageOrdering(id, new_mainImage, new_subImages);
     }
 
     @DeleteMapping("/{id}")
