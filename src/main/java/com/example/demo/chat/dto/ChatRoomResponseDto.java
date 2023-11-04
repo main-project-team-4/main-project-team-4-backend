@@ -43,7 +43,10 @@ public class ChatRoomResponseDto {
     private String sender;
 
     @JsonProperty(ParameterNameConfig.Member.IMAGE)
-    private URL profileImage;
+    private URL sellerProfileImage;
+
+    @JsonProperty(ParameterNameConfig.Member.IMAGE)
+    private URL consumerProfileImage;
 
     @JsonProperty(ParameterNameConfig.Item.MAIN_IMAGE)
     private URL itemImage;
@@ -64,14 +67,10 @@ public class ChatRoomResponseDto {
         this.consumerName = chatRoom.getConsumer().getNickname();
         this.sender = member.getNickname();
         this.itemName = chatRoom.getItem().getName();
-        if(member.getNickname().equals(this.consumerName)){
-            Optional<URL> profileImg = Optional.of(chatRoom.getConsumer()).map(Member::getImage);
-            this.profileImage = profileImg.orElse(null);
-        }
-        else{
-            Optional<URL> profileImg = Optional.of(chatRoom.getSeller()).map(Member::getImage);
-            this.profileImage = profileImg.orElse(null);
-        }
+        Optional<URL> sellerImage = Optional.of(chatRoom.getSeller()).map(Member::getImage);
+        this.sellerProfileImage = sellerImage.orElse(null);
+        Optional<URL> consumerImage = Optional.of(chatRoom.getConsumer()).map(Member::getImage);
+        this.consumerProfileImage = consumerImage.orElse(null);
         this.itemImage = chatRoom.getItem().getMain_image();
     }
 }
