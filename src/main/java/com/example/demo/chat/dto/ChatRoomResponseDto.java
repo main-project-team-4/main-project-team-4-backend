@@ -1,5 +1,6 @@
 package com.example.demo.chat.dto;
 
+import com.example.demo.category.entity.CategoryM;
 import com.example.demo.chat.entity.ChatRoom;
 import com.example.demo.config.ParameterNameConfig;
 import com.example.demo.item.entity.Item;
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
 import java.net.URL;
+import java.util.Optional;
 
 @Getter
 public class ChatRoomResponseDto {
@@ -61,8 +63,9 @@ public class ChatRoomResponseDto {
         this.sellerName = chatRoom.getSeller().getNickname();
         this.consumerName = chatRoom.getConsumer().getNickname();
         this.sender = member.getNickname();
-        this.itemId = chatRoom.getItem().getId();
-        this.profileImage = chatRoom.getConsumer().getImage();
+        this.itemName = chatRoom.getItem().getName();
+        Optional<URL> profileImg = Optional.of(chatRoom.getConsumer().getImage());
+        this.profileImage = profileImg.orElse(null);
         this.itemImage = chatRoom.getItem().getMain_image();
     }
 }
