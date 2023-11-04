@@ -64,8 +64,14 @@ public class ChatRoomResponseDto {
         this.consumerName = chatRoom.getConsumer().getNickname();
         this.sender = member.getNickname();
         this.itemName = chatRoom.getItem().getName();
-        Optional<URL> profileImg = Optional.of(chatRoom.getConsumer()).map(Member::getImage);
-        this.profileImage = profileImg.orElse(null);
+        if(member.getNickname().equals(this.consumerName)){
+            Optional<URL> profileImg = Optional.of(chatRoom.getConsumer()).map(Member::getImage);
+            this.profileImage = profileImg.orElse(null);
+        }
+        else{
+            Optional<URL> profileImg = Optional.of(chatRoom.getSeller()).map(Member::getImage);
+            this.profileImage = profileImg.orElse(null);
+        }
         this.itemImage = chatRoom.getItem().getMain_image();
     }
 }
