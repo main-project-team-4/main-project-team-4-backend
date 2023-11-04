@@ -3,6 +3,7 @@ package com.example.demo.config;
 import com.example.demo.jwt.JwtAuthenticationFilter;
 import com.example.demo.jwt.JwtAuthorizationFilter;
 import com.example.demo.jwt.JwtUtil;
+import com.example.demo.refreshToken.RefreshTokenService;
 import com.example.demo.security.UserDetailsServiceImpl;
 import com.example.demo.util.FilterChainRingContainer;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class WebSecurityConfig {
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthenticationConfiguration authenticationConfiguration;
     private final FilterChainRingContainer filterChainRingContainer;
+    private final RefreshTokenService refreshTokenService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -43,8 +45,11 @@ public class WebSecurityConfig {
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
-        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtUtil);
+
+        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(jwtUtil, refreshTokenService);
+
         filter.setAuthenticationManager(authenticationManager(authenticationConfiguration));
+
         return filter;
     }
 

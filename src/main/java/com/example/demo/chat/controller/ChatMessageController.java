@@ -1,5 +1,6 @@
 package com.example.demo.chat.controller;
 
+import com.example.demo.chat.dto.ChatMessageRequestDto;
 import com.example.demo.chat.dto.ChatMessageResponseDto;
 import com.example.demo.chat.entity.ChatMessage;
 import com.example.demo.chat.service.ChatMessageService;
@@ -30,7 +31,7 @@ public class ChatMessageController {
 
     // 메세지 전송
     @MessageMapping("/chat/message")
-    public ChatMessageResponseDto sendMessage(ChatMessage message, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ChatMessageResponseDto sendMessage(ChatMessageRequestDto message, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return chatMessageService.sendMessages(message, userDetails.getMember());
     }
 }

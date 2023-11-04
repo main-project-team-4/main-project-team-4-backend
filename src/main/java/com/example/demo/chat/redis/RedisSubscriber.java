@@ -1,5 +1,6 @@
 package com.example.demo.chat.redis;
 
+import com.example.demo.chat.dto.ChatMessageResponseDto;
 import com.example.demo.chat.entity.ChatMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,8 @@ public class RedisSubscriber implements MessageListener {
             // ChatMessage 객채로 맵핑
             ChatMessage chatMessage = objectMapper.readValue(publishMessage, ChatMessage.class);
             // Websocket 구독자에게 채팅 메시지 Send
-            messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessage.getRoomId(), chatMessage);
+            ChatMessageResponseDto responseDto = new ChatMessageResponseDto(chatMessage);
+            messagingTemplate.convertAndSend("/sub/chat/room/" + responseDto.getRoomId(), responseDto);
         } catch (Exception e) {
             log.error(e.getMessage());
         }

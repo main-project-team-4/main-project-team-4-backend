@@ -6,6 +6,7 @@ import com.example.demo.kakao.properties.KakaoOAuth2Properties;
 import com.example.demo.member.dto.LoginResponseDto;
 import com.example.demo.member.entity.Member;
 import com.example.demo.member.repository.MemberRepository;
+import com.example.demo.refreshToken.RefreshTokenService;
 import com.example.demo.security.UserRoleEnum;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -33,14 +34,16 @@ public class KakaoService {
     private final JwtUtil jwtUtil;
     private final KakaoOAuth2Properties kakaoOAuth2Properties;
     private final ObjectMapper objectMapper;
+    private final RefreshTokenService refreshTokenService;
 
     public ResponseEntity<LoginResponseDto> kakaoLogin(String code) throws JsonProcessingException {
         String accessToken = getToken(code);
         KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
         Tray tray = registerKakaoUserIfNeeded(kakaoUserInfo);
         String token = jwtUtil.createToken(tray.member().getUsername(), UserRoleEnum.USER);
+        String refreshToken = refreshTokenService.createRefreshToken(tray.member().getUsername());
 
-        LoginResponseDto response = new LoginResponseDto("로그인 성공", token, tray.first());
+        LoginResponseDto response = new LoginResponseDto("로그인 성공", token, refreshToken, tray.first());
         return ResponseEntity.ok(response);
     }
 

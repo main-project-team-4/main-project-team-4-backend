@@ -4,6 +4,7 @@ public class ParameterNameConfig {
     public static class Message {
         public static final String MESSAGE = "msg";
         public static final String TOkEN = "token";
+        public static final String REFRESH_TOKEN = "refresh_token";
         public static final String STATUS_CODE = "statusCode";
         public static final String IS_FIRST = "first";
     }
