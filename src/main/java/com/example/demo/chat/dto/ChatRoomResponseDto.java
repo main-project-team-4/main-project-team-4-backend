@@ -42,10 +42,10 @@ public class ChatRoomResponseDto {
     @JsonProperty(ParameterNameConfig.ChatRoom.SENDER)
     private String sender;
 
-    @JsonProperty(ParameterNameConfig.Member.IMAGE)
+    @JsonProperty(ParameterNameConfig.ChatRoom.SELLER_IMAGE)
     private URL sellerProfileImage;
 
-    @JsonProperty(ParameterNameConfig.Member.IMAGE)
+    @JsonProperty(ParameterNameConfig.ChatRoom.CONSUMER_IMAGE)
     private URL consumerProfileImage;
 
     @JsonProperty(ParameterNameConfig.Item.MAIN_IMAGE)

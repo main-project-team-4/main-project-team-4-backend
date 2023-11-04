@@ -82,6 +82,8 @@ public class ParameterNameConfig {
         public static final String SENDER = "chatroom_sender";
         public static final String SELLER = "chatroom_seller_name";
         public static final String CONSUMER = "chatroom_consumer_name";
+        public static final String SELLER_IMAGE = "chatroom_seller_image";
+        public static final String CONSUMER_IMAGE = "chatroom_consumer_image";
     }
 
     public static class ChatMessage {
