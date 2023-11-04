@@ -40,7 +40,7 @@ public class JwtUtil {
     //redis 값 조회 헤더
     public static final String REFRESH_PREFIX = "refresh:";
 
-    private final long TOKEN_TIME = 180 * 60 * 1000L;
+    private final long TOKEN_TIME = 30 * 1000L;
 
 //    private final long TOKEN_TIME = 30 * 1000L;
 
