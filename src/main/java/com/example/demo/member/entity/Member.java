@@ -1,16 +1,15 @@
 package com.example.demo.member.entity;
 
-import com.example.demo.chat.entity.ChatMessage;
 import com.example.demo.chat.entity.ChatRoom;
 import com.example.demo.follow.entity.Follow;
 import com.example.demo.location.entity.MemberLocation;
 import com.example.demo.shop.entity.Shop;
 import com.example.demo.trade.entity.Trade;
 import com.example.demo.wish.entity.Wish;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.net.URL;
@@ -47,7 +46,7 @@ public class Member implements Serializable {
     @OneToMany(mappedBy = "member", cascade = {CascadeType.REMOVE})
     private List<Follow> followList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "seller", cascade = {CascadeType.REMOVE})
+    @OneToMany(mappedBy = "seller")
     private List<ChatRoom> sellerChatRoomList = new ArrayList<>();
 
     @OneToMany(mappedBy = "consumer")

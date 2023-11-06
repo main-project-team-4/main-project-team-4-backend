@@ -75,19 +75,27 @@ public class TradeService {
 
         State state = State.SOLDOUT;
 
+        // 있으면 거래 기록 치환.
         // 없으면 거래 기록 남기기.
-        tradeRepository.findByMember_IdAndItem_Id(
-                tradeRequestDto.getConsumerId(),
+        tradeRepository.findByItem_Id(
                 itemId
-        ).orElseGet(() -> saveTrade(consumer, item, state));
+        ).ifPresentOrElse(
+                trade -> updateTrade(trade, consumer, state),
+                () -> saveTrade(consumer, item, state)
+        );
 
         MessageResponseDto msg = new MessageResponseDto("거래 기록에 성공했습니다.", HttpStatus.OK.value());
         return ResponseEntity.status(HttpStatus.OK).body(msg);
     }
 
-    private Trade saveTrade(Member consumer, Item item, State state) {
+    private void updateTrade(Trade trade, Member consumer, State state) {
+        trade.setMember(consumer);
+        trade.getItem().setState(state);
+    }
+
+    private void saveTrade(Member consumer, Item item, State state) {
         Trade trade = new Trade(consumer, item, state);
-        return tradeRepository.save(trade);
+        tradeRepository.save(trade);
     }
 
     private boolean validateOwnerOfItem(Member memberWhoAccessToTrade, Item item) {

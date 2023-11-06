@@ -32,7 +32,7 @@ public class Shop implements Serializable {
     @Column(name = "star_avg")
     private Double star;
 
-    @OneToMany(mappedBy = "shop", orphanRemoval = true)
+    @OneToMany(mappedBy = "shop", cascade = {CascadeType.REMOVE})
     private List<Item> itemList = new ArrayList<>();
 
     @OneToMany(mappedBy = "shop", orphanRemoval = true)
