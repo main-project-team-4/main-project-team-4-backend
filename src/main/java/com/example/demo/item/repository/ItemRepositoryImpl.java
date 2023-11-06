@@ -220,7 +220,7 @@ public class ItemRepositoryImpl implements
                 .from(item)
 
                 .where(
-                        filterTradeByState(stateList),
+                        filterByState(stateList),
                         item.shop.member.id.eq(id)
                 )
 
