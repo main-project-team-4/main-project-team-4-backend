@@ -1,5 +1,7 @@
 package com.example.demo.item.controller;
 
+import com.example.demo.chat.dto.ChatRoomForItemResponseDto;
+import com.example.demo.chat.service.ChatRoomService;
 import com.example.demo.dto.MessageResponseDto;
 import com.example.demo.item.dto.ImageResponseDto;
 import com.example.demo.item.dto.ItemResponseDto;
@@ -29,6 +31,7 @@ public class ItemController {
 
     private final ItemService itemService;
     private final ItemRequestDto requestDto;
+    private final ChatRoomService chatRoomService;
 
 //    @Secured("ROLE_USER")
     @PostMapping
@@ -89,6 +92,14 @@ public class ItemController {
             Pageable pageable
     ) {
         return itemService.searchItem(keyword, state, pageable);
+    }
+
+    @GetMapping("/{itemId}/chatrooms")
+    public ResponseEntity<List<ChatRoomForItemResponseDto>> readChatRoomsForItem(
+            @PathVariable Long itemId,
+            @AuthenticationPrincipal UserDetailsImpl principal
+    ) {
+        return chatRoomService.readChatRoomsForItem(itemId, principal.getMember());
     }
 
 }

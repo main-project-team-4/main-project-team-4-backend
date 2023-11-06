@@ -7,16 +7,10 @@ import lombok.Getter;
 
 @Getter
 public class TradeRequestDto {
-    @JsonProperty(ParameterNameConfig.Item.STATE)
-    private State state;
-    @JsonProperty(ParameterNameConfig.Item.ID)
-    private Long itemId;
     @JsonProperty(ParameterNameConfig.Member.ID)
     private Long consumerId;
 
-    public TradeRequestDto(Long itemId, Long consumerId, State state) {
-        this.itemId = itemId;
+    public TradeRequestDto(Long consumerId, State state) {
         this.consumerId = consumerId;
-        this.state = state;
     }
 }

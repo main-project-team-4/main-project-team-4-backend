@@ -7,6 +7,7 @@ import com.example.demo.item.repository.ItemRepository;
 import com.example.demo.member.entity.Member;
 import com.example.demo.member.repository.MemberRepository;
 import com.example.demo.shop.entity.Shop;
+import com.example.demo.trade.dto.ItemStateRequestDto;
 import com.example.demo.trade.dto.TradeRequestDto;
 import com.example.demo.trade.entity.Trade;
 import com.example.demo.trade.repository.TradeRepository;
@@ -20,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.security.access.AccessDeniedException;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -44,8 +44,26 @@ public class TradeService {
     }
 
     @Transactional
-    public ResponseEntity<MessageResponseDto> updateTradeRecord(Member member, TradeRequestDto tradeRequestDto) throws AccessDeniedException {
-        Item item = itemRepository.findById(tradeRequestDto.getItemId())
+    public ResponseEntity<MessageResponseDto> updateItemState(Member member, ItemStateRequestDto requestDto) throws AccessDeniedException {
+        Item item = itemRepository.findById(requestDto.getItemId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 상품은 존재하지 않습니다."));
+
+        if(!validateOwnerOfItem(member, item)) {
+            throw new AccessDeniedException("거래 상태 변화는 상품의 소유자만 변경할 수 있습니다.");
+        }
+
+        State state = requestDto.getState();
+
+        // Item 상태 변경.
+        item.setState(state);
+
+        MessageResponseDto msg = new MessageResponseDto("거래 상태 변화에 성공했습니다.", HttpStatus.OK.value());
+        return ResponseEntity.status(HttpStatus.OK).body(msg);
+    }
+
+    @Transactional
+    public ResponseEntity<MessageResponseDto> updateTradeRecord(Member member, TradeRequestDto tradeRequestDto, Long itemId) throws AccessDeniedException {
+        Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID의 상품은 존재하지 않습니다."));
 
         if(!validateOwnerOfItem(member, item)) {
@@ -55,18 +73,15 @@ public class TradeService {
         Member consumer = memberRepository.findById(tradeRequestDto.getConsumerId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 ID의 회원은 존재하지 않습니다."));
 
-        State state = tradeRequestDto.getState();
+        State state = State.SOLDOUT;
 
-        // 없으면 거래 기록 남기기. TODO 채팅 기록이 있는 사람 목록 생기면 다시 활성화
-//        tradeRepository.findByMember_IdAndItem_Id(
-//                tradeRequestDto.getConsumerId(),
-//                tradeRequestDto.getItemId()
-//        ).orElseGet(() -> saveTrade(consumer, item, state));
+        // 없으면 거래 기록 남기기.
+        tradeRepository.findByMember_IdAndItem_Id(
+                tradeRequestDto.getConsumerId(),
+                itemId
+        ).orElseGet(() -> saveTrade(consumer, item, state));
 
-        // Item 상태 변경.
-        item.setState(state);
-
-        MessageResponseDto msg = new MessageResponseDto("거래 상태 변화에 성공했습니다.", HttpStatus.OK.value());
+        MessageResponseDto msg = new MessageResponseDto("거래 기록에 성공했습니다.", HttpStatus.OK.value());
         return ResponseEntity.status(HttpStatus.OK).body(msg);
     }
 

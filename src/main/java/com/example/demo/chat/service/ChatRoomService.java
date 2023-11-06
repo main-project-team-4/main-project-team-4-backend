@@ -1,5 +1,6 @@
 package com.example.demo.chat.service;
 
+import com.example.demo.chat.dto.ChatRoomForItemResponseDto;
 import com.example.demo.chat.dto.ChatRoomResponseDto;
 import com.example.demo.chat.entity.ChatRoom;
 import com.example.demo.chat.redis.RedisSubscriber;
@@ -8,18 +9,21 @@ import com.example.demo.item.entity.Item;
 import com.example.demo.item.repository.ItemRepository;
 import com.example.demo.member.entity.Member;
 import com.example.demo.repository.RedisRepository;
+import com.example.demo.shop.entity.Shop;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -90,5 +94,27 @@ public class ChatRoomService {
                 .toList();
 
         return chatRoomList;
+    }
+
+    public ResponseEntity<List<ChatRoomForItemResponseDto>> readChatRoomsForItem(Long itemId, Member member) {
+        validateOwnerShipOfItem(itemId, member);
+
+        List<ChatRoomForItemResponseDto> dtoList = chatRoomRepository.findByItem_Id(itemId).stream()
+                .map(ChatRoomForItemResponseDto::new)
+                .toList();
+
+        return ResponseEntity.ok(dtoList);
+    }
+
+    private void validateOwnerShipOfItem(Long itemId, Member member) {
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다."));
+
+        Optional.of(item)
+                .map(Item::getShop)
+                .map(Shop::getMember)
+                .map(Member::getId)
+                .filter(id -> id.equals(member.getId()))
+                .orElseThrow(() -> new IllegalArgumentException("해당 상품의 소유주만 열람할 수 있습니다."));
     }
 }
