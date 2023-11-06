@@ -1,5 +1,6 @@
 package com.example.demo.chat.service;
 
+import com.example.demo.chat.dto.ChatMessageResponseDto;
 import com.example.demo.chat.dto.ChatRoomForItemResponseDto;
 import com.example.demo.chat.dto.ChatRoomResponseDto;
 import com.example.demo.chat.entity.ChatRoom;
@@ -78,6 +79,11 @@ public class ChatRoomService {
             topics.put(roomId.toString(), topic);
         }
         return chatRoom;
+    }
+
+    // 채팅방 삭제
+    public ChatMessageResponseDto deleteChatRoom(Long roomId, Member member){
+        return ChatMessageResponseDto;
     }
 
     public ChannelTopic getTopic(Long roomId) {

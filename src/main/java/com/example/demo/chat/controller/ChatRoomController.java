@@ -44,4 +44,12 @@ public class ChatRoomController{
                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return chatRoomService.createChatRoom(itemId, userDetails.getMember());
     }
+
+    // 채팅방 나가기
+    @DeleteMapping("/room/{roomId}")
+    @ResponseBody
+    public ChatRoomResponseDto deleteRoom(@PathVariable Long roomId,
+                                          @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return chatRoomService.deleteChatRoom(roomId, userDetails.getMember());
+    }
 }
