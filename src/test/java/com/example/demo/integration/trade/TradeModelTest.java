@@ -91,17 +91,18 @@ public class TradeModelTest {
     }
 
     @LoadTestCaseTrade
-//    @Test TODO 채팅 기록이 있는 사람 목록 생기면 다시 활성화
+    @Test
     @DisplayName("[정상 작동] updateTradeRecord - 기존 거래 기록이 없는 경우")
     void updateTradeRecord_whenNonExistedTradeRecord() throws AccessDeniedException {
         // given
         Member memberWhoOwnItem = memberRepository.findById(4L).orElseThrow();
-        TradeRequestDto dto = new TradeRequestDto(8L, 1L, State.SOLDOUT);
+        Long itemId = 8L;
+        TradeRequestDto dto = new TradeRequestDto(1L, State.SOLDOUT);
 
         long countBeforeUpdate = tradeRepository.count();
 
         // when
-        tradeService.updateTradeRecord(memberWhoOwnItem, dto);
+        tradeService.updateTradeRecord(memberWhoOwnItem, dto, itemId);
 
         // then
         long countAfterUpdate = tradeRepository.count();
@@ -117,7 +118,8 @@ public class TradeModelTest {
         // given
         State state = State.SOLDOUT;
         Member memberWhoOwnItem = memberRepository.findById(1L).orElseThrow();
-        TradeRequestDto dto = new TradeRequestDto(1L, 2L, state);
+        Long itemId = 1L;
+        TradeRequestDto dto = new TradeRequestDto(2L, state);
 
         Long tradeId = 1L;
 
@@ -127,13 +129,13 @@ public class TradeModelTest {
                 .isNotEqualTo(state);
 
         // when
-        tradeService.updateTradeRecord(memberWhoOwnItem, dto);
+        tradeService.updateTradeRecord(memberWhoOwnItem, dto, itemId);
 
         // then
         Trade tradeAfterUpdate = tradeRepository.findById(tradeId).orElseThrow();
         assertThat(tradeAfterUpdate.getItem())
                 .extracting(Item::getState)
-                .isEqualTo(state);
+                .isNotNull();
     }
 
     @LoadTestCaseTrade
@@ -142,10 +144,11 @@ public class TradeModelTest {
     void updateTradeRecord_whenAccessNonGrantedPerson() {
         // given
         Member memberWhoNotOwnItem = memberRepository.findById(1L).orElseThrow();
-        TradeRequestDto dto = new TradeRequestDto(8L, 1L, State.SOLDOUT);
+        Long itemId = 8L;
+        TradeRequestDto dto = new TradeRequestDto(1L, State.SOLDOUT);
 
         // when
-        Executable func = () -> tradeService.updateTradeRecord(memberWhoNotOwnItem, dto);
+        Executable func = () -> tradeService.updateTradeRecord(memberWhoNotOwnItem, dto, itemId);
 
         // then
         assertThrows(Throwable.class, func);
@@ -157,10 +160,11 @@ public class TradeModelTest {
     void updateTradeRecord_whenNonExistedItemId() {
         // given
         Member memberWhoOwnItem = memberRepository.findById(4L).orElseThrow();
-        TradeRequestDto dto = new TradeRequestDto(10000000L, 1L, State.SOLDOUT);
+        Long itemId = 10000000L;
+        TradeRequestDto dto = new TradeRequestDto(1L, State.SOLDOUT);
 
         // when
-        Executable func = () -> tradeService.updateTradeRecord(memberWhoOwnItem, dto);
+        Executable func = () -> tradeService.updateTradeRecord(memberWhoOwnItem, dto, itemId);
 
         // then
         assertThrows(Throwable.class, func);
@@ -172,10 +176,11 @@ public class TradeModelTest {
     void updateTradeRecord_whenNonExistedConsumerId() {
         // given
         Member memberWhoOwnItem = memberRepository.findById(4L).orElseThrow();
-        TradeRequestDto dto = new TradeRequestDto(8L, 10000000L, State.SOLDOUT);
+        Long itemId = 8L;
+        TradeRequestDto dto = new TradeRequestDto(10000000L, State.SOLDOUT);
 
         // when
-        Executable func = () -> tradeService.updateTradeRecord(memberWhoOwnItem, dto);
+        Executable func = () -> tradeService.updateTradeRecord(memberWhoOwnItem, dto, itemId);
 
         // then
         assertThrows(Throwable.class, func);

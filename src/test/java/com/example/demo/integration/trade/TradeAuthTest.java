@@ -135,7 +135,7 @@ public class TradeAuthTest {
         // given
         Long itemId = 1L;
         Long memberId = 1L;
-        TradeRequestDto dto = new TradeRequestDto(itemId, memberId, State.SOLDOUT);
+        TradeRequestDto dto = new TradeRequestDto(memberId, State.SOLDOUT);
 
         MockHttpServletRequestBuilder request = post("/api/trades")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -143,7 +143,7 @@ public class TradeAuthTest {
         request = authTestUtil.setAccessToken(request);
 
         ResponseEntity<MessageResponseDto> result = ResponseEntity.ok(new MessageResponseDto("mock msg", 200));
-        when(tradeService.updateTradeRecord(any(), any()))
+        when(tradeService.updateItemState(any(), any()))
                 .thenReturn(result);
 
         // when & then
@@ -159,14 +159,14 @@ public class TradeAuthTest {
         // given
         Long itemId = 1L;
         Long memberId = 1L;
-        TradeRequestDto dto = new TradeRequestDto(itemId, memberId, State.SOLDOUT);
+        TradeRequestDto dto = new TradeRequestDto(memberId, State.SOLDOUT);
 
         MockHttpServletRequestBuilder request = post("/api/trades")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto));
 
         ResponseEntity<MessageResponseDto> result = ResponseEntity.ok(new MessageResponseDto("mock msg", 200));
-        when(tradeService.updateTradeRecord(any(), any()))
+        when(tradeService.updateItemState(any(), any()))
                 .thenReturn(result);
 
         // when & then
