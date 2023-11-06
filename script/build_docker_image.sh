@@ -13,3 +13,4 @@ source ./script/build_spring_project.sh
 docker build --tag $TARGET_IMAGE:$VERSION_IMAGE $DIR_DOCKERFILE
 docker tag $TARGET_IMAGE:$VERSION_IMAGE $PUSH_IMAGE:$VERSION_IMAGE
 docker push $PUSH_IMAGE:$VERSION_IMAGE
+docker push $PUSH_IMAGE:latest
