@@ -8,4 +8,5 @@ import org.springframework.data.domain.Pageable;
 public interface TransactionRepository {
     Page<Item> findPurchaseItemByMember_id(Long id, State[] stateList, Pageable pageable);
     Page<Item> findSellingItemByMember_id(Long id, State[] stateList, Pageable pageable);
+    Page<Item> findItemByMember_IdAndStateList(Long id, State[] stateList, Pageable pageable);
 }

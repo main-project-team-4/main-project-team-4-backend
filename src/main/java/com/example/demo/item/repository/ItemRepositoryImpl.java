@@ -214,6 +214,35 @@ public class ItemRepositoryImpl implements
         return new PageImpl<>(result, pageable, count);
     }
 
+    public Page<Item> findItemByMember_IdAndStateList(Long id, State[] stateList, Pageable pageable) {
+        List<Item> result = jpaQueryFactory
+                .select(item)
+                .from(item)
+
+                .where(
+                        filterTradeByState(stateList),
+                        item.shop.member.id.eq(id)
+                )
+
+                .orderBy(
+                        QueryBuilder.extractOrder(new ItemMapper(), pageable)
+                )
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        // Count Query
+        Long count = jpaQueryFactory
+                .select(item.count())
+                .from(item)
+                .join(trade).on(trade.item.id.eq(item.id))
+
+                .where(trade.member.id.eq(id))
+                .fetchOne();
+
+        return new PageImpl<>(result, pageable, count);
+    }
+
     private static BooleanExpression filterTradeByState(State[] stateList) {
         return stateList != null && stateList.length != 0 ? trade.item.state.in(stateList) : null;
     }

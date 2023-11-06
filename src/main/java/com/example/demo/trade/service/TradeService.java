@@ -38,7 +38,7 @@ public class TradeService {
 
     @Transactional
     public ResponseEntity<Page<ItemSearchResponseDto>> readSales(Member member, State[] stateList, Pageable pageable) {
-        Page<ItemSearchResponseDto> dtoPage = itemRepository.findSellingItemByMember_id(member.getId(), stateList, pageable)
+        Page<ItemSearchResponseDto> dtoPage = itemRepository.findItemByMember_IdAndStateList(member.getId(), stateList, pageable)
                 .map(ItemSearchResponseDto::new);
         return ResponseEntity.ok(dtoPage);
     }
