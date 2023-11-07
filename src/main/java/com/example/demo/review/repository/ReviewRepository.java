@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface ReviewRepository  extends JpaRepository<Review, Long> {
+public interface ReviewRepository  extends JpaRepository<Review, Long>, BulkReviewRepository {
     Page<Review> findByShop_Id(Long shopId, Pageable pageable);
     Optional<Review> findByItem_Id(Long itemId);
 }

@@ -10,12 +10,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-@Getter @AllArgsConstructor
+@Getter @Setter @AllArgsConstructor
 public class ItemSearchResponseDto {
     @Schema(description = "상품의 id", example = "1")
     @JsonProperty(ParameterNameConfig.Item.ID)
@@ -53,6 +54,10 @@ public class ItemSearchResponseDto {
     @Schema(description = "상품을 판매하는 상점 이름.", example = "적절한 상점명")
     @JsonProperty(ParameterNameConfig.Shop.NAME)
     private String shopName;
+
+    @Schema(description = "리뷰가 작성되어 있는지 아닌지 여부", example = "true")
+    @JsonProperty(ParameterNameConfig.Review.IS_REVIEW_WRITTEN)
+    private Boolean isReviewWritten;
 
     public ItemSearchResponseDto(Item entity) {
         this.itemId = entity.getId();
