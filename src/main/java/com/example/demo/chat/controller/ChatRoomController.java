@@ -48,7 +48,7 @@ public class ChatRoomController{
     // 채팅방 나가기
     @DeleteMapping("/room/{roomId}")
     @ResponseBody
-    public ChatRoomResponseDto deleteRoom(@PathVariable Long roomId,
+    public List<ChatRoomResponseDto> deleteRoom(@PathVariable Long roomId,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails){
         return chatRoomService.deleteChatRoom(roomId, userDetails.getMember());
     }

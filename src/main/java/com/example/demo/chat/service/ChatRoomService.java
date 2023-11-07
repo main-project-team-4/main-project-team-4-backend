@@ -82,8 +82,30 @@ public class ChatRoomService {
     }
 
     // 채팅방 삭제
-    public ChatMessageResponseDto deleteChatRoom(Long roomId, Member member){
-        return ChatMessageResponseDto;
+    public List<ChatRoomResponseDto> deleteChatRoom(Long roomId, Member member){
+        Long id = member.getId();
+        int isOut = chatRoomRepository.findIsOutById(roomId);
+
+        if(isOut == 0){
+            List<ChatRoomResponseDto> chatRoomList = chatRoomRepository.findAllBySellerIdOrConsumerId(id, id)
+                    .stream()
+                    .filter(chatRoom -> !chatRoom.getId().equals(roomId))
+                    .map(chatRoom -> new ChatRoomResponseDto(chatRoom, member))
+                    .toList();
+            return chatRoomList;
+        }
+        else{
+            ChatRoom deleteChatRoom = chatRoomRepository.findChatRoomById(roomId).orElseThrow(() ->
+                    new IllegalArgumentException("선택한 채팅방은 존재하지 않습니다.")
+            );
+            chatRoomRepository.delete(deleteChatRoom);
+
+            List<ChatRoomResponseDto> chatRoomList = chatRoomRepository.findAllBySellerIdOrConsumerId(id, id)
+                    .stream()
+                    .map(chatRoom -> new ChatRoomResponseDto(chatRoom, member))
+                    .toList();
+            return chatRoomList;
+        }
     }
 
     public ChannelTopic getTopic(Long roomId) {
