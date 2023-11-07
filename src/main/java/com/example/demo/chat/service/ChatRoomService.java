@@ -85,6 +85,9 @@ public class ChatRoomService {
     public List<ChatRoomResponseDto> deleteChatRoom(Long roomId, Member member){
         Long id = member.getId();
         int isOut = chatRoomRepository.findIsOutById(roomId);
+        ChatRoom deleteChatRoom = chatRoomRepository.findChatRoomById(roomId).orElseThrow(() ->
+                new IllegalArgumentException("선택한 채팅방은 존재하지 않습니다.")
+        );
 
         if(isOut == 0){
             List<ChatRoomResponseDto> chatRoomList = chatRoomRepository.findAllBySellerIdOrConsumerId(id, id)
@@ -92,12 +95,17 @@ public class ChatRoomService {
                     .filter(chatRoom -> !chatRoom.getId().equals(roomId))
                     .map(chatRoom -> new ChatRoomResponseDto(chatRoom, member))
                     .toList();
+
+            if (member.getId() == deleteChatRoom.getSeller().getId()){
+                isOut = 1;
+            }
+            else{
+                isOut = 2;
+            }
+            deleteChatRoom.chatRoomStatusUpdate(isOut);
             return chatRoomList;
         }
         else{
-            ChatRoom deleteChatRoom = chatRoomRepository.findChatRoomById(roomId).orElseThrow(() ->
-                    new IllegalArgumentException("선택한 채팅방은 존재하지 않습니다.")
-            );
             chatRoomRepository.delete(deleteChatRoom);
 
             List<ChatRoomResponseDto> chatRoomList = chatRoomRepository.findAllBySellerIdOrConsumerId(id, id)

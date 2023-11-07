@@ -56,4 +56,8 @@ public class ChatRoom implements Serializable {
         this.roomName = consumer.getNickname() + " 님의 " + item.getName() + " 문의";
         this.isOut = 0;
     }
+
+    public void chatRoomStatusUpdate(int isOut){
+        this.isOut = isOut;
+    }
 }
