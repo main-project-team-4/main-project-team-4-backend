@@ -118,6 +118,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         // 리뷰 관련 API
                         .requestMatchers(antMatcher(HttpMethod.POST, "/api/reviews")).authenticated()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/api/member/*/reviews")).permitAll()
+                        .requestMatchers(antMatcher(HttpMethod.GET, "/api/items/*/reviews")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.PUT, "/api/reviews")).authenticated()
                         .requestMatchers(antMatcher(HttpMethod.PUT, "/api/reviews/*")).authenticated()
                         .requestMatchers(antMatcher(HttpMethod.DELETE, "/api/reviews")).authenticated()

@@ -35,6 +35,12 @@ public class ReviewController implements ReviewDocs{
         return reviewService.readReviewList(shopId, pageable);
     }
 
+    @GetMapping("/items/{itemId}/reviews")
+    public ResponseEntity<ReviewResponseDto> readReviewOfItem(
+            @PathVariable Long itemId
+    ) {
+        return reviewService.readReviewOfItem(itemId);
+    }
 
     @PutMapping("/reviews/{review_id}")
     public ResponseEntity<MessageResponseDto> updateReview(@PathVariable Long review_id, @RequestBody ReviewRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {

@@ -6,6 +6,7 @@ import com.example.demo.item.entity.Item;
 import com.example.demo.item.repository.ItemRepository;
 import com.example.demo.member.entity.Member;
 import com.example.demo.member.repository.MemberRepository;
+import com.example.demo.review.repository.ReviewRepository;
 import com.example.demo.shop.entity.Shop;
 import com.example.demo.trade.dto.ItemStateRequestDto;
 import com.example.demo.trade.dto.TradeRequestDto;
@@ -17,10 +18,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import org.springframework.security.access.AccessDeniedException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -28,11 +30,23 @@ public class TradeService {
     private final ItemRepository itemRepository;
     private final TradeRepository tradeRepository;
     private final MemberRepository memberRepository;
+    private final ReviewRepository reviewRepository;
 
     @Transactional
     public ResponseEntity<Page<ItemSearchResponseDto>> readOrders(Member member, State[] stateList, Pageable pageable) {
         Page<ItemSearchResponseDto> dtoPage = itemRepository.findPurchaseItemByMember_id(member.getId(), stateList, pageable)
                 .map(ItemSearchResponseDto::new);
+
+        // 리뷰 존재 여부 매핑
+        List<Long> itemIdList = dtoPage.map(ItemSearchResponseDto::getItemId).toList();
+        List<Boolean> booleanMap = reviewRepository.existsAllByItem_Id(itemIdList);
+
+        int i = 0;
+        for (ItemSearchResponseDto dto : dtoPage) {
+            Boolean isReviewWritten = booleanMap.get(i++);
+            dto.setIsReviewWritten(isReviewWritten);
+        }
+
         return ResponseEntity.ok(dtoPage);
     }
 
@@ -40,6 +54,17 @@ public class TradeService {
     public ResponseEntity<Page<ItemSearchResponseDto>> readSales(Member member, State[] stateList, Pageable pageable) {
         Page<ItemSearchResponseDto> dtoPage = itemRepository.findItemByMember_IdAndStateList(member.getId(), stateList, pageable)
                 .map(ItemSearchResponseDto::new);
+
+        // 리뷰 존재 여부 매핑
+        List<Long> itemIdList = dtoPage.map(ItemSearchResponseDto::getItemId).toList();
+        List<Boolean> booleanMap = reviewRepository.existsAllByItem_Id(itemIdList);
+
+        int i = 0;
+        for (ItemSearchResponseDto dto : dtoPage) {
+            Boolean isReviewWritten = booleanMap.get(i++);
+            dto.setIsReviewWritten(isReviewWritten);
+        }
+
         return ResponseEntity.ok(dtoPage);
     }
 
@@ -75,19 +100,27 @@ public class TradeService {
 
         State state = State.SOLDOUT;
 
+        // 있으면 거래 기록 치환.
         // 없으면 거래 기록 남기기.
-        tradeRepository.findByMember_IdAndItem_Id(
-                tradeRequestDto.getConsumerId(),
+        tradeRepository.findByItem_Id(
                 itemId
-        ).orElseGet(() -> saveTrade(consumer, item, state));
+        ).ifPresentOrElse(
+                trade -> updateTrade(trade, consumer, state),
+                () -> saveTrade(consumer, item, state)
+        );
 
         MessageResponseDto msg = new MessageResponseDto("거래 기록에 성공했습니다.", HttpStatus.OK.value());
         return ResponseEntity.status(HttpStatus.OK).body(msg);
     }
 
-    private Trade saveTrade(Member consumer, Item item, State state) {
+    private void updateTrade(Trade trade, Member consumer, State state) {
+        trade.setMember(consumer);
+        trade.getItem().setState(state);
+    }
+
+    private void saveTrade(Member consumer, Item item, State state) {
         Trade trade = new Trade(consumer, item, state);
-        return tradeRepository.save(trade);
+        tradeRepository.save(trade);
     }
 
     private boolean validateOwnerOfItem(Member memberWhoAccessToTrade, Item item) {

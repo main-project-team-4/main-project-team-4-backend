@@ -68,4 +68,11 @@ public class ReviewService {
                 .map(ReviewResponseDto::new);
         return ResponseEntity.ok(dtoList);
     }
+
+    public ResponseEntity<ReviewResponseDto> readReviewOfItem(Long itemId) {
+        ReviewResponseDto dto = reviewRepository.findByItem_Id(itemId)
+                .map(ReviewResponseDto::new)
+                .orElseGet(ReviewResponseDto::new);
+        return ResponseEntity.ok(dto);
+    }
 }
