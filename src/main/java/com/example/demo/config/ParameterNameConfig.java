@@ -68,6 +68,7 @@ public class ParameterNameConfig {
         public static final String COMMENT = "review_comment";
         public static final String RATING = "review_rating";
         public static final String RATING_AVG = "review_rating_avg";
+        public static final String IS_REVIEW_WRITTEN = "is_review_written";
     }
 
     public static class Location {
