@@ -8,14 +8,17 @@ import com.example.demo.review.entity.Review;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class ReviewResponseDto {
     @Schema(description = "리뷰 id", example = "1")
     @JsonProperty(ParameterNameConfig.Review.ID)
@@ -43,6 +46,9 @@ public class ReviewResponseDto {
     @Schema(description = "리뷰어 이름", example = "iksadnorth")
     @JsonProperty(ParameterNameConfig.Member.NICKNAME)
     private String reviewerName;
+    @Schema(description = "리뷰어 프로필 이미지", example = "https://cdn.pixabay.com/photo/2023/10/14/09/20/mountains-8314422_1280.png")
+    @JsonProperty(ParameterNameConfig.Member.IMAGE)
+    private String reviewerProfile;
 
     @Schema(description = "리뷰 점수", example = "3.5463")
     @JsonProperty(ParameterNameConfig.Review.RATING)
@@ -63,6 +69,7 @@ public class ReviewResponseDto {
         Optional<Member> member = Optional.of(review).map(Review::getMember);
         this.reviewerId = member.map(Member::getId).orElse(null);
         this.reviewerName = member.map(Member::getNickname).orElse(null);
+        this.reviewerProfile = member.map(Member::getImage).map(URL::toString).orElse(null);
 
         this.reviewRating = review.getRating();
     }

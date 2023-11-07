@@ -63,6 +63,24 @@ public interface ReviewDocs {
             @RequestBody @Valid ReviewRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails);
     /////////
 
+    @Operation(
+            summary = "상품 리뷰 열람 API",
+            description = """
+                    상품 리뷰 열람 API
+                    """
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "정상 작동",
+            content = @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ReviewResponseDto.class)
+            )
+    )
+    ResponseEntity<ReviewResponseDto> readReviewOfItem(
+            Long itemId
+    );
+
 
     @Operation(
             summary = "댓글 수정 API",
