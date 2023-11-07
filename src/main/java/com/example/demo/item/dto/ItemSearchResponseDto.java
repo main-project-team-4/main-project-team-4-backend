@@ -48,6 +48,9 @@ public class ItemSearchResponseDto {
     @JsonProperty(ParameterNameConfig.Item.STATE)
     private String state;
     @Schema(description = "상품을 판매하는 상점 ID.", example = "1524")
+    @JsonProperty(ParameterNameConfig.Shop.ID)
+    private Long shopId;
+    @Schema(description = "상품을 판매하는 상점 이름.", example = "적절한 상점명")
     @JsonProperty(ParameterNameConfig.Shop.NAME)
     private String shopName;
 
@@ -75,6 +78,7 @@ public class ItemSearchResponseDto {
         this.state = state.orElse(State.SELLING).name();
 
         Optional<Shop> shop = Optional.of(entity).map(Item::getShop);
+        this.shopId = shop.map(Shop::getId).orElse(null);
         this.shopName = shop.map(Shop::getShopName).orElse(null);
     }
 }
