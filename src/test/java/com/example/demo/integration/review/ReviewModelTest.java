@@ -56,7 +56,7 @@ public class ReviewModelTest {
     void createReview() {
         // given
         ReviewRequestDto dto = new ReviewRequestDto();
-        dto.setShopId(1L);
+        dto.setItemId(1L);
         dto.setComment("적절한 리뷰 내용.");
         dto.setRating(1);
 
@@ -81,7 +81,7 @@ public class ReviewModelTest {
         String comment = "적절한 리뷰 내용.";
 
         ReviewRequestDto dto = new ReviewRequestDto();
-        dto.setShopId(1L);
+        dto.setItemId(1L);
         dto.setComment(comment);
         dto.setRating(1);
 
@@ -109,7 +109,7 @@ public class ReviewModelTest {
         String comment = "적절한 리뷰 내용.";
 
         ReviewRequestDto dto = new ReviewRequestDto();
-        dto.setShopId(1L);
+        dto.setItemId(1L);
         dto.setComment(comment);
         dto.setRating(1);
 
@@ -131,7 +131,7 @@ public class ReviewModelTest {
         String comment = "적절한 리뷰 내용.";
 
         ReviewRequestDto dto = new ReviewRequestDto();
-        dto.setShopId(1L);
+        dto.setItemId(1L);
         dto.setComment(comment);
         dto.setRating(1);
 
