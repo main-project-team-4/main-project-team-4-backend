@@ -4,6 +4,8 @@ import com.example.demo.dto.MessageResponseDto;
 import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.security.UserDetailsImpl;
 import com.example.demo.trade.dto.ItemStateRequestDto;
+import com.example.demo.trade.dto.MyOrdersResponseDto;
+import com.example.demo.trade.dto.MySalesResponseDto;
 import com.example.demo.trade.dto.TradeRequestDto;
 import com.example.demo.trade.service.TradeService;
 import com.example.demo.trade.type.State;
@@ -21,7 +23,7 @@ public class TradeController implements TradeDocs {
     private final TradeService tradeService;
 
     @GetMapping("/api/mypages/orders")
-    public ResponseEntity<Page<ItemSearchResponseDto>> readMyPageOrders(
+    public ResponseEntity<Page<MyOrdersResponseDto>> readMyPageOrders(
             @AuthenticationPrincipal UserDetailsImpl principal,
             @RequestParam(defaultValue = "SOLDOUT") State[] stateList,
             @PageableDefault Pageable pageable
@@ -30,7 +32,7 @@ public class TradeController implements TradeDocs {
     }
 
     @GetMapping("/api/mypages/sales")
-    public ResponseEntity<Page<ItemSearchResponseDto>> readMyPageSales(
+    public ResponseEntity<Page<MySalesResponseDto>> readMyPageSales(
             @AuthenticationPrincipal UserDetailsImpl principal,
             @RequestParam(defaultValue = "SOLDOUT") State[] stateList,
             @PageableDefault Pageable pageable

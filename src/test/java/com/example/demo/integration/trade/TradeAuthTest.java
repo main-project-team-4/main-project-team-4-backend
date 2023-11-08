@@ -1,8 +1,8 @@
 package com.example.demo.integration.trade;
 
 import com.example.demo.dto.MessageResponseDto;
-import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.trade.controller.TradeController;
+import com.example.demo.trade.dto.MyOrdersResponseDto;
 import com.example.demo.trade.dto.TradeRequestDto;
 import com.example.demo.trade.service.TradeService;
 import com.example.demo.trade.type.State;
@@ -57,7 +57,7 @@ public class TradeAuthTest {
                 .param("sort", "createdAt,desc");
         request = authTestUtil.setAccessToken(request);
 
-        ResponseEntity<Page<ItemSearchResponseDto>> result = ResponseEntity.ok(Page.empty());
+        ResponseEntity<Page<MyOrdersResponseDto>> result = ResponseEntity.ok(Page.empty());
         when(tradeService.readOrders(any(), any(), any()))
                 .thenReturn(result);
 
@@ -77,7 +77,7 @@ public class TradeAuthTest {
                 .param("size", "10")
                 .param("sort", "createdAt,desc");
 
-        ResponseEntity<Page<ItemSearchResponseDto>> result = ResponseEntity.ok(Page.empty());
+        ResponseEntity<Page<MyOrdersResponseDto>> result = ResponseEntity.ok(Page.empty());
         when(tradeService.readOrders(any(), any(), any()))
                 .thenReturn(result);
 
@@ -98,7 +98,7 @@ public class TradeAuthTest {
                 .param("sort", "createdAt,desc");
         request = authTestUtil.setAccessToken(request);
 
-        ResponseEntity<Page<ItemSearchResponseDto>> result = ResponseEntity.ok(Page.empty());
+        ResponseEntity<Page<MyOrdersResponseDto>> result = ResponseEntity.ok(Page.empty());
         when(tradeService.readOrders(any(), any(), any()))
                 .thenReturn(result);
 
@@ -118,7 +118,7 @@ public class TradeAuthTest {
                 .param("size", "10")
                 .param("sort", "createdAt,desc");
 
-        ResponseEntity<Page<ItemSearchResponseDto>> result = ResponseEntity.ok(Page.empty());
+        ResponseEntity<Page<MyOrdersResponseDto>> result = ResponseEntity.ok(Page.empty());
         when(tradeService.readOrders(any(), any(), any()))
                 .thenReturn(result);
 
