@@ -60,11 +60,11 @@ public class Item extends TimeStamp implements Serializable {
     @JoinColumn(name = "category_mid_id")
     private CategoryM categoryMidId;
 
-    @OneToMany(mappedBy = "item")
+    @OneToMany(mappedBy = "item", cascade = {CascadeType.REMOVE})
     @Column(name = "wish_list")
     private List<Wish> wishList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "item")
+    @OneToMany(mappedBy = "item", orphanRemoval = true)
     private List<ChatRoom> itemChatRoom = new ArrayList<>();
 
     @OneToOne(mappedBy = "item", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
