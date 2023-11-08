@@ -4,6 +4,7 @@ import com.example.demo.chat.dto.ChatMessageRequestDto;
 import com.example.demo.chat.dto.ChatMessageResponseDto;
 import com.example.demo.chat.dto.ChatRoomResponseDto;
 import com.example.demo.chat.entity.ChatMessage;
+import com.example.demo.chat.entity.ChatRoom;
 import com.example.demo.chat.entity.MessageType;
 //import com.example.demo.chat.redis.RedisPublisher;
 import com.example.demo.chat.repository.ChatMessageRepository;
@@ -45,6 +46,17 @@ public class ChatMessageService {
             log.info(message.getSender()+ "님이 입장하셨습니다.");
             return null;
         }
+
+        Long id = member.getId();
+        ChatRoom chatRoom = chatRoomRepository.findChatRoomById(message.getRoomId()).orElseThrow(() ->
+                new IllegalArgumentException("선택한 채팅방은 존재하지 않습니다.")
+        );
+
+        if((id.equals(chatRoom.getSeller().getId()) && chatRoom.getIsOut() == 2) ||
+           (id.equals(chatRoom.getConsumer().getId()) && chatRoom.getIsOut() == 1)){
+            chatRoom.isOutUpdate(0);
+        }
+        
         chatMessageRepository.save(message);
 
         // 1. 직렬화
