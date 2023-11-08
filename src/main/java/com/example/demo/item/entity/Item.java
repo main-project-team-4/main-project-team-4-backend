@@ -125,4 +125,15 @@ public class Item extends TimeStamp implements Serializable {
         this.main_image = main_image;
     }
 
+    public List<URL> getImageList() {
+        URL mainImage = this.getMain_image();
+        List<URL> subImageList = this.getSub_images();
+
+        List<URL> urlList = new ArrayList<>();
+        urlList.add(mainImage);
+        urlList.addAll(subImageList);
+
+        return urlList;
+    }
+
 }
