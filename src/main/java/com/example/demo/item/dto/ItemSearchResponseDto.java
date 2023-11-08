@@ -5,6 +5,7 @@ import com.example.demo.config.ParameterNameConfig;
 import com.example.demo.item.entity.Item;
 import com.example.demo.member.entity.Member;
 import com.example.demo.shop.entity.Shop;
+import com.example.demo.review.entity.Review;
 import com.example.demo.trade.type.State;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -59,6 +60,11 @@ public class ItemSearchResponseDto {
     @JsonProperty(ParameterNameConfig.Review.IS_REVIEW_WRITTEN)
     private Boolean isReviewWritten;
 
+    @Schema(description = "리뷰id", example = "true")
+    @JsonProperty(ParameterNameConfig.Review.ID)
+    private Long reviewId;
+
+
     public ItemSearchResponseDto(Item entity) {
         this.itemId = entity.getId();
         this.createdAt = entity.getCreatedAt();
@@ -85,5 +91,9 @@ public class ItemSearchResponseDto {
         Optional<Shop> shop = Optional.of(entity).map(Item::getShop);
         this.shopId = shop.map(Shop::getId).orElse(null);
         this.shopName = shop.map(Shop::getShopName).orElse(null);
+
+        Optional<Review> review = Optional.of(entity).map(Item::getReviewList).flatMap(list -> list.stream().findFirst());
+        this.isReviewWritten = review.map(Review::getId).isPresent();
+
     }
 }
