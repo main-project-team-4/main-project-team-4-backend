@@ -98,7 +98,7 @@ public class ChatRoomService {
                     .map(chatRoom -> new ChatRoomResponseDto(chatRoom, member))
                     .toList();
 
-            if (member.equals(deleteChatRoom.getSeller())){
+            if (id.equals(deleteChatRoom.getSeller().getId())){
                 isOut = 1;
             }
             else{
@@ -128,8 +128,17 @@ public class ChatRoomService {
 
         List<ChatRoomResponseDto> chatRoomList = chatRoomRepository.findAllBySellerIdOrConsumerId(id, id)
                 .stream()
-                .filter(chatRoom -> !(chatRoom.getSeller().equals(member) && chatRoom.getIsOut() == 1))
-                .filter(chatRoom -> !(chatRoom.getConsumer().equals(member) && chatRoom.getIsOut() == 2))
+                .filter(chatRoom -> {
+                    if (id.equals(chatRoom.getSeller().getId()) && chatRoom.getIsOut() == 1){
+                        return false;
+                    }
+                    else if (id.equals(chatRoom.getConsumer().getId()) && chatRoom.getIsOut() == 2){
+                        return false;
+                    }
+                    else {
+                        return true;
+                    }
+                })
                 .map(chatRoom -> new ChatRoomResponseDto(chatRoom, member))
                 .toList();
 
