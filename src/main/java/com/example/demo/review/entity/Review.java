@@ -60,7 +60,12 @@ public class Review extends TimeStamp {
     }
 
     public void update(ReviewRequestDto requestDto){
-        this.comment = requestDto.getComment();
+        if(requestDto.getComment() != null && !requestDto.getComment().isBlank()) {
+            this.comment = requestDto.getComment();
+        }
+        if(requestDto.getRating() != null) {
+            this.rating = requestDto.getRating();
+        }
     }
 
     public static Optional<Review> getReviewWrittenAtLast(List<Review> reviewList) {

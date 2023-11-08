@@ -58,7 +58,7 @@ public class ReviewModelTest {
         ReviewRequestDto dto = new ReviewRequestDto();
         dto.setItemId(1L);
         dto.setComment("적절한 리뷰 내용.");
-        dto.setRating(1);
+        dto.setRating(1d);
 
         Member member = memberRepository.findById(1L).orElseThrow();
 
@@ -83,7 +83,7 @@ public class ReviewModelTest {
         ReviewRequestDto dto = new ReviewRequestDto();
         dto.setItemId(1L);
         dto.setComment(comment);
-        dto.setRating(1);
+        dto.setRating(1d);
 
         Member member = memberRepository.findById(1L).orElseThrow();
         Review review = reviewRepository.findById(reviewId).orElseThrow();
@@ -111,7 +111,7 @@ public class ReviewModelTest {
         ReviewRequestDto dto = new ReviewRequestDto();
         dto.setItemId(1L);
         dto.setComment(comment);
-        dto.setRating(1);
+        dto.setRating(1d);
 
         Member member = memberRepository.findById(1L).orElseThrow();
 
@@ -133,7 +133,7 @@ public class ReviewModelTest {
         ReviewRequestDto dto = new ReviewRequestDto();
         dto.setItemId(1L);
         dto.setComment(comment);
-        dto.setRating(1);
+        dto.setRating(1d);
 
         Member member = memberRepository.findById(5L).orElseThrow();
 
