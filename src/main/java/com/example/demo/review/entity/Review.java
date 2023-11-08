@@ -47,6 +47,14 @@ public class Review extends TimeStamp {
         this.rating = (double) requestDto.getRating();
     }
 
+    public Review(ReviewRequestDto requestDto, Item item, Member member){
+        this.comment = requestDto.getComment();
+        this.shop = item.getShop();
+        this.member = member;
+        this.item = item;
+        this.rating = (double) requestDto.getRating();
+    }
+
     public void update(ReviewRequestDto requestDto){
         this.comment = requestDto.getComment();
     }

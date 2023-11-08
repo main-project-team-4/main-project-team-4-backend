@@ -24,14 +24,14 @@ insert into category_mid (id, name, parent) VALUES (2, 'man pants', 1);
 insert into category_mid (id, name, parent) VALUES (3, 'woman shirt', 2);
 insert into category_mid (id, name, parent) VALUES (4, 'woman pants', 2);
 
-insert into item (name, price, comment, category_mid_id) values ('jacket1', 10000, 'nice man shirt1', 1);
-insert into item (name, price, comment, category_mid_id) values ('jacket2', 5000, 'nice man shirt2', 1);
-insert into item (name, price, comment, category_mid_id) values ('jacket3', 5000, 'nice woman shirt3', 3);
-insert into item (name, price, comment, category_mid_id) values ('jacket4', 10000, 'nice woman shirt4', 3);
-insert into item (name, price, comment, category_mid_id) values ('jean1', 10000, 'nice man pants1', 2);
-insert into item (name, price, comment, category_mid_id) values ('jean2', 5000, 'nice man pants2', 2);
-insert into item (name, price, comment, category_mid_id) values ('jean3', 10000, 'nice woman pants3', 4);
-insert into item (name, price, comment, category_mid_id) values ('jean4', 5000, 'nice woman pants4', 4);
+insert into item (name, price, comment, category_mid_id, shop_id) values ('jacket1', 10000, 'nice man shirt1', 1, 1);
+insert into item (name, price, comment, category_mid_id, shop_id) values ('jacket2', 5000, 'nice man shirt2', 1, 1);
+insert into item (name, price, comment, category_mid_id, shop_id) values ('jacket3', 5000, 'nice woman shirt3', 3, 1);
+insert into item (name, price, comment, category_mid_id, shop_id) values ('jacket4', 10000, 'nice woman shirt4', 3, 1);
+insert into item (name, price, comment, category_mid_id, shop_id) values ('jean1', 10000, 'nice man pants1', 2, 1);
+insert into item (name, price, comment, category_mid_id, shop_id) values ('jean2', 5000, 'nice man pants2', 2, 1);
+insert into item (name, price, comment, category_mid_id, shop_id) values ('jean3', 10000, 'nice woman pants3', 4, 1);
+insert into item (name, price, comment, category_mid_id, shop_id) values ('jean4', 5000, 'nice woman pants4', 4, 1);
 
 insert into review (created_at, comment, rating, item_id, member_id, shop_id) values ('2023-07-10T11:25:59Z', 'Phasellus sit amet erat.', 4, 4, 1, 1);
 insert into review (created_at, comment, rating, item_id, member_id, shop_id) values ('2023-04-20T11:17:54Z', 'Donec vitae nisi.', 3, 1, 2, 2);

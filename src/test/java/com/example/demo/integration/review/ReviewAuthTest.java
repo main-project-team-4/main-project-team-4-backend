@@ -50,7 +50,7 @@ public class ReviewAuthTest {
     void createReview() throws Exception {
         // given
         ReviewRequestDto dto = new ReviewRequestDto();
-        dto.setShopId(1L);
+        dto.setItemId(1L);
         dto.setComment("적절한 리뷰 내용.");
 
         MockHttpServletRequestBuilder request = post("/api/reviews")
