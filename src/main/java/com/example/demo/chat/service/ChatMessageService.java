@@ -2,6 +2,7 @@ package com.example.demo.chat.service;
 
 import com.example.demo.chat.dto.ChatMessageRequestDto;
 import com.example.demo.chat.dto.ChatMessageResponseDto;
+import com.example.demo.chat.dto.ChatRoomResponseDto;
 import com.example.demo.chat.entity.ChatMessage;
 import com.example.demo.chat.entity.MessageType;
 //import com.example.demo.chat.redis.RedisPublisher;
@@ -13,6 +14,7 @@ import com.example.demo.repository.RedisRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.stereotype.Service;
@@ -62,11 +64,24 @@ public class ChatMessageService {
 
     // 이전 메세지 로드
     public List<ChatMessageResponseDto> loadMessages(Long roomId) {
-        List<ChatMessage> chatMessageList = redisMessageTemplate.opsForList().range("chat:roomId" + roomId, 0, 99);
-        List<ChatMessageResponseDto> chatMessageResponseDtoList = new ArrayList<>();
-        for (ChatMessage chatMessage : chatMessageList) {
-            chatMessageResponseDtoList.add(new ChatMessageResponseDto(chatMessage));
+        ValueOperations<String, ChatMessage> valueOperations = redisMessageTemplate.opsForValue();
+        boolean exists = valueOperations.getOperations().hasKey("chat:roomId" + roomId);
+
+        if(exists){
+            List<ChatMessage> chatMessageList = redisMessageTemplate.opsForList().range("chat:roomId" + roomId, 0, 99);
+            List<ChatMessageResponseDto> chatMessageResponseDtoList = new ArrayList<>();
+            for (ChatMessage chatMessage : chatMessageList) {
+                chatMessageResponseDtoList.add(new ChatMessageResponseDto(chatMessage));
+            }
+            return chatMessageResponseDtoList;
         }
-        return chatMessageResponseDtoList;
+        else{
+            List<ChatMessageResponseDto> chatMessageResponseDtoList = chatMessageRepository.findAllByRoomId(roomId)
+                    .stream()
+                    .map(ChatMessageResponseDto::new)
+                    .toList();
+
+            return chatMessageResponseDtoList;
+        }
     }
 }

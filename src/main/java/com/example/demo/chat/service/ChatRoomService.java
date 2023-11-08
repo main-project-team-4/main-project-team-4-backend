@@ -1,5 +1,6 @@
 package com.example.demo.chat.service;
 
+import com.example.demo.chat.dto.ChatMessageResponseDto;
 import com.example.demo.chat.dto.ChatRoomForItemResponseDto;
 import com.example.demo.chat.dto.ChatRoomResponseDto;
 import com.example.demo.chat.entity.ChatRoom;
@@ -80,6 +81,41 @@ public class ChatRoomService {
         return chatRoom;
     }
 
+    // 채팅방 삭제
+    public List<ChatRoomResponseDto> deleteChatRoom(Long roomId, Member member){
+        Long id = member.getId();
+        int isOut = chatRoomRepository.findIsOutById(roomId);
+        ChatRoom deleteChatRoom = chatRoomRepository.findChatRoomById(roomId).orElseThrow(() ->
+                new IllegalArgumentException("선택한 채팅방은 존재하지 않습니다.")
+        );
+
+        if(isOut == 0){
+            List<ChatRoomResponseDto> chatRoomList = chatRoomRepository.findAllBySellerIdOrConsumerId(id, id)
+                    .stream()
+                    .filter(chatRoom -> !chatRoom.getId().equals(roomId))
+                    .map(chatRoom -> new ChatRoomResponseDto(chatRoom, member))
+                    .toList();
+
+            if (member.getId().equals(deleteChatRoom.getSeller().getId())){
+                isOut = 1;
+            }
+            else{
+                isOut = 2;
+            }
+            deleteChatRoom.chatRoomStatusUpdate(isOut);
+            return chatRoomList;
+        }
+        else{
+            chatRoomRepository.delete(deleteChatRoom);
+
+            List<ChatRoomResponseDto> chatRoomList = chatRoomRepository.findAllBySellerIdOrConsumerId(id, id)
+                    .stream()
+                    .map(chatRoom -> new ChatRoomResponseDto(chatRoom, member))
+                    .toList();
+            return chatRoomList;
+        }
+    }
+
     public ChannelTopic getTopic(Long roomId) {
         return topics.get(roomId.toString());
     }
@@ -90,6 +126,8 @@ public class ChatRoomService {
 
         List<ChatRoomResponseDto> chatRoomList = chatRoomRepository.findAllBySellerIdOrConsumerId(id, id)
                 .stream()
+                .filter(chatRoom -> !(chatRoom.getSeller().getId().equals(id) && chatRoom.getIsOut() == 1))
+                .filter(chatRoom -> !(chatRoom.getSeller().getId().equals(id) && chatRoom.getIsOut() == 2))
                 .map(chatRoom -> new ChatRoomResponseDto(chatRoom, member))
                 .toList();
 
