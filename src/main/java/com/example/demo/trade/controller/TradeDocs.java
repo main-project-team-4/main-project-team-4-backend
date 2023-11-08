@@ -4,6 +4,8 @@ import com.example.demo.dto.MessageResponseDto;
 import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.security.UserDetailsImpl;
 import com.example.demo.trade.dto.ItemStateRequestDto;
+import com.example.demo.trade.dto.MyOrdersResponseDto;
+import com.example.demo.trade.dto.MySalesResponseDto;
 import com.example.demo.trade.dto.TradeRequestDto;
 import com.example.demo.trade.type.State;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,7 +30,7 @@ public interface TradeDocs {
                     사용자가 구매한 내역.
                     """
     )
-    ResponseEntity<Page<ItemSearchResponseDto>> readMyPageOrders(
+    ResponseEntity<Page<MyOrdersResponseDto>> readMyPageOrders(
             UserDetailsImpl principal,
             State[] stateList,
             Pageable pageable
@@ -40,7 +42,7 @@ public interface TradeDocs {
                     사용자가 판매한 내역.
                     """
     )
-    ResponseEntity<Page<ItemSearchResponseDto>> readMyPageSales(
+    ResponseEntity<Page<MySalesResponseDto>> readMyPageSales(
             UserDetailsImpl principal,
             State[] stateList,
             Pageable pageable

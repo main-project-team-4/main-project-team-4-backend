@@ -4,6 +4,8 @@ import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.item.entity.Item;
 import com.example.demo.member.entity.Member;
 import com.example.demo.member.repository.MemberRepository;
+import com.example.demo.trade.dto.MyOrdersResponseDto;
+import com.example.demo.trade.dto.MySalesResponseDto;
 import com.example.demo.trade.dto.TradeRequestDto;
 import com.example.demo.trade.entity.Trade;
 import com.example.demo.trade.repository.TradeRepository;
@@ -64,11 +66,11 @@ public class TradeModelTest {
         Pageable pageable = PageRequest.of(0, 10);
 
         // when
-        ResponseEntity<Page<ItemSearchResponseDto>> result = tradeService.readOrders(member, states, pageable);
+        ResponseEntity<Page<MyOrdersResponseDto>> result = tradeService.readOrders(member, states, pageable);
 
         // then
         assertThat(result.getBody().getContent())
-                .extracting(ItemSearchResponseDto::getItemId)
+                .extracting(MyOrdersResponseDto::getItemId)
                 .containsAnyElementsOf(List.of(2L, 3L, 4L));
     }
 
@@ -82,11 +84,11 @@ public class TradeModelTest {
         Pageable pageable = PageRequest.of(0, 10);
 
         // when
-        ResponseEntity<Page<ItemSearchResponseDto>> result = tradeService.readSales(member, states, pageable);
+        ResponseEntity<Page<MySalesResponseDto>> result = tradeService.readSales(member, states, pageable);
 
         // then
         assertThat(result.getBody().getContent())
-                .extracting(ItemSearchResponseDto::getItemId)
+                .extracting(MySalesResponseDto::getItemId)
                 .containsAnyElementsOf(List.of(1L, 2L));
     }
 

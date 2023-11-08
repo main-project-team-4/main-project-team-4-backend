@@ -1,11 +1,11 @@
-package com.example.demo.item.dto;
+package com.example.demo.trade.dto;
 
 import com.example.demo.category.entity.CategoryM;
 import com.example.demo.config.ParameterNameConfig;
 import com.example.demo.item.entity.Item;
 import com.example.demo.member.entity.Member;
-import com.example.demo.shop.entity.Shop;
 import com.example.demo.review.entity.Review;
+import com.example.demo.shop.entity.Shop;
 import com.example.demo.trade.type.State;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Getter @Setter @AllArgsConstructor
-public class ItemSearchResponseDto {
+public class MyOrdersResponseDto {
     @Schema(description = "상품의 id", example = "1")
     @JsonProperty(ParameterNameConfig.Item.ID)
     private Long itemId;
@@ -56,7 +56,16 @@ public class ItemSearchResponseDto {
     @JsonProperty(ParameterNameConfig.Shop.NAME)
     private String shopName;
 
-    public ItemSearchResponseDto(Item entity) {
+    @Schema(description = "리뷰가 작성되어 있는지 아닌지 여부", example = "true")
+    @JsonProperty(ParameterNameConfig.Review.IS_REVIEW_WRITTEN)
+    private Boolean isReviewWritten;
+
+    @Schema(description = "리뷰id", example = "4812")
+    @JsonProperty(ParameterNameConfig.Review.ID)
+    private Long reviewId;
+
+
+    public MyOrdersResponseDto(Item entity) {
         this.itemId = entity.getId();
         this.createdAt = entity.getCreatedAt();
 
@@ -82,5 +91,9 @@ public class ItemSearchResponseDto {
         Optional<Shop> shop = Optional.of(entity).map(Item::getShop);
         this.shopId = shop.map(Shop::getId).orElse(null);
         this.shopName = shop.map(Shop::getShopName).orElse(null);
+
+        Optional<Review> reviewWrittenAtLast = Review.getReviewWrittenAtLast(entity.getReviewList());
+        this.isReviewWritten = reviewWrittenAtLast.isPresent();
+        this.reviewId = reviewWrittenAtLast.map(Review::getId).orElse(null);
     }
 }

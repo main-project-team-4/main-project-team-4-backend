@@ -11,6 +11,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+
 @Entity
 @Table(name ="review")
 @Getter
@@ -57,5 +61,11 @@ public class Review extends TimeStamp {
 
     public void update(ReviewRequestDto requestDto){
         this.comment = requestDto.getComment();
+    }
+
+    public static Optional<Review> getReviewWrittenAtLast(List<Review> reviewList) {
+        Comparator<Review> comparatorByCreatedAt = Comparator.comparing(Review::getCreatedAt);
+        return reviewList.stream()
+                .max(comparatorByCreatedAt);
     }
 }
