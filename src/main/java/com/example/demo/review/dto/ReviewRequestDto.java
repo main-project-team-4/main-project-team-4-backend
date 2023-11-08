@@ -23,5 +23,5 @@ public class ReviewRequestDto {
     private String comment;
     @Schema(description = "리뷰 평점", example = "5")
     @JsonProperty(ParameterNameConfig.Review.RATING)
-    private int rating;
+    private Double rating;
 }
