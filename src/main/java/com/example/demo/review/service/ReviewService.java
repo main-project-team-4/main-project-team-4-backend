@@ -18,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class ReviewService {
@@ -81,7 +83,8 @@ public class ReviewService {
     }
 
     public ResponseEntity<ReviewResponseDto> readReviewOfItem(Long itemId) {
-        ReviewResponseDto dto = reviewRepository.findByItem_Id(itemId)
+        List<Review> reviewList = reviewRepository.findByItem_Id(itemId);
+        ReviewResponseDto dto = Review.getReviewWrittenAtLast(reviewList)
                 .map(ReviewResponseDto::new)
                 .orElseGet(ReviewResponseDto::new);
         return ResponseEntity.ok(dto);
