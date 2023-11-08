@@ -2,6 +2,8 @@ package com.example.demo.review.service;
 
 
 import com.example.demo.dto.MessageResponseDto;
+import com.example.demo.item.entity.Item;
+import com.example.demo.item.repository.ItemRepository;
 import com.example.demo.member.entity.Member;
 import com.example.demo.review.dto.ReviewRequestDto;
 import com.example.demo.review.dto.ReviewResponseDto;
@@ -21,14 +23,22 @@ import org.springframework.transaction.annotation.Transactional;
 public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ShopRepository shopRepository;
+    private final ItemRepository itemRepository;
 
 
+    @Transactional
     public ResponseEntity<MessageResponseDto> createReview(ReviewRequestDto requestDto, Member member) {
-        Shop shop = findShop(requestDto.getShopId());
-        Review review = new Review(requestDto, shop,member);
+        Item item = findItemById(requestDto.getItemId());
+        Review review = new Review(requestDto, item, member);
         reviewRepository.save(review);
+
         MessageResponseDto msg = new MessageResponseDto("리뷰 작성에 성공하였습니다.", 200);
         return ResponseEntity.status(200).body(msg);
+    }
+
+    private Item findItemById(Long itemId) {
+        return itemRepository.findById(itemId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 상품은 존재하지 않습니다."));
     }
 
     @Transactional
@@ -44,6 +54,7 @@ public class ReviewService {
         return ResponseEntity.status(200).body(msg);
     }
 
+    @Transactional
     public ResponseEntity<MessageResponseDto> deleteReview(Long reviewId, Member member) {
         Review review = reviewRepository.findById(reviewId).orElseThrow(
                 () -> new IllegalArgumentException("해당 리뷰가 존재하지 않습니다.")

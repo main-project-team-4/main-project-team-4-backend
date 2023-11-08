@@ -60,11 +60,11 @@ public class Item extends TimeStamp implements Serializable {
     @JoinColumn(name = "category_mid_id")
     private CategoryM categoryMidId;
 
-    @OneToMany(mappedBy = "item")
+    @OneToMany(mappedBy = "item", cascade = {CascadeType.REMOVE})
     @Column(name = "wish_list")
     private List<Wish> wishList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "item")
+    @OneToMany(mappedBy = "item", orphanRemoval = true)
     private List<ChatRoom> itemChatRoom = new ArrayList<>();
 
     @OneToOne(mappedBy = "item", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
@@ -123,6 +123,17 @@ public class Item extends TimeStamp implements Serializable {
 
     public void updateMainImage(URL main_image) {
         this.main_image = main_image;
+    }
+
+    public List<URL> getImageList() {
+        URL mainImage = this.getMain_image();
+        List<URL> subImageList = this.getSub_images();
+
+        List<URL> urlList = new ArrayList<>();
+        urlList.add(mainImage);
+        urlList.addAll(subImageList);
+
+        return urlList;
     }
 
 }
