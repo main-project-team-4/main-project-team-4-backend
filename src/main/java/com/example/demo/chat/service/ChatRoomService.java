@@ -84,7 +84,7 @@ public class ChatRoomService {
     // 채팅방 삭제
     public List<ChatRoomResponseDto> deleteChatRoom(Long roomId, Member member){
         Long id = member.getId();
-        int isOut = chatRoomRepository.findIsOutById(roomId);
+        int isOut = chatRoomRepository.findIs_OutById(roomId);
         ChatRoom deleteChatRoom = chatRoomRepository.findChatRoomById(roomId).orElseThrow(() ->
                 new IllegalArgumentException("선택한 채팅방은 존재하지 않습니다.")
         );
