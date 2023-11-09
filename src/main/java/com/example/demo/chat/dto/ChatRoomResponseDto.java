@@ -73,6 +73,7 @@ public class ChatRoomResponseDto {
         this.consumerName = chatRoom.getConsumer().getNickname();
         this.sender = member.getNickname();
         this.itemName = chatRoom.getItem().getName();
+        this.itemPrice = chatRoom.getItem().getPrice();
         Optional<URL> sellerImage = Optional.of(chatRoom.getSeller()).map(Member::getImage);
         this.sellerProfileImage = sellerImage.orElse(null);
         Optional<URL> consumerImage = Optional.of(chatRoom.getConsumer()).map(Member::getImage);
