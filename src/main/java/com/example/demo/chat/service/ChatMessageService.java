@@ -46,8 +46,8 @@ public class ChatMessageService {
     // 새 메세지 전송 및 저장
     @Transactional
     public ChatMessageResponseDto sendMessages(ChatMessageRequestDto requestDto, Member member) {
-        // ChatMessage message = requestDto.toEntity();
-        ChatMessage message = new ChatMessage(requestDto);
+        ChatMessage message = requestDto.toEntity();
+        // ChatMessage message = new ChatMessage(requestDto);
 
         // 퇴장 메세지
         if(MessageType.QUIT.equals(message.getType())){

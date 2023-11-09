@@ -39,14 +39,14 @@ public class ChatMessage extends TimeStamp {
         this.type = type;
     }
 
-    public ChatMessage(ChatMessageRequestDto requestDto){
-        this.chatRoom = new ChatRoom();
-        this.chatRoom.setId(requestDto.getChatRoomId());
-        this.roomId = requestDto.getChatRoomId();
-        this.sender = requestDto.getSenderNickname();
-        this.message = requestDto.getMessage();
-        this.type = requestDto.getType();
-    }
+//    public ChatMessage(ChatMessageRequestDto requestDto){
+//        this.chatRoom = new ChatRoom();
+//        this.chatRoom.setId(requestDto.getChatRoomId());
+//        this.roomId = requestDto.getChatRoomId();
+//        this.sender = requestDto.getSenderNickname();
+//        this.message = requestDto.getMessage();
+//        this.type = requestDto.getType();
+//    }
 
     public void setSender(String sender){
         this.sender = sender;
