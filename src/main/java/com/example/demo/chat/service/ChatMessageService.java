@@ -38,7 +38,6 @@ public class ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final MemberRepository memberRepository;
-    private final ChatRoomService chatRoomService;
     //private final RedisPublisher redisPublisher;
     private final RedisRepository redisRepository;
     private final ChannelTopic channelTopic;
@@ -47,7 +46,6 @@ public class ChatMessageService {
     @Transactional
     public ChatMessageResponseDto sendMessages(ChatMessageRequestDto requestDto, Member member) {
         ChatMessage message = requestDto.toEntity();
-        // ChatMessage message = new ChatMessage(requestDto);
 
         // 퇴장 메세지
         if(MessageType.QUIT.equals(message.getType())){

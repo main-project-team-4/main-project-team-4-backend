@@ -31,12 +31,15 @@ public class ChatRoomResponseDto {
     @JsonProperty(ParameterNameConfig.ChatRoom.CONSUMER)
     private String consumerName;
 
+    @JsonProperty(ParameterNameConfig.Item.ID)
+    private Long itemId;
+
     @Schema(description = "아이템 이름", example = "아비렉스 가죽자켓")
     @JsonProperty(ParameterNameConfig.Item.NAME)
     private String itemName;
 
-    @JsonProperty(ParameterNameConfig.Item.ID)
-    private Long itemId;
+    @JsonProperty(ParameterNameConfig.Item.PRICE)
+    private int itemPrice;
 
     @Schema(description = "로그인한 멤버 닉네임", example = "고기닭고기")
     @JsonProperty(ParameterNameConfig.ChatRoom.SENDER)
@@ -51,6 +54,7 @@ public class ChatRoomResponseDto {
     @JsonProperty(ParameterNameConfig.Item.MAIN_IMAGE)
     private URL itemImage;
 
+
     public ChatRoomResponseDto(ChatRoom chatRoom, Item item){
         this.roomId = chatRoom.getId();
         this.roomName = chatRoom.getRoomName();
@@ -58,6 +62,8 @@ public class ChatRoomResponseDto {
         this.consumerName = chatRoom.getConsumer().getNickname();
         this.itemId = item.getId();
         this.itemName = item.getName();
+        this.itemPrice = item.getPrice();
+        this.itemImage = item.getMain_image();
     }
 
     public ChatRoomResponseDto(ChatRoom chatRoom, Member member) {
