@@ -4,6 +4,7 @@ package com.example.demo.wish.controller;
 import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.security.UserDetailsImpl;
 import com.example.demo.trade.type.State;
+import com.example.demo.wish.dto.TopItemResponseDto;
 import com.example.demo.wish.dto.WishListResponseDto;
 import com.example.demo.wish.dto.WishReadResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -109,10 +110,10 @@ public interface WishDocs {
             description = "정상 작동",
             content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ItemSearchResponseDto.class)
+                    schema = @Schema(implementation = TopItemResponseDto.class)
             )
     )
-    ResponseEntity<Page<ItemSearchResponseDto>> readPopularItems(
+    ResponseEntity<Page<TopItemResponseDto>> readPopularItems(
             State[] stateList,
             Pageable pageable
     );
