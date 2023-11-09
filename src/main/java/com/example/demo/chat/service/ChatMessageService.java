@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -84,32 +85,39 @@ public class ChatMessageService {
     // 이전 메세지 로드
     // @Cacheable(value = "chatMessages", key = "#roomId")
     public List<ChatMessageResponseDto> loadMessages(Long roomId) {
-        Long chatMessageCount = redisMessageTemplate.opsForList().size("chatMessages::" + roomId);
+        List<ChatMessageResponseDto> mysqlResponseDtoList = chatMessageRepository.findAllByRoomId(roomId)
+                .stream()
+                .limit(100)
+                .map(ChatMessageResponseDto::new)
+                .toList();
 
-        if (chatMessageCount == null) {
-            chatMessageCount = 0L;
+        Long redisChatMessageCount = redisMessageTemplate.opsForList().size("chatMessages::" + roomId);
+        int mysqlChatMessageCount = mysqlResponseDtoList.size();
+
+        if (redisChatMessageCount == null) {
+            redisChatMessageCount = 0L;
         }
 
         // redis 에 데이터가 있을 때
-        if(chatMessageCount != 0){
-            // redis 에 데이터가 100개 미만으로 있을 때 - mysql + redis
-            if(chatMessageCount < 100){
-                List<ChatMessageResponseDto> chatMessageResponseDtoList = chatMessageRepository.findAllByRoomId(roomId)
-                        .stream()
-                        .limit(100 - chatMessageCount)
-                        .map(ChatMessageResponseDto::new)
-                        .toList();
-
-                List<ChatMessage> chatMessageList = redisMessageTemplate.opsForList().range("chatMessages::" + roomId, 0, chatMessageCount);
+        if(redisChatMessageCount != 0){
+            // redis 데이터랑 mysql 데이터랑 같을 때 + redis 데이터만 100개 이상일 때는 redis 만
+            if(redisChatMessageCount == mysqlChatMessageCount || redisChatMessageCount >= 100){
+                List<ChatMessage> chatMessageList = redisMessageTemplate.opsForList().range("chatMessages::" + roomId, 0, 99);
+                List<ChatMessageResponseDto> chatMessageResponseDtoList = new ArrayList<>();
                 for (ChatMessage chatMessage : chatMessageList) {
                     chatMessageResponseDtoList.add(new ChatMessageResponseDto(chatMessage));
                 }
                 return chatMessageResponseDtoList;
             }
-            // redis 에 데이터가 100개 이상으로 있을 때 - redis 만
+            // redis 데이터랑 mysql 데이터랑 다를 때
             else{
-                List<ChatMessage> chatMessageList = redisMessageTemplate.opsForList().range("chatMessages::" + roomId, 0, 99);
-                List<ChatMessageResponseDto> chatMessageResponseDtoList = new ArrayList<>();
+                List<ChatMessageResponseDto> chatMessageResponseDtoList = chatMessageRepository.findAllByRoomId(roomId)
+                        .stream()
+                        .limit(100 - redisChatMessageCount)
+                        .map(ChatMessageResponseDto::new)
+                        .collect(Collectors.toList());
+
+                List<ChatMessage> chatMessageList = redisMessageTemplate.opsForList().range("chatMessages::" + roomId, 0, redisChatMessageCount);
                 for (ChatMessage chatMessage : chatMessageList) {
                     chatMessageResponseDtoList.add(new ChatMessageResponseDto(chatMessage));
                 }
