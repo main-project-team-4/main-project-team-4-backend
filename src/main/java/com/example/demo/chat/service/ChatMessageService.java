@@ -46,15 +46,30 @@ public class ChatMessageService {
         ChatMessage message = requestDto.toEntity();
 
         Optional<Member> sender = memberRepository.findByNickname(message.getSender());
-        
+
         Long id = sender.orElseThrow().getId();
         ChatRoom chatRoom = chatRoomRepository.findChatRoomById(message.getRoomId()).orElseThrow(() ->
                 new IllegalArgumentException("선택한 채팅방은 존재하지 않습니다.")
         );
 
+        log.info("isOut 1 로직 들어가기 전 / 로그인한 내 아이디 : "+id);
+        log.info("isOut 1 로직 들어가기 전 / seller 아이디 : "+chatRoom.getSeller().getId());
+        log.info("isOut 1 로직 들어가기 전 / seller 아이디 : "+chatRoom.getConsumer().getId());
+        log.info("isOut 1 로직 들어가기 전 / 채팅방 isOut Status : "+chatRoom.getIsOut());
+        if((id.equals(chatRoom.getSeller().getId()) && chatRoom.getIsOut() == 1) ||
+           (id.equals(chatRoom.getConsumer().getId()) && chatRoom.getIsOut() == 2)){
+            chatRoom.isOutUpdate(0);
+            log.info("isOut 1 완료");
+        }
+
+        log.info("isOut 2 로직 들어가기 전 / 로그인한 내 아이디 : "+id);
+        log.info("isOut 2 로직 들어가기 전 / seller 아이디 : "+chatRoom.getSeller().getId());
+        log.info("isOut 2 로직 들어가기 전 / seller 아이디 : "+chatRoom.getConsumer().getId());
+        log.info("isOut 2 로직 들어가기 전 / 채팅방 isOut Status : "+chatRoom.getIsOut());
         if((id.equals(chatRoom.getSeller().getId()) && chatRoom.getIsOut() == 2) ||
            (id.equals(chatRoom.getConsumer().getId()) && chatRoom.getIsOut() == 1)){
             chatRoom.isOutUpdate(0);
+            log.info("isOut 2 완료");
         }
 
         chatMessageRepository.save(message);
@@ -63,7 +78,7 @@ public class ChatMessageService {
         redisMessageTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(ChatMessage.class));
 
         // 2. redis 저장
-        redisMessageTemplate.opsForList().rightPush("chat:roomId" + message.getRoomId(), message);
+        redisMessageTemplate.opsForList().rightPush("chatMessages::" + message.getRoomId(), message);
 
         // 3. expire 을 이용해서, Key 를 만료시킬 수 있음
         // redisTemplateMessage.expire(message.getRoomId(), 1, TimeUnit.MINUTES);
@@ -78,10 +93,10 @@ public class ChatMessageService {
     @Cacheable(value = "chatMessages", key = "#roomId")
     public List<ChatMessageResponseDto> loadMessages(Long roomId) {
         ValueOperations<String, ChatMessage> valueOperations = redisMessageTemplate.opsForValue();
-        boolean exists = valueOperations.getOperations().hasKey("chat:roomId" + roomId);
+        boolean exists = valueOperations.getOperations().hasKey("chatMessages::" + roomId);
 
         if(exists){
-            Long chatMessageCount = redisMessageTemplate.opsForList().size("chat:roomId" + roomId);
+            Long chatMessageCount = redisMessageTemplate.opsForList().size("chatMessages::" + roomId);
             if (chatMessageCount == null) {
                 chatMessageCount = 0L;
             }
@@ -93,7 +108,7 @@ public class ChatMessageService {
                         .map(ChatMessageResponseDto::new)
                         .toList();
 
-                List<ChatMessage> chatMessageList = redisMessageTemplate.opsForList().range("chat:roomId" + roomId, 0, chatMessageCount);
+                List<ChatMessage> chatMessageList = redisMessageTemplate.opsForList().range("chatMessages::" + roomId, 0, chatMessageCount);
                 for (ChatMessage chatMessage : chatMessageList) {
                     chatMessageResponseDtoList.add(new ChatMessageResponseDto(chatMessage));
                 }
@@ -101,7 +116,7 @@ public class ChatMessageService {
             }
 
             else{
-                List<ChatMessage> chatMessageList = redisMessageTemplate.opsForList().range("chat:roomId" + roomId, 0, 99);
+                List<ChatMessage> chatMessageList = redisMessageTemplate.opsForList().range("chatMessages::" + roomId, 0, 99);
                 List<ChatMessageResponseDto> chatMessageResponseDtoList = new ArrayList<>();
                 for (ChatMessage chatMessage : chatMessageList) {
                     chatMessageResponseDtoList.add(new ChatMessageResponseDto(chatMessage));
