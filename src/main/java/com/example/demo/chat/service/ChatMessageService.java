@@ -13,6 +13,7 @@ import com.example.demo.entity.ResponseDto;
 import com.example.demo.member.entity.Member;
 import com.example.demo.member.repository.MemberRepository;
 import com.example.demo.repository.RedisRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
@@ -42,6 +43,7 @@ public class ChatMessageService {
     private final ChannelTopic channelTopic;
 
     // 새 메세지 전송 및 저장
+    @Transactional
     public ChatMessageResponseDto sendMessages(ChatMessageRequestDto requestDto, Member member) {
         ChatMessage message = requestDto.toEntity();
 
@@ -90,7 +92,7 @@ public class ChatMessageService {
     }
 
     // 이전 메세지 로드
-    @Cacheable(value = "chatMessages", key = "#roomId")
+    // @Cacheable(value = "chatMessages", key = "#roomId")
     public List<ChatMessageResponseDto> loadMessages(Long roomId) {
         ValueOperations<String, ChatMessage> valueOperations = redisMessageTemplate.opsForValue();
         boolean exists = valueOperations.getOperations().hasKey("chatMessages::" + roomId);
