@@ -48,6 +48,11 @@ public class ChatMessageService {
     public ChatMessageResponseDto sendMessages(ChatMessageRequestDto requestDto, Member member) {
         ChatMessage message = requestDto.toEntity();
 
+        // 퇴장 메세지
+        if(MessageType.QUIT.equals(message.getType())){
+            return new ChatMessageResponseDto(message);
+        }
+
         Member sender = memberRepository.findByNickname(requestDto.getSenderNickname()).orElseThrow(() ->
                 new IllegalArgumentException("해당 유저는 존재하지 않습니다.")
         );
