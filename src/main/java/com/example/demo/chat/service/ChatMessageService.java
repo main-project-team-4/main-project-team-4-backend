@@ -57,7 +57,7 @@ public class ChatMessageService {
                 new IllegalArgumentException("해당 유저는 존재하지 않습니다.")
         );
 
-        Long id = sender.getId();
+        Long id = member.getId();
 
         ChatRoom chatRoom = chatRoomRepository.findChatRoomById(message.getRoomId()).orElseThrow(() ->
                 new IllegalArgumentException("선택한 채팅방은 존재하지 않습니다.")
