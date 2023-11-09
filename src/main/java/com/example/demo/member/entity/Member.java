@@ -46,10 +46,10 @@ public class Member implements Serializable {
     @OneToMany(mappedBy = "member", cascade = {CascadeType.REMOVE})
     private List<Follow> followList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "seller")
+    @OneToMany(mappedBy = "seller", orphanRemoval = true)
     private List<ChatRoom> sellerChatRoomList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "consumer")
+    @OneToMany(mappedBy = "consumer", orphanRemoval = true)
     private List<ChatRoom> consumerChatRoomList = new ArrayList<>();
 
     @OneToMany(mappedBy = "sellerId", cascade = {CascadeType.REMOVE})
