@@ -48,9 +48,12 @@ public class ChatMessageService {
     public ChatMessageResponseDto sendMessages(ChatMessageRequestDto requestDto, Member member) {
         ChatMessage message = requestDto.toEntity();
 
-        Optional<Member> sender = memberRepository.findByNickname(message.getSender());
+        member = memberRepository.findByNickname(message.getSender()).orElseThrow(() ->
+                new IllegalArgumentException("해당 유저는 존재하지 않습니다.")
+        );
 
-        Long id = sender.orElseThrow().getId();
+        Long id = member.getId();
+
         ChatRoom chatRoom = chatRoomRepository.findChatRoomById(message.getRoomId()).orElseThrow(() ->
                 new IllegalArgumentException("선택한 채팅방은 존재하지 않습니다.")
         );
