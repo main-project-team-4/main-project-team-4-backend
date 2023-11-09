@@ -14,7 +14,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -54,7 +53,7 @@ public class LocationAuthTest {
         request = authTestUtil.setAccessToken(request);
 
         ResponseEntity<Page<ItemSearchResponseDto>> result = ResponseEntity.ok(Page.empty());
-        when(itemService.readNearbyItems(any(), any()))
+        when(itemService.readNearbyItems(any(), any(), any()))
                 .thenReturn(result);
 
         // when & then
@@ -73,7 +72,7 @@ public class LocationAuthTest {
                 .param("sort", "createdAt,desc");
 
         ResponseEntity<Page<ItemSearchResponseDto>> result = ResponseEntity.ok(Page.empty());
-        when(itemService.readNearbyItems(any(), any()))
+        when(itemService.readNearbyItems(any(), any(), any()))
                 .thenReturn(result);
 
         // when & then

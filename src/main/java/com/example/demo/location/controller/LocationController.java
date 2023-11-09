@@ -9,6 +9,7 @@ import com.example.demo.location.entity.Location;
 import com.example.demo.location.service.LocationService;
 import com.example.demo.member.entity.Member;
 import com.example.demo.security.UserDetailsImpl;
+import com.example.demo.trade.type.State;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -37,10 +38,11 @@ public class LocationController implements LocationDocs{
     @GetMapping("/nearby-items")
     public ResponseEntity<Page<ItemSearchResponseDto>> readNearbyItems(
             @AuthenticationPrincipal UserDetailsImpl principal,
+            @RequestParam(required = false) State[] stateList,
             @PageableDefault Pageable pageable
     ) {
         Member member = principal.getMember();
-        return itemService.readNearbyItems(member, pageable);
+        return itemService.readNearbyItems(member, stateList, pageable);
     }
 }
 
