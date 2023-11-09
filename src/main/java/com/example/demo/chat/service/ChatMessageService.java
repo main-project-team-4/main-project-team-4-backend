@@ -11,6 +11,7 @@ import com.example.demo.chat.repository.ChatMessageRepository;
 import com.example.demo.chat.repository.ChatRoomRepository;
 import com.example.demo.entity.ResponseDto;
 import com.example.demo.member.entity.Member;
+import com.example.demo.member.repository.MemberRepository;
 import com.example.demo.repository.RedisRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -33,6 +35,7 @@ public class ChatMessageService {
     private final RedisTemplate<String, ChatMessage> redisMessageTemplate;
     private final ChatMessageRepository chatMessageRepository;
     private final ChatRoomRepository chatRoomRepository;
+    private final MemberRepository memberRepository;
     private final ChatRoomService chatRoomService;
     //private final RedisPublisher redisPublisher;
     private final RedisRepository redisRepository;
@@ -41,14 +44,10 @@ public class ChatMessageService {
     // 새 메세지 전송 및 저장
     public ChatMessageResponseDto sendMessages(ChatMessageRequestDto requestDto, Member member) {
         ChatMessage message = requestDto.toEntity();
-        if (MessageType.ENTER.equals(message.getType())) {
-            chatRoomService.getRoom(message.getRoomId(), member);
-            // message.setMessage(message.getSender() + "님이 입장하셨습니다.");
-            log.info(message.getSender()+ "님이 입장하셨습니다.");
-            return null;
-        }
 
-        Long id = member.getId();
+        Optional<Member> sender = memberRepository.findByNickname(message.getSender());
+        
+        Long id = sender.orElseThrow().getId();
         ChatRoom chatRoom = chatRoomRepository.findChatRoomById(message.getRoomId()).orElseThrow(() ->
                 new IllegalArgumentException("선택한 채팅방은 존재하지 않습니다.")
         );
