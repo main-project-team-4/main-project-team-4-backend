@@ -54,24 +54,14 @@ public class ChatMessageService {
                 new IllegalArgumentException("선택한 채팅방은 존재하지 않습니다.")
         );
 
-        log.info("isOut 1 로직 들어가기 전 / 로그인한 내 아이디 : "+id);
-        log.info("isOut 1 로직 들어가기 전 / seller 아이디 : "+chatRoom.getSeller().getId());
-        log.info("isOut 1 로직 들어가기 전 / seller 아이디 : "+chatRoom.getConsumer().getId());
-        log.info("isOut 1 로직 들어가기 전 / 채팅방 isOut Status : "+chatRoom.getIsOut());
         if((id.equals(chatRoom.getSeller().getId()) && chatRoom.getIsOut() == 1) ||
            (id.equals(chatRoom.getConsumer().getId()) && chatRoom.getIsOut() == 2)){
             chatRoom.isOutUpdate(0);
-            log.info("isOut 1 완료");
         }
 
-        log.info("isOut 2 로직 들어가기 전 / 로그인한 내 아이디 : "+id);
-        log.info("isOut 2 로직 들어가기 전 / seller 아이디 : "+chatRoom.getSeller().getId());
-        log.info("isOut 2 로직 들어가기 전 / seller 아이디 : "+chatRoom.getConsumer().getId());
-        log.info("isOut 2 로직 들어가기 전 / 채팅방 isOut Status : "+chatRoom.getIsOut());
         if((id.equals(chatRoom.getSeller().getId()) && chatRoom.getIsOut() == 2) ||
            (id.equals(chatRoom.getConsumer().getId()) && chatRoom.getIsOut() == 1)){
             chatRoom.isOutUpdate(0);
-            log.info("isOut 2 완료");
         }
 
         chatMessageRepository.save(message);
@@ -94,16 +84,16 @@ public class ChatMessageService {
     // 이전 메세지 로드
     // @Cacheable(value = "chatMessages", key = "#roomId")
     public List<ChatMessageResponseDto> loadMessages(Long roomId) {
-        ValueOperations<String, ChatMessage> valueOperations = redisMessageTemplate.opsForValue();
-        boolean exists = valueOperations.getOperations().hasKey("chatMessages::" + roomId);
+        Long chatMessageCount = redisMessageTemplate.opsForList().size("chatMessages::" + roomId);
 
-        if(exists){
-            Long chatMessageCount = redisMessageTemplate.opsForList().size("chatMessages::" + roomId);
-            if (chatMessageCount == null) {
-                chatMessageCount = 0L;
-            }
+        if (chatMessageCount == null) {
+            chatMessageCount = 0L;
+        }
 
-            if(chatMessageCount <= 100){
+        // redis 에 데이터가 있을 때
+        if(chatMessageCount != 0){
+            // redis 에 데이터가 100개 미만으로 있을 때 - mysql + redis
+            if(chatMessageCount < 100){
                 List<ChatMessageResponseDto> chatMessageResponseDtoList = chatMessageRepository.findAllByRoomId(roomId)
                         .stream()
                         .limit(100 - chatMessageCount)
@@ -116,7 +106,7 @@ public class ChatMessageService {
                 }
                 return chatMessageResponseDtoList;
             }
-
+            // redis 에 데이터가 100개 이상으로 있을 때 - redis 만
             else{
                 List<ChatMessage> chatMessageList = redisMessageTemplate.opsForList().range("chatMessages::" + roomId, 0, 99);
                 List<ChatMessageResponseDto> chatMessageResponseDtoList = new ArrayList<>();
@@ -126,6 +116,7 @@ public class ChatMessageService {
                 return chatMessageResponseDtoList;
             }
         }
+        // redis 에 데이터가 아예 없을 때
         else{
             List<ChatMessageResponseDto> chatMessageResponseDtoList = chatMessageRepository.findAllByRoomId(roomId)
                     .stream()
