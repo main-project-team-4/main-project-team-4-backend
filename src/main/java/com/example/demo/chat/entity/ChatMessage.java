@@ -1,5 +1,6 @@
 package com.example.demo.chat.entity;
 
+import com.example.demo.chat.dto.ChatMessageRequestDto;
 import com.example.demo.entity.TimeStamp;
 import jakarta.persistence.*;
 import lombok.*;
@@ -36,6 +37,15 @@ public class ChatMessage extends TimeStamp {
         this.sender = sender;
         this.message = message;
         this.type = type;
+    }
+
+    public ChatMessage(ChatMessageRequestDto requestDto){
+        this.chatRoom = new ChatRoom();
+        this.chatRoom.setId(requestDto.getChatRoomId());
+        this.roomId = requestDto.getChatRoomId();
+        this.sender = requestDto.getSenderNickname();
+        this.message = requestDto.getMessage();
+        this.type = requestDto.getType();
     }
 
     public void setSender(String sender){
