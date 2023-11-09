@@ -13,6 +13,7 @@ import com.example.demo.repository.RedisRepository;
 import com.example.demo.shop.entity.Shop;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.listener.ChannelTopic;
@@ -82,12 +83,13 @@ public class ChatRoomService {
     }
 
     // 채팅방 삭제
+    @Transactional
     public List<ChatRoomResponseDto> deleteChatRoom(Long roomId, Member member){
         Long id = member.getId();
-        int isOut = chatRoomRepository.findIs_OutById(roomId);
         ChatRoom deleteChatRoom = chatRoomRepository.findChatRoomById(roomId).orElseThrow(() ->
                 new IllegalArgumentException("선택한 채팅방은 존재하지 않습니다.")
         );
+        int isOut = deleteChatRoom.getIsOut();
 
         if(isOut == 0){
             List<ChatRoomResponseDto> chatRoomList = chatRoomRepository.findAllBySellerIdOrConsumerId(id, id)
@@ -96,13 +98,13 @@ public class ChatRoomService {
                     .map(chatRoom -> new ChatRoomResponseDto(chatRoom, member))
                     .toList();
 
-            if (member.getId().equals(deleteChatRoom.getSeller().getId())){
+            if (id.equals(deleteChatRoom.getSeller().getId())){
                 isOut = 1;
             }
             else{
                 isOut = 2;
             }
-            deleteChatRoom.chatRoomStatusUpdate(isOut);
+            deleteChatRoom.isOutUpdate(isOut);
             return chatRoomList;
         }
         else{
@@ -126,8 +128,17 @@ public class ChatRoomService {
 
         List<ChatRoomResponseDto> chatRoomList = chatRoomRepository.findAllBySellerIdOrConsumerId(id, id)
                 .stream()
-                .filter(chatRoom -> !(chatRoom.getSeller().getId().equals(id) && chatRoom.getIsOut() == 1))
-                .filter(chatRoom -> !(chatRoom.getSeller().getId().equals(id) && chatRoom.getIsOut() == 2))
+                .filter(chatRoom -> {
+                    if (id.equals(chatRoom.getSeller().getId()) && chatRoom.getIsOut() == 1){
+                        return false;
+                    }
+                    else if (id.equals(chatRoom.getConsumer().getId()) && chatRoom.getIsOut() == 2){
+                        return false;
+                    }
+                    else {
+                        return true;
+                    }
+                })
                 .map(chatRoom -> new ChatRoomResponseDto(chatRoom, member))
                 .toList();
 

@@ -4,6 +4,7 @@ import com.example.demo.chat.dto.ChatMessageRequestDto;
 import com.example.demo.chat.dto.ChatMessageResponseDto;
 import com.example.demo.chat.dto.ChatRoomResponseDto;
 import com.example.demo.chat.entity.ChatMessage;
+import com.example.demo.chat.entity.ChatRoom;
 import com.example.demo.chat.entity.MessageType;
 //import com.example.demo.chat.redis.RedisPublisher;
 import com.example.demo.chat.repository.ChatMessageRepository;
@@ -13,6 +14,7 @@ import com.example.demo.member.entity.Member;
 import com.example.demo.repository.RedisRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.listener.ChannelTopic;
@@ -45,6 +47,17 @@ public class ChatMessageService {
             log.info(message.getSender()+ "님이 입장하셨습니다.");
             return null;
         }
+
+        Long id = member.getId();
+        ChatRoom chatRoom = chatRoomRepository.findChatRoomById(message.getRoomId()).orElseThrow(() ->
+                new IllegalArgumentException("선택한 채팅방은 존재하지 않습니다.")
+        );
+
+        if((id.equals(chatRoom.getSeller().getId()) && chatRoom.getIsOut() == 2) ||
+           (id.equals(chatRoom.getConsumer().getId()) && chatRoom.getIsOut() == 1)){
+            chatRoom.isOutUpdate(0);
+        }
+
         chatMessageRepository.save(message);
 
         // 1. 직렬화
@@ -63,17 +76,39 @@ public class ChatMessageService {
     }
 
     // 이전 메세지 로드
+    @Cacheable(value = "chatMessages", key = "#roomId")
     public List<ChatMessageResponseDto> loadMessages(Long roomId) {
         ValueOperations<String, ChatMessage> valueOperations = redisMessageTemplate.opsForValue();
         boolean exists = valueOperations.getOperations().hasKey("chat:roomId" + roomId);
 
         if(exists){
-            List<ChatMessage> chatMessageList = redisMessageTemplate.opsForList().range("chat:roomId" + roomId, 0, 99);
-            List<ChatMessageResponseDto> chatMessageResponseDtoList = new ArrayList<>();
-            for (ChatMessage chatMessage : chatMessageList) {
-                chatMessageResponseDtoList.add(new ChatMessageResponseDto(chatMessage));
+            Long chatMessageCount = redisMessageTemplate.opsForList().size("chat:roomId" + roomId);
+            if (chatMessageCount == null) {
+                chatMessageCount = 0L;
             }
-            return chatMessageResponseDtoList;
+
+            if(chatMessageCount <= 100){
+                List<ChatMessageResponseDto> chatMessageResponseDtoList = chatMessageRepository.findAllByRoomId(roomId)
+                        .stream()
+                        .limit(100 - chatMessageCount)
+                        .map(ChatMessageResponseDto::new)
+                        .toList();
+
+                List<ChatMessage> chatMessageList = redisMessageTemplate.opsForList().range("chat:roomId" + roomId, 0, chatMessageCount);
+                for (ChatMessage chatMessage : chatMessageList) {
+                    chatMessageResponseDtoList.add(new ChatMessageResponseDto(chatMessage));
+                }
+                return chatMessageResponseDtoList;
+            }
+
+            else{
+                List<ChatMessage> chatMessageList = redisMessageTemplate.opsForList().range("chat:roomId" + roomId, 0, 99);
+                List<ChatMessageResponseDto> chatMessageResponseDtoList = new ArrayList<>();
+                for (ChatMessage chatMessage : chatMessageList) {
+                    chatMessageResponseDtoList.add(new ChatMessageResponseDto(chatMessage));
+                }
+                return chatMessageResponseDtoList;
+            }
         }
         else{
             List<ChatMessageResponseDto> chatMessageResponseDtoList = chatMessageRepository.findAllByRoomId(roomId)

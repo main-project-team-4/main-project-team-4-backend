@@ -57,7 +57,7 @@ public class ChatRoom implements Serializable {
         this.isOut = 0;
     }
 
-    public void chatRoomStatusUpdate(int isOut){
+    public void isOutUpdate(int isOut){
         this.isOut = isOut;
     }
 }
