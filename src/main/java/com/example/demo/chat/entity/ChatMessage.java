@@ -1,5 +1,6 @@
 package com.example.demo.chat.entity;
 
+import com.example.demo.chat.dto.ChatMessageRequestDto;
 import com.example.demo.entity.TimeStamp;
 import jakarta.persistence.*;
 import lombok.*;

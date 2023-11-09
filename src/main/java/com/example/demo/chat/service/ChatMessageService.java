@@ -13,6 +13,7 @@ import com.example.demo.entity.ResponseDto;
 import com.example.demo.member.entity.Member;
 import com.example.demo.member.repository.MemberRepository;
 import com.example.demo.repository.RedisRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -36,21 +38,34 @@ public class ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final MemberRepository memberRepository;
-    private final ChatRoomService chatRoomService;
     //private final RedisPublisher redisPublisher;
     private final RedisRepository redisRepository;
     private final ChannelTopic channelTopic;
 
     // 새 메세지 전송 및 저장
+    @Transactional
     public ChatMessageResponseDto sendMessages(ChatMessageRequestDto requestDto, Member member) {
         ChatMessage message = requestDto.toEntity();
 
-        Optional<Member> sender = memberRepository.findByNickname(message.getSender());
-        
-        Long id = sender.orElseThrow().getId();
+        // 퇴장 메세지
+        if(MessageType.QUIT.equals(message.getType())){
+            return new ChatMessageResponseDto(message);
+        }
+
+        Member sender = memberRepository.findByNickname(message.getSender()).orElseThrow(() ->
+                new IllegalArgumentException("해당 유저는 존재하지 않습니다.")
+        );
+
+        Long id = sender.getId();
+
         ChatRoom chatRoom = chatRoomRepository.findChatRoomById(message.getRoomId()).orElseThrow(() ->
                 new IllegalArgumentException("선택한 채팅방은 존재하지 않습니다.")
         );
+
+        if((id.equals(chatRoom.getSeller().getId()) && chatRoom.getIsOut() == 1) ||
+           (id.equals(chatRoom.getConsumer().getId()) && chatRoom.getIsOut() == 2)){
+            chatRoom.isOutUpdate(0);
+        }
 
         if((id.equals(chatRoom.getSeller().getId()) && chatRoom.getIsOut() == 2) ||
            (id.equals(chatRoom.getConsumer().getId()) && chatRoom.getIsOut() == 1)){
@@ -63,7 +78,7 @@ public class ChatMessageService {
         redisMessageTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(ChatMessage.class));
 
         // 2. redis 저장
-        redisMessageTemplate.opsForList().rightPush("chat:roomId" + message.getRoomId(), message);
+        redisMessageTemplate.opsForList().rightPush("chatMessages::" + message.getRoomId(), message);
 
         // 3. expire 을 이용해서, Key 를 만료시킬 수 있음
         // redisTemplateMessage.expire(message.getRoomId(), 1, TimeUnit.MINUTES);
@@ -75,40 +90,48 @@ public class ChatMessageService {
     }
 
     // 이전 메세지 로드
-    @Cacheable(value = "chatMessages", key = "#roomId")
+    // @Cacheable(value = "chatMessages", key = "#roomId")
     public List<ChatMessageResponseDto> loadMessages(Long roomId) {
-        ValueOperations<String, ChatMessage> valueOperations = redisMessageTemplate.opsForValue();
-        boolean exists = valueOperations.getOperations().hasKey("chat:roomId" + roomId);
+        List<ChatMessageResponseDto> mysqlResponseDtoList = chatMessageRepository.findAllByRoomId(roomId)
+                .stream()
+                .limit(100)
+                .map(ChatMessageResponseDto::new)
+                .toList();
 
-        if(exists){
-            Long chatMessageCount = redisMessageTemplate.opsForList().size("chat:roomId" + roomId);
-            if (chatMessageCount == null) {
-                chatMessageCount = 0L;
-            }
+        Long redisChatMessageCount = redisMessageTemplate.opsForList().size("chatMessages::" + roomId);
+        int mysqlChatMessageCount = mysqlResponseDtoList.size();
 
-            if(chatMessageCount <= 100){
-                List<ChatMessageResponseDto> chatMessageResponseDtoList = chatMessageRepository.findAllByRoomId(roomId)
-                        .stream()
-                        .limit(100 - chatMessageCount)
-                        .map(ChatMessageResponseDto::new)
-                        .toList();
+        if (redisChatMessageCount == null) {
+            redisChatMessageCount = 0L;
+        }
 
-                List<ChatMessage> chatMessageList = redisMessageTemplate.opsForList().range("chat:roomId" + roomId, 0, chatMessageCount);
-                for (ChatMessage chatMessage : chatMessageList) {
-                    chatMessageResponseDtoList.add(new ChatMessageResponseDto(chatMessage));
-                }
-                return chatMessageResponseDtoList;
-            }
-
-            else{
-                List<ChatMessage> chatMessageList = redisMessageTemplate.opsForList().range("chat:roomId" + roomId, 0, 99);
+        // redis 에 데이터가 있을 때
+        if(redisChatMessageCount != 0){
+            // redis 데이터랑 mysql 데이터랑 같을 때 + redis 데이터만 100개 이상일 때는 redis 만
+            if(redisChatMessageCount == mysqlChatMessageCount || redisChatMessageCount >= 100){
+                List<ChatMessage> chatMessageList = redisMessageTemplate.opsForList().range("chatMessages::" + roomId, 0, 99);
                 List<ChatMessageResponseDto> chatMessageResponseDtoList = new ArrayList<>();
                 for (ChatMessage chatMessage : chatMessageList) {
                     chatMessageResponseDtoList.add(new ChatMessageResponseDto(chatMessage));
                 }
                 return chatMessageResponseDtoList;
             }
+            // redis 데이터랑 mysql 데이터랑 다를 때
+            else{
+                List<ChatMessageResponseDto> chatMessageResponseDtoList = chatMessageRepository.findAllByRoomId(roomId)
+                        .stream()
+                        .limit(100 - redisChatMessageCount)
+                        .map(ChatMessageResponseDto::new)
+                        .collect(Collectors.toList());
+
+                List<ChatMessage> chatMessageList = redisMessageTemplate.opsForList().range("chatMessages::" + roomId, 0, redisChatMessageCount);
+                for (ChatMessage chatMessage : chatMessageList) {
+                    chatMessageResponseDtoList.add(new ChatMessageResponseDto(chatMessage));
+                }
+                return chatMessageResponseDtoList;
+            }
         }
+        // redis 에 데이터가 아예 없을 때
         else{
             List<ChatMessageResponseDto> chatMessageResponseDtoList = chatMessageRepository.findAllByRoomId(roomId)
                     .stream()
