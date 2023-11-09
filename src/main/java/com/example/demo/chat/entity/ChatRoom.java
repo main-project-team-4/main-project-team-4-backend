@@ -47,7 +47,7 @@ public class ChatRoom implements Serializable {
 
     // 1 - seller is out, 2 - consumer is out
     @Column(name = "is_out")
-    private int isOut;
+    private Integer isOut;
 
     public ChatRoom (Item item, Member member){
         this.consumer = member;
