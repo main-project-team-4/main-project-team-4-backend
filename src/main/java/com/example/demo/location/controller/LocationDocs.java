@@ -5,6 +5,7 @@ import com.example.demo.dto.MessageResponseDto;
 import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.location.dto.LocationRequestDto;
 import com.example.demo.security.UserDetailsImpl;
+import com.example.demo.trade.type.State;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -98,6 +99,7 @@ public interface LocationDocs {
     )
     ResponseEntity<Page<ItemSearchResponseDto>> readNearbyItems(
             UserDetailsImpl principal,
+            State[] state,
             Pageable pageable
     );
 }

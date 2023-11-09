@@ -177,7 +177,7 @@ public class ItemsModelTest {
         Pageable pageable = PageRequest.of(0, num);
 
         // when
-        ResponseEntity<Page<ItemSearchResponseDto>> result = itemService.readNearbyItems(member, pageable);
+        ResponseEntity<Page<ItemSearchResponseDto>> result = itemService.readNearbyItems(member, null, pageable);
 
         // then
         assertThat(result.getBody())

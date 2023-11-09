@@ -94,8 +94,9 @@ public class ItemRepositoryImpl implements
     }
 
     @Override
-    public Page<Item> findNearbyItems(Location center, Member member, Pageable pageable) {
+    public Page<Item> findNearbyItems(Location center, Member member, State[] stateList, Pageable pageable) {
         Predicate[] predicates = {
+                filterByState(stateList),
                 item.shop.member.id.ne(member.getId())
         };
 
