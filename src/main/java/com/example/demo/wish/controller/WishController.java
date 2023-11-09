@@ -4,6 +4,7 @@ import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.item.service.ItemService;
 import com.example.demo.security.UserDetailsImpl;
 import com.example.demo.trade.type.State;
+import com.example.demo.wish.dto.TopItemResponseDto;
 import com.example.demo.wish.dto.WishListResponseDto;
 import com.example.demo.wish.dto.WishReadResponseDto;
 import com.example.demo.wish.service.WishService;
@@ -47,7 +48,7 @@ public class WishController implements WishDocs{
     }
 
     @GetMapping("/api/top-items")
-    public ResponseEntity<Page<ItemSearchResponseDto>> readPopularItems(
+    public ResponseEntity<Page<TopItemResponseDto>> readPopularItems(
             @RequestParam(required = false) State[] state,
             @PageableDefault Pageable pageable
             ) {

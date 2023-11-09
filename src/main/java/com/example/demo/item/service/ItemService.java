@@ -13,6 +13,7 @@ import com.example.demo.member.entity.Member;
 import com.example.demo.shop.entity.Shop;
 import com.example.demo.shop.repository.ShopRepository;
 import com.example.demo.trade.type.State;
+import com.example.demo.wish.dto.TopItemResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -214,9 +215,9 @@ public class ItemService {
             return new ItemResponseDto(item);
         }
 
-        public ResponseEntity<Page<ItemSearchResponseDto>> readPopularItems (State[]stateList, Pageable pageable){
-            Page<ItemSearchResponseDto> dtoList = itemRepository.findPopularItems(stateList, pageable)
-                    .map(ItemSearchResponseDto::new);
+        public ResponseEntity<Page<TopItemResponseDto>> readPopularItems (State[]stateList, Pageable pageable){
+            Page<TopItemResponseDto> dtoList = itemRepository.findPopularItems(stateList, pageable)
+                    .map(TopItemResponseDto::new);
             return ResponseEntity.ok(dtoList);
         }
 

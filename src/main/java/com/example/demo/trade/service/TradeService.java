@@ -1,7 +1,6 @@
 package com.example.demo.trade.service;
 
 import com.example.demo.dto.MessageResponseDto;
-import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.item.entity.Item;
 import com.example.demo.item.repository.ItemRepository;
 import com.example.demo.member.entity.Member;
@@ -22,6 +21,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -80,9 +81,10 @@ public class TradeService {
 
         // 있으면 거래 기록 치환.
         // 없으면 거래 기록 남기기.
-        tradeRepository.findByItem_Id(
+        List<Trade> tradeList = tradeRepository.findByItem_Id(
                 itemId
-        ).ifPresentOrElse(
+        );
+        Trade.getTradeWrittenAtLast(tradeList).ifPresentOrElse(
                 trade -> updateTrade(trade, consumer, state),
                 () -> saveTrade(consumer, item, state)
         );

@@ -1,10 +1,10 @@
 package com.example.demo.integration.wish;
 
-import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.item.service.ItemService;
 import com.example.demo.utils.LoadEnvironmentVariables;
 import com.example.demo.utils.testcase.AuthTestUtil;
 import com.example.demo.wish.controller.WishController;
+import com.example.demo.wish.dto.TopItemResponseDto;
 import com.example.demo.wish.dto.WishListResponseDto;
 import com.example.demo.wish.service.WishService;
 import org.junit.jupiter.api.DisplayName;
@@ -56,7 +56,7 @@ public class WishAuthTest {
                 .param("size", "10")
                 .param("sort", "createdAt,desc");
 
-        ResponseEntity<Page<ItemSearchResponseDto>> result = ResponseEntity.ok(Page.empty());
+        ResponseEntity<Page<TopItemResponseDto>> result = ResponseEntity.ok(Page.empty());
         when(itemService.readPopularItems(any(), any()))
                 .thenReturn(result);
 
