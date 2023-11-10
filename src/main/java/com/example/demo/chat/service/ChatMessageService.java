@@ -101,7 +101,7 @@ public class ChatMessageService {
         URL imageUrl = chatRoom.getItem().getMain_image();
         String content = sender.getNickname() + "님이 메세지를 보냈습니다.";
         String url = "/chat/message";
-        notificationService.send(receiver, NotificationType.CHAT, content, url);
+        notificationService.send(receiver, NotificationType.CHAT, content, url, imageUrl);
 
         return new ChatMessageResponseDto(message);
     }
