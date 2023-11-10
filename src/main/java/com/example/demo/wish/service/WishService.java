@@ -35,9 +35,11 @@ public class WishService {
         Wish entity = new Wish(member, itemEntity);
         wishRepository.save(entity);
 
+        Member receiver = itemEntity.getShop().getMember();
+
         String content = member.getNickname() + "님이 " + itemEntity.getName() + " 상품을 찜하였습니다.";
         String url = "/api/items/"+itemId+"/wishes";
-        notificationService.send(member, NotificationType.WISH, content, url);
+        notificationService.send(receiver, NotificationType.WISH, content, url);
     }
 
     public ResponseEntity<Void> toggle(Member member, Long itemId) {
