@@ -65,6 +65,7 @@ public class NotificationService {
 //            log.warn("data : " + data.toString());
             emitter.send(SseEmitter.event()
                     .id(emitterId)
+                    .name("sse")
                     .data(data));
 //            log.info(emitterId+"-emitter has been sent and completed");
         } catch (IOException exception) {
