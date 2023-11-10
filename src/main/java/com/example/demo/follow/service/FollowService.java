@@ -8,6 +8,8 @@ import com.example.demo.follow.entity.Follow;
 import com.example.demo.follow.repository.FollowRepository;
 import com.example.demo.member.entity.Member;
 import com.example.demo.member.repository.MemberRepository;
+import com.example.demo.notification.Entity.NotificationType;
+import com.example.demo.notification.service.NotificationService;
 import com.example.demo.shop.entity.Shop;
 import com.example.demo.shop.repository.ShopRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ public class FollowService {
     private final MemberRepository memberRepository;
     private final FollowRepository followRepository;
     private final ShopRepository shopRepository;
+    private final NotificationService notificationService;
 
     @Transactional
     public ResponseEntity<FollowResponseDto> toggleShopFollow(Member memberLoggedIn, Long shopId) {
@@ -39,6 +42,12 @@ public class FollowService {
         } else {
             resultOfFollowing = saveFollow(memberLoggedIn, shop);
         }
+
+        Member receiver = shop.getMember();
+
+        String content = memberLoggedIn.getNickname() + "님이 상점을 팔로우하였습니다.";
+        String url = "/api/shops/"+shopId+"/follows";
+        notificationService.send(receiver, NotificationType.FOLLOW, content, url, null);
 
         FollowResponseDto responseDto = new FollowResponseDto(resultOfFollowing);
         return ResponseEntity.ok(responseDto);

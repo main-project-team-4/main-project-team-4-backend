@@ -12,6 +12,8 @@ import com.example.demo.chat.repository.ChatRoomRepository;
 import com.example.demo.entity.ResponseDto;
 import com.example.demo.member.entity.Member;
 import com.example.demo.member.repository.MemberRepository;
+import com.example.demo.notification.Entity.NotificationType;
+import com.example.demo.notification.service.NotificationService;
 import com.example.demo.repository.RedisRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -38,9 +41,8 @@ public class ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final MemberRepository memberRepository;
-    //private final RedisPublisher redisPublisher;
-    private final RedisRepository redisRepository;
     private final ChannelTopic channelTopic;
+    private final NotificationService notificationService;
 
     // 새 메세지 전송 및 저장
     @Transactional
@@ -86,6 +88,21 @@ public class ChatMessageService {
         // Websocket에 발행된 메시지를 redis로 발행한다(publish)
         // redisPublisher.publish(chatRoomService.getTopic(message.getRoomId()), message);
         redisMessageTemplate.convertAndSend(channelTopic.getTopic(), message);
+
+        Member receiver = new Member();
+
+        if(id.equals(chatRoom.getSeller().getId())){
+            receiver = chatRoom.getConsumer();
+        }
+        else{
+            receiver = chatRoom.getSeller();
+        }
+
+        URL imageUrl = chatRoom.getItem().getMain_image();
+        String content = sender.getNickname() + "님이 메세지를 보냈습니다.";
+        String url = "/chat/message";
+        notificationService.send(receiver, NotificationType.CHAT, content, url, imageUrl);
+
         return new ChatMessageResponseDto(message);
     }
 
