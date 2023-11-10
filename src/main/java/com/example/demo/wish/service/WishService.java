@@ -4,14 +4,12 @@ import com.example.demo.item.entity.Item;
 import com.example.demo.item.repository.ItemRepository;
 import com.example.demo.member.entity.Member;
 import com.example.demo.notification.Entity.NotificationType;
-import com.example.demo.notification.dto.NotificationRequestDto;
 import com.example.demo.notification.service.NotificationService;
 import com.example.demo.wish.dto.WishListResponseDto;
 import com.example.demo.wish.dto.WishReadResponseDto;
 import com.example.demo.wish.entity.Wish;
 import com.example.demo.wish.repository.WishRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,9 +22,7 @@ import java.util.Optional;
 public class WishService {
     private final ItemRepository itemRepository;
     private final WishRepository wishRepository;
-
     private final NotificationService notificationService;
-    private final ApplicationEventPublisher eventPublisher;
 
     private void save(Member member, Long itemId) {
         Item itemEntity = itemRepository.findById(itemId)
@@ -39,7 +35,7 @@ public class WishService {
 
         String content = member.getNickname() + "님이 " + itemEntity.getName() + " 상품을 찜하였습니다.";
         String url = "/api/items/"+itemId+"/wishes";
-        notificationService.send(receiver, NotificationType.WISH, content, url);
+        notificationService.send(receiver, NotificationType.WISH, content, url, null);
     }
 
     public ResponseEntity<Void> toggle(Member member, Long itemId) {
@@ -64,10 +60,5 @@ public class WishService {
     public ResponseEntity<WishReadResponseDto> readWishRecord(Member member, Long itemId) {
         boolean isWished = wishRepository.existsByMember_IdAndItem_Id(member.getId(), itemId);
         return ResponseEntity.ok(new WishReadResponseDto(isWished));
-    }
-
-    private void notify(Member itemOwner, Member sender, NotificationType notificationType,
-                        String content, Long itemId){
-        eventPublisher.publishEvent(new NotificationRequestDto(itemOwner, sender, notificationType, content, itemId));
     }
 }

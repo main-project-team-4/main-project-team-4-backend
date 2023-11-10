@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.net.URL;
+
 @Getter
 @Entity
 @NoArgsConstructor
@@ -34,13 +36,16 @@ public class Notification extends TimeStamp {
     @JoinColumn(name = "member_id")
     private Member receiver;
 
+    private URL imageUrl;
+
     @Builder
-    public Notification(Member receiver, NotificationType notificationType, String content, String url) {
+    public Notification(Member receiver, NotificationType notificationType, String content, String url, URL imageUrl) {
         this.receiver = receiver;
         this.notificationType = notificationType;
         this.content = new NotificationContent(content);
         this.url = url;
         this.isRead = false;
+        this.imageUrl = imageUrl;
     }
 
     public String getContent() {

@@ -26,5 +26,4 @@ public class NotificationResponseDto {
         this.isRead = notification.getIsRead();
         this.createdAt = notification.getCreatedAt();
     }
-
 }
