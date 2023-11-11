@@ -4,4 +4,5 @@ public enum NotificationType {
     WISH,
     CHAT,
     FOLLOW,
+    SYSTEM
 }
