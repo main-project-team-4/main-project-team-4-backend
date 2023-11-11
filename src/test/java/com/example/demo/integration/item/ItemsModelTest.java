@@ -186,6 +186,23 @@ public class ItemsModelTest {
                 .isEqualTo(List.of(5L, 2L, 6L, 3L, 7L, 4L, 8L));
     }
 
+    @LoadTestCaseLocation
+    @Test
+    @DisplayName("[정상 작동] readNearbyItems - 만약 주소가 입력되지 않았을 때, 정렬 기준 없음.")
+    void readNearbyItems_whenLocationIsNull() {
+        // given
+        int num = 7;
+        Member member = memberRepository.findById(9L).orElseThrow();
+        Pageable pageable = PageRequest.of(0, num);
+
+        // when
+        ResponseEntity<Page<ItemSearchResponseDto>> result = itemService.readNearbyItems(member, null, pageable);
+
+        // then
+        assertThat(result.getBody())
+                .hasSize(0);
+    }
+
     @LoadTestCaseItem
     @Test
     @DisplayName("[정상 작동] showItem")

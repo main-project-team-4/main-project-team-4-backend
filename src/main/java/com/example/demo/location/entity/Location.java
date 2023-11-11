@@ -28,7 +28,7 @@ public abstract class Location {
     }
 
     private static boolean hasValue(Long value) {
-        return value != null && !value.equals(0L);
+        return value != null;
     }
 
     public void setName(String name) {
