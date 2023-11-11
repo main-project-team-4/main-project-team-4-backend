@@ -59,7 +59,9 @@ public class ReviewResponseDto {
     @Schema(description = "리뷰어 프로필 이미지", example = "https://cdn.pixabay.com/photo/2023/10/14/09/20/mountains-8314422_1280.png")
     @JsonProperty(ParameterNameConfig.Member.IMAGE)
     private String reviewerProfile;
-
+    @Schema(description = "리뷰어 상점 이름", example = "iksadnorth")
+    @JsonProperty(ParameterNameConfig.Shop.CONSUMER_SHOP_NAME)
+    private String reviewerShopName;
     @Schema(description = "리뷰 점수", example = "3.5463")
     @JsonProperty(ParameterNameConfig.Review.RATING)
     private Double reviewRating;
@@ -87,7 +89,7 @@ public class ReviewResponseDto {
         this.reviewerId = member.map(Member::getId).orElse(null);
         this.reviewerName = member.map(Member::getNickname).orElse(null);
         this.reviewerProfile = member.map(Member::getImage).map(URL::toString).orElse(null);
-
+        this.reviewerShopName = member.map(Member::getShop).map(Shop::getShopName).orElse(null);
         this.reviewRating = review.getRating();
     }
 
