@@ -57,7 +57,7 @@ public class ChatMessageService {
         // 퇴장 메세지
         if(MessageType.QUIT.equals(message.getType())){
             log.info("QUIT 인식함");
-            new ChatMessageResponseDto(message);
+            return new ChatMessageResponseDto(message);
         }
 
         Member sender = memberRepository.findByNickname(message.getSender()).orElseThrow(() ->
