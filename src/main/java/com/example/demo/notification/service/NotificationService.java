@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Map;
 
 @Slf4j
@@ -46,25 +47,24 @@ public class NotificationService {
         return emitter;
     }
 
-    public void send(Member receiver, NotificationType notificationType, String content, String url) {
-        Notification notification = notificationRepository.save(new Notification(receiver, notificationType, content, url));
+    public void send(Member receiver, NotificationType notificationType, String content, String url, URL imageUrl) {
+        Notification notification = notificationRepository.save(new Notification(receiver, notificationType, content, url, imageUrl));
         String memberId = String.valueOf(receiver.getId());
 
         Map<String, SseEmitter> sseEmitters = emitterRepository.findAllEmitterStartWithByMemberId(memberId);
         sseEmitters.forEach(
                 (key, emitter) -> {
                     emitterRepository.saveEventCache(key, notification);
-                    sendToClient(emitter, key, notification.getContent());
+                    sendToClient(emitter, key, notification);
                 }
         );
     }
 
     private void sendToClient(SseEmitter emitter, String emitterId, Object data) {
         try {
-//            log.warn("emitterId : " + emitterId);
-//            log.warn("data : " + data.toString());
             emitter.send(SseEmitter.event()
                     .id(emitterId)
+                    .name("sse")
                     .data(data));
 //            log.info(emitterId+"-emitter has been sent and completed");
         } catch (IOException exception) {

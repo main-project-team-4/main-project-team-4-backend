@@ -31,6 +31,9 @@ public class ChatRoomResponseDto {
     @JsonProperty(ParameterNameConfig.ChatRoom.CONSUMER)
     private String consumerName;
 
+    @JsonProperty(ParameterNameConfig.Shop.ID)
+    private Long shopId;
+
     @JsonProperty(ParameterNameConfig.Item.ID)
     private Long itemId;
 
@@ -60,6 +63,7 @@ public class ChatRoomResponseDto {
         this.roomName = chatRoom.getRoomName();
         this.sellerName = chatRoom.getSeller().getNickname();
         this.consumerName = chatRoom.getConsumer().getNickname();
+        this.shopId = chatRoom.getSeller().getShop().getId();
         this.itemId = item.getId();
         this.itemName = item.getName();
         this.itemPrice = item.getPrice();
@@ -72,6 +76,8 @@ public class ChatRoomResponseDto {
         this.sellerName = chatRoom.getSeller().getNickname();
         this.consumerName = chatRoom.getConsumer().getNickname();
         this.sender = member.getNickname();
+        this.shopId = chatRoom.getSeller().getShop().getId();
+        this.itemId = chatRoom.getItem().getId();
         this.itemName = chatRoom.getItem().getName();
         this.itemPrice = chatRoom.getItem().getPrice();
         Optional<URL> sellerImage = Optional.of(chatRoom.getSeller()).map(Member::getImage);
