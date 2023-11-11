@@ -48,8 +48,7 @@ public class Notification extends TimeStamp {
         this.content = new NotificationContent(content);
         this.url = url;
         this.isRead = false;
-        Optional<URL> image = Optional.of(receiver.getImage());
-        this.imageUrl = image.orElse(null);
+        this.imageUrl = Optional.ofNullable(imageUrl).orElse(null);
     }
 
     public String getContent() {
