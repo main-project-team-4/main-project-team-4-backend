@@ -23,6 +23,10 @@ public class ChatMessageResponseDto {
     private MessageType type;
     @JsonProperty(ParameterNameConfig.ChatMessage.CREATED_AT)
     private LocalDateTime created_at;
+    @JsonProperty(ParameterNameConfig.Shop.SELLER_SHOP_NAME)
+    private String sellerShopName;
+    @JsonProperty(ParameterNameConfig.Shop.CONSUMER_SHOP_NAME)
+    private String consumerShopName;
 
     public ChatMessageResponseDto(ChatMessage chatMessage) {
         this.roomId = chatMessage.getRoomId();
@@ -30,5 +34,7 @@ public class ChatMessageResponseDto {
         this.message = chatMessage.getMessage();
         this.type = chatMessage.getType();
         this.created_at = this.getCreated_at();
+        this.sellerShopName = chatMessage.getChatRoom().getSeller().getShop().getShopName();
+        this.consumerShopName = chatMessage.getChatRoom().getConsumer().getShop().getShopName();
     }
 }

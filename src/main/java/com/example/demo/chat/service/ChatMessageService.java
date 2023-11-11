@@ -94,7 +94,7 @@ public class ChatMessageService {
 
         if(message.getType().equals(MessageType.TALK)){
             URL imageUrl = chatRoom.getItem().getMain_image();
-            String content = sender.getNickname() + "|||" + imageUrl + "|||" + message.getMessage();
+            String content = sender.getShop().getShopName() + "|||" + imageUrl + "|||" + message.getMessage();
             String url = "/chat/message";
             notificationService.send(receiver, NotificationType.CHAT, content, url);
         }

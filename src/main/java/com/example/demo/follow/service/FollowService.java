@@ -45,7 +45,7 @@ public class FollowService {
 
         Member receiver = shop.getMember();
 
-        String content = memberLoggedIn.getNickname() + "님이 상점을 팔로우하였습니다.";
+        String content = memberLoggedIn.getShop().getShopName() + "님이 상점을 팔로우하였습니다.";
         String url = "/api/shops/"+shopId+"/follows";
         notificationService.send(receiver, NotificationType.FOLLOW, content, url);
 
