@@ -58,6 +58,64 @@ public class ItemRepositoryImpl implements
         return new PageImpl<>(result, pageable, count);
     }
 
+    @Override
+    public Page<Item> searchByCategoryLargeId(Long categoryId, State[] stateList, Pageable pageable) {
+        Predicate[] predicates = {
+                filterByState(stateList),
+                largeCategoryWhereQuery(categoryId)
+        };
+
+        List<Item> result = jpaQueryFactory.select(item)
+                .from(item)
+                .where(predicates)
+
+                .orderBy(QueryBuilder.extractOrder(new ItemMapper(), pageable))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        // Count Query
+        Long count = jpaQueryFactory.select(item.count())
+                .from(item)
+                .where(predicates)
+                .fetchOne();
+
+        return new PageImpl<>(result, pageable, count);
+    }
+
+    private Predicate largeCategoryWhereQuery(Long categoryId) {
+        return categoryId != null ? item.categoryMidId.parent.id.eq(categoryId) : null;
+    }
+
+    @Override
+    public Page<Item> searchByCategoryMiddleId(Long categoryId, State[] stateList, Pageable pageable) {
+        Predicate[] predicates = {
+                filterByState(stateList),
+                middleCategoryWhereQuery(categoryId)
+        };
+
+        List<Item> result = jpaQueryFactory.select(item)
+                .from(item)
+                .where(predicates)
+
+                .orderBy(QueryBuilder.extractOrder(new ItemMapper(), pageable))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        // Count Query
+        Long count = jpaQueryFactory.select(item.count())
+                .from(item)
+                .where(predicates)
+                .fetchOne();
+
+        return new PageImpl<>(result, pageable, count);
+    }
+
+    private Predicate middleCategoryWhereQuery(Long categoryId) {
+        return categoryId != null ? item.categoryMidId.id.eq(categoryId) : null;
+    }
+
     private Predicate filterByState(State[] stateList) {
         return stateList != null && stateList.length != 0 ? item.state.in(stateList) : null;
     }

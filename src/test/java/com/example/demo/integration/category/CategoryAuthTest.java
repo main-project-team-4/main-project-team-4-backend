@@ -98,7 +98,7 @@ public class CategoryAuthTest {
         List<ItemInCategoryResponseDto> dtoList = List.of(new ItemInCategoryResponseDto());
         Page<ItemInCategoryResponseDto> dtoPage = new PageImpl<>(dtoList);
         ResponseEntity<Page<ItemInCategoryResponseDto>> result = ResponseEntity.ok(dtoPage);
-        when(categoryService.readChildItem(any(), anyInt(), any()))
+        when(categoryService.readChildItem(any(), anyInt(), any(), any()))
                 .thenReturn(result);
 
         // when & then
@@ -116,7 +116,7 @@ public class CategoryAuthTest {
         List<ItemInCategoryResponseDto> dtoList = List.of(new ItemInCategoryResponseDto());
         Page<ItemInCategoryResponseDto> dtoPage = new PageImpl<>(dtoList);
         ResponseEntity<Page<ItemInCategoryResponseDto>> result = ResponseEntity.ok(dtoPage);
-        when(categoryService.readChildItem(any(), anyInt(), any()))
+        when(categoryService.readChildItem(any(), anyInt(), any(), any()))
                 .thenReturn(result);
 
         // when & then

@@ -7,4 +7,8 @@ import org.springframework.data.domain.Pageable;
 
 public interface SearchRepository {
     Page<Item> searchBy(String keyword, State[] stateList, Pageable pageable);
+
+    Page<Item> searchByCategoryLargeId(Long categoryId, State[] stateList, Pageable pageable);
+
+    Page<Item> searchByCategoryMiddleId(Long categoryId, State[] stateList, Pageable pageable);
 }

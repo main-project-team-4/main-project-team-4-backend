@@ -3,6 +3,7 @@ package com.example.demo.category.controller;
 
 import com.example.demo.category.dto.CategoryResponseDto;
 import com.example.demo.category.dto.ItemInCategoryResponseDto;
+import com.example.demo.trade.type.State;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -118,6 +119,7 @@ public interface CategoryDocs {
     )
     ResponseEntity<Page<ItemInCategoryResponseDto>> readChildItem(
             @PathVariable Long categoryId,
+            State[] state,
             @RequestParam(defaultValue = "2") int layer,
             Pageable pageable
     );
