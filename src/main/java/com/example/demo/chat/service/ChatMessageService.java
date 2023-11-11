@@ -81,7 +81,6 @@ public class ChatMessageService {
         // redisTemplateMessage.expire(message.getRoomId(), 1, TimeUnit.MINUTES);
 
         // Websocket에 발행된 메시지를 redis로 발행한다(publish)
-        // redisPublisher.publish(chatRoomService.getTopic(message.getRoomId()), message);
         redisMessageTemplate.convertAndSend(channelTopic.getTopic(), message);
 
         Member receiver = new Member();
@@ -93,10 +92,12 @@ public class ChatMessageService {
             receiver = chatRoom.getSeller();
         }
 
-        URL imageUrl = chatRoom.getItem().getMain_image();
-        String content = sender.getNickname() + "|||" + imageUrl + "|||" + message.getMessage();
-        String url = "/chat/message";
-        notificationService.send(receiver, NotificationType.CHAT, content, url);
+        if(message.getType().equals(MessageType.TALK)){
+            URL imageUrl = chatRoom.getItem().getMain_image();
+            String content = sender.getNickname() + "|||" + imageUrl + "|||" + message.getMessage();
+            String url = "/chat/message";
+            notificationService.send(receiver, NotificationType.CHAT, content, url);
+        }
 
         return new ChatMessageResponseDto(message);
     }
