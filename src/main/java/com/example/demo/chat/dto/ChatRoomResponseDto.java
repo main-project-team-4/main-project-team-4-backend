@@ -31,8 +31,11 @@ public class ChatRoomResponseDto {
     @JsonProperty(ParameterNameConfig.ChatRoom.CONSUMER)
     private String consumerName;
 
-    @JsonProperty(ParameterNameConfig.Shop.ID)
-    private Long shopId;
+    @JsonProperty(ParameterNameConfig.Shop.SELLER_SHOP_ID)
+    private Long sellerShopId;
+
+    @JsonProperty(ParameterNameConfig.Shop.CONSUMER_SHOP_ID)
+    private Long consumerShopId;
 
     @JsonProperty(ParameterNameConfig.Item.ID)
     private Long itemId;
@@ -57,26 +60,29 @@ public class ChatRoomResponseDto {
     @JsonProperty(ParameterNameConfig.Item.MAIN_IMAGE)
     private URL itemImage;
 
-
+    // 채팅방 생성
     public ChatRoomResponseDto(ChatRoom chatRoom, Item item){
         this.roomId = chatRoom.getId();
         this.roomName = chatRoom.getRoomName();
         this.sellerName = chatRoom.getSeller().getNickname();
         this.consumerName = chatRoom.getConsumer().getNickname();
-        this.shopId = chatRoom.getSeller().getShop().getId();
+        this.sellerShopId = chatRoom.getSeller().getShop().getId();
+        this.consumerShopId = chatRoom.getConsumer().getShop().getId();
         this.itemId = item.getId();
         this.itemName = item.getName();
         this.itemPrice = item.getPrice();
         this.itemImage = item.getMain_image();
     }
 
+    // 채팅방 조회
     public ChatRoomResponseDto(ChatRoom chatRoom, Member member) {
         this.roomId = chatRoom.getId();
         this.roomName = chatRoom.getRoomName();
         this.sellerName = chatRoom.getSeller().getNickname();
         this.consumerName = chatRoom.getConsumer().getNickname();
         this.sender = member.getNickname();
-        this.shopId = chatRoom.getSeller().getShop().getId();
+        this.sellerShopId = chatRoom.getSeller().getShop().getId();
+        this.consumerShopId = chatRoom.getConsumer().getShop().getId();
         this.itemId = chatRoom.getItem().getId();
         this.itemName = chatRoom.getItem().getName();
         this.itemPrice = chatRoom.getItem().getPrice();
