@@ -1,6 +1,7 @@
 package com.example.demo.chat.dto;
 
 import com.example.demo.chat.entity.ChatMessage;
+import com.example.demo.chat.entity.ChatRoom;
 import com.example.demo.chat.entity.MessageType;
 import com.example.demo.config.ParameterNameConfig;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -33,8 +34,18 @@ public class ChatMessageResponseDto {
         this.sender = chatMessage.getSender();
         this.message = chatMessage.getMessage();
         this.type = chatMessage.getType();
-        this.created_at = this.getCreated_at();
+        this.created_at = chatMessage.getCreatedAt();
         this.sellerShopName = chatMessage.getChatRoom().getSeller().getShop().getShopName();
         this.consumerShopName = chatMessage.getChatRoom().getConsumer().getShop().getShopName();
+    }
+
+    public ChatMessageResponseDto(ChatMessage chatMessage, ChatRoom chatRoom) {
+        this.roomId = chatMessage.getRoomId();
+        this.sender = chatMessage.getSender();
+        this.message = chatMessage.getMessage();
+        this.type = chatMessage.getType();
+        this.created_at = chatMessage.getCreatedAt();
+        this.sellerShopName = chatRoom.getSeller().getShop().getShopName();
+        this.consumerShopName = chatRoom.getConsumer().getShop().getShopName();
     }
 }
