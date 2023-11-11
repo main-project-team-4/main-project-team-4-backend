@@ -6,6 +6,7 @@ insert into member (nickname, username, image) values ('dtegler4', 5, 'http://du
 insert into member (nickname, username, image) values ('qwer322', 6, 'http://dummyimage.com/166x235.png/cc0000/ffffff');
 insert into member (nickname, username, image) values ('tyy3u6', 7, 'http://dummyimage.com/166x235.png/cc0000/ffffff');
 insert into member (nickname, username, image) values ('hujd944gb', 8, 'http://dummyimage.com/166x235.png/cc0000/ffffff');
+insert into member (nickname, username, image) values ('hujd944gb', 9, 'http://dummyimage.com/166x235.png/cc0000/ffffff');
 
 insert into shop (seller_id, intro, name) values (1, 'Etiam vel augue. Vestibulum rutrum rutrum neque. Aenean auctor gravida sem.', 'jbiggen0');
 insert into shop (seller_id, intro, name) values (2, 'Ut at dolor quis odio consequat varius. Integer ac leo.', 'cmaccurlye1');
@@ -15,6 +16,7 @@ insert into shop (seller_id, intro, name) values (5, 'Duis ac nibh.', 'caylett4'
 insert into shop (seller_id, intro, name) values (6, 'eget elit sodales.', 'caylett4');
 insert into shop (seller_id, intro, name) values (7, 'quis odio consequat.', 'caylett4');
 insert into shop (seller_id, intro, name) values (8, 'Aenean auctor gravida sem.', 'caylett4');
+insert into shop (seller_id, intro, name) values (9, 'eget elit sodales.', 'jbiggen0');
 
 insert into item (id, name, price, comment, shop_id) values (1, 'jacket1', 10000, 'nice man shirt1', 1);
 insert into item (id, name, price, comment, shop_id) values (2, 'jacket2', 5000, 'nice man shirt2', 2);
@@ -33,3 +35,4 @@ insert into member_location (latitude, longitude, member_id) values (10, 10, 5);
 insert into member_location (latitude, longitude, member_id) values (10, 20, 6); -- 500
 insert into member_location (latitude, longitude, member_id) values (10, 30, 7); -- 1000
 insert into member_location (latitude, longitude, member_id) values (10, 40, 8); -- 1700
+insert into member_location (member_id) values (9);
