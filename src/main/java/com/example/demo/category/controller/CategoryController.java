@@ -4,6 +4,7 @@ import com.example.demo.category.dto.CategoryBundleResponseDto;
 import com.example.demo.category.dto.CategoryResponseDto;
 import com.example.demo.category.dto.ItemInCategoryResponseDto;
 import com.example.demo.category.service.CategoryService;
+import com.example.demo.trade.type.State;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,10 +40,11 @@ public class CategoryController implements CategoryDocs{
     @GetMapping("/api/categories/{categoryId}/items")
     public ResponseEntity<Page<ItemInCategoryResponseDto>> readChildItem(
             @PathVariable Long categoryId,
+            @RequestParam(required = false) State[] state,
             @RequestParam(defaultValue = "2") int layer,
             @PageableDefault Pageable pageable
     ) {
-        return categoryService.readChildItem(categoryId, layer, pageable);
+        return categoryService.readChildItem(categoryId, layer, state, pageable);
     }
 
     @GetMapping("/api/categories")

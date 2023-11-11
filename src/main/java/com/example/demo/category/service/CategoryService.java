@@ -9,6 +9,7 @@ import com.example.demo.category.repository.CategoryLRepository;
 import com.example.demo.category.repository.CategoryMRepository;
 import com.example.demo.category.type.CategoryType;
 import com.example.demo.item.repository.ItemRepository;
+import com.example.demo.trade.type.State;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,16 +37,16 @@ public class CategoryService {
 
     public ResponseEntity<Page<ItemInCategoryResponseDto>> readChildItem(
             Long categoryId, int layer,
-            Pageable pageable) {
+            State[] state, Pageable pageable) {
         CategoryType categoryType = getTypeByLayer(layer);
 
         Page<ItemInCategoryResponseDto> response = null;
         if (categoryType == CategoryType.LARGE) {
-            response = itemRepository.findByCategoryLargeId(categoryId, pageable)
+            response = itemRepository.searchByCategoryLargeId(categoryId, state, pageable)
                     .map(ItemInCategoryResponseDto::new);
 
         } else if (categoryType == CategoryType.MIDDLE) {
-            response = itemRepository.findByCategoryMiddleId(categoryId, pageable)
+            response = itemRepository.searchByCategoryMiddleId(categoryId, state, pageable)
                     .map(ItemInCategoryResponseDto::new);
 
         }

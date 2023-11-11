@@ -12,17 +12,6 @@ public interface ItemRepository extends
         JpaRepository<Item, Long>,
         SearchRepository, PopularRepository, DistanceRepository, ShopDisplayRepository, TransactionRepository
 {
-
-    @Query("SELECT i FROM Item i " +
-            "JOIN FETCH i.categoryMidId " +
-            "WHERE i.categoryMidId.parent.id = :id")
-    Page<Item> findByCategoryLargeId(Long id, Pageable pageable);
-
-    @Query("SELECT i FROM Item i " +
-            "JOIN FETCH i.categoryMidId " +
-            "WHERE i.categoryMidId.id = :id")
-    Page<Item> findByCategoryMiddleId(Long id, Pageable pageable);
-
     // Item의 wish 많은 기준으로 상위 20개 상품을 가져오는 쿼리
     @Query("SELECT r FROM Item r ORDER BY (select count (w) from Wish w WHERE w.item.id = r.id) DESC limit 100")
     List<Item> findTop100ByOrderByWishCountDesc();
