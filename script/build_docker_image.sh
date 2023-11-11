@@ -4,6 +4,7 @@ DIR_DOCKERFILE=./;
 
 # Get Version Of Image
 VERSION_IMAGE=$(source ./script/count_image_version.sh)
+VERSION_IMAGE=$(echo $VERSION_IMAGE | sed 's/\\r$//')
 echo "This Version Of Image is $VERSION_IMAGE"
 
 # Generate Jar File With Gradle
