@@ -49,19 +49,6 @@ public class ChatMessageService {
     public ChatMessageResponseDto sendMessages(ChatMessageRequestDto requestDto, Member member) {
         ChatMessage message = requestDto.toEntity();
 
-        log.info("프론트에서 날아온 dto 메세지 데이터 자체 : "+requestDto.getType());
-        log.info("프론트에서 날아온 dto 메세지 데이터 타입 : "+requestDto.getType().getClass().getName());
-        log.info("프론트에서 날아온 객체에 저장한 메세지 자체 : "+message.getType());
-        log.info("프론트에서 날아온 dto 메세지 데이터 타입 : "+message.getType().getClass().getName());
-
-        // 퇴장 메세지
-        if(MessageType.QUIT.equals(message.getType())){
-            log.info("QUIT 인식함");
-            redisMessageTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(ChatMessage.class));
-            redisMessageTemplate.convertAndSend(channelTopic.getTopic(), message);
-            return new ChatMessageResponseDto(message);
-        }
-
         Member sender = memberRepository.findByNickname(message.getSender()).orElseThrow(() ->
                 new IllegalArgumentException("해당 유저는 존재하지 않습니다.")
         );
