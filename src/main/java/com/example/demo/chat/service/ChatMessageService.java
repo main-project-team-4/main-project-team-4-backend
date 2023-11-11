@@ -99,7 +99,7 @@ public class ChatMessageService {
             notificationService.send(receiver, NotificationType.CHAT, content, url);
         }
 
-        return new ChatMessageResponseDto(message, chatRoom);
+        return new ChatMessageResponseDto(message);
     }
 
     // 이전 메세지 로드

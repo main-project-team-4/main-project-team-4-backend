@@ -35,17 +35,5 @@ public class ChatMessageResponseDto {
         this.message = chatMessage.getMessage();
         this.type = chatMessage.getType();
         this.created_at = chatMessage.getCreatedAt();
-        this.sellerShopName = chatMessage.getChatRoom().getSeller().getShop().getShopName();
-        this.consumerShopName = chatMessage.getChatRoom().getConsumer().getShop().getShopName();
-    }
-
-    public ChatMessageResponseDto(ChatMessage chatMessage, ChatRoom chatRoom) {
-        this.roomId = chatMessage.getRoomId();
-        this.sender = chatMessage.getSender();
-        this.message = chatMessage.getMessage();
-        this.type = chatMessage.getType();
-        this.created_at = chatMessage.getCreatedAt();
-        this.sellerShopName = chatRoom.getSeller().getShop().getShopName();
-        this.consumerShopName = chatRoom.getConsumer().getShop().getShopName();
     }
 }
