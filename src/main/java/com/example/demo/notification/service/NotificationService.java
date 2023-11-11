@@ -34,14 +34,14 @@ public class NotificationService {
 
         // SSE 연결 후, 데이터가 전송되지 않았는데 SseEmitter 의 유효시간이 끝나면 503 에러 발생
         // 최초 연결시 더미 데이터 전송
-        sendToClient(emitter, emitterId, "EventStream Created. [memberId=" + memberId + "]");
+        sendToClient(emitter, emitterId, "EventStream Created. [memberId=" + memberId + "]", NotificationType.SYSTEM);
 
         // 저장된 데이터 캐시에서 유실된 데이터들을 다시 전송
         if (!lastEventId.isEmpty()) {
             Map<String, Object> events = emitterRepository.findAllEventCacheStartWithByMemberId(String.valueOf(memberId));
             events.entrySet().stream()
                     .filter(entry -> lastEventId.compareTo(entry.getKey()) < 0)
-                    .forEach(entry -> sendToClient(emitter, entry.getKey(), entry.getValue()));
+                    .forEach(entry -> sendToClient(emitter, entry.getKey(), entry.getValue(), NotificationType.SYSTEM));
         }
 
         return emitter;
