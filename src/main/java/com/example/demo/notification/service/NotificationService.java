@@ -47,24 +47,24 @@ public class NotificationService {
         return emitter;
     }
 
-    public void send(Member receiver, NotificationType notificationType, String content, String url, URL imageUrl) {
-        Notification notification = notificationRepository.save(new Notification(receiver, notificationType, content, url, imageUrl));
+    public void send(Member receiver, NotificationType notificationType, String content, String url) {
+        Notification notification = notificationRepository.save(new Notification(receiver, notificationType, content, url));
         String memberId = String.valueOf(receiver.getId());
 
         Map<String, SseEmitter> sseEmitters = emitterRepository.findAllEmitterStartWithByMemberId(memberId);
         sseEmitters.forEach(
                 (key, emitter) -> {
                     emitterRepository.saveEventCache(key, notification);
-                    sendToClient(emitter, key, notification);
+                    sendToClient(emitter, key, notification.getContent(), notificationType);
                 }
         );
     }
 
-    private void sendToClient(SseEmitter emitter, String emitterId, Object data) {
+    private void sendToClient(SseEmitter emitter, String emitterId, Object data, NotificationType type) {
         try {
             emitter.send(SseEmitter.event()
                     .id(emitterId)
-                    .name("sse")
+                    .name(type.toString())
                     .data(data));
 //            log.info(emitterId+"-emitter has been sent and completed");
         } catch (IOException exception) {

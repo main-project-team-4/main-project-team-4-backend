@@ -42,13 +42,12 @@ public class Notification extends TimeStamp {
     private URL imageUrl;
 
     @Builder
-    public Notification(Member receiver, NotificationType notificationType, String content, String url, URL imageUrl) {
+    public Notification(Member receiver, NotificationType notificationType, String content, String url) {
         this.receiver = receiver;
         this.notificationType = notificationType;
         this.content = new NotificationContent(content);
         this.url = url;
         this.isRead = false;
-        this.imageUrl = Optional.ofNullable(imageUrl).orElse(null);
     }
 
     public String getContent() {

@@ -99,9 +99,9 @@ public class ChatMessageService {
         }
 
         URL imageUrl = chatRoom.getItem().getMain_image();
-        String content = sender.getNickname() + "님이 메세지를 보냈습니다.";
+        String content = sender.getNickname() + "|||" + imageUrl + "|||" + message.getMessage();
         String url = "/chat/message";
-        notificationService.send(receiver, NotificationType.CHAT, content, url, imageUrl);
+        notificationService.send(receiver, NotificationType.CHAT, content, url);
 
         return new ChatMessageResponseDto(message);
     }
