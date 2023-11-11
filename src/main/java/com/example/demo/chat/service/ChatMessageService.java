@@ -57,6 +57,8 @@ public class ChatMessageService {
         // 퇴장 메세지
         if(MessageType.QUIT.equals(message.getType())){
             log.info("QUIT 인식함");
+            redisMessageTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(ChatMessage.class));
+            redisMessageTemplate.convertAndSend(channelTopic.getTopic(), message);
             return new ChatMessageResponseDto(message);
         }
 
