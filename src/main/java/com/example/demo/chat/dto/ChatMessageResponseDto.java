@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -28,6 +29,6 @@ public class ChatMessageResponseDto {
         this.sender = chatMessage.getSender();
         this.message = chatMessage.getMessage();
         this.type = chatMessage.getType();
-        this.created_at = chatMessage.getCreatedAt();
+        this.created_at = this.getCreated_at();
     }
 }
