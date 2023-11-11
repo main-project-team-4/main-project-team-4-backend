@@ -9,6 +9,7 @@ import com.example.demo.item.dto.ItemResponseDto;
 import com.example.demo.item.dto.ItemSearchResponseDto;
 import com.example.demo.item.entity.Item;
 import com.example.demo.item.repository.ItemRepository;
+import com.example.demo.location.entity.Location;
 import com.example.demo.member.entity.Member;
 import com.example.demo.shop.entity.Shop;
 import com.example.demo.shop.repository.ShopRepository;
@@ -223,13 +224,19 @@ public class ItemService {
 
         @Transactional
         public ResponseEntity<Page<ItemSearchResponseDto>> readNearbyItems (Member member, State[] stateList, Pageable pageable){
-            if (member.getLocation() == null) {
+            if (!validateLocationOfMember(member)) {
                 return ResponseEntity.ok(Page.empty());
             }
 
             Page<ItemSearchResponseDto> dtoList = itemRepository.findNearbyItems(member.getLocation(), member, stateList, pageable)
                     .map(ItemSearchResponseDto::new);
             return ResponseEntity.ok(dtoList);
+        }
+
+        private boolean validateLocationOfMember(Member member) {
+            Location location = member.getLocation();
+            if (location == null) return false;
+            return location.hasCoordinates();
         }
 
         @Transactional
