@@ -37,6 +37,12 @@ public class ChatRoomResponseDto {
     @JsonProperty(ParameterNameConfig.Shop.CONSUMER_SHOP_ID)
     private Long consumerShopId;
 
+    @JsonProperty(ParameterNameConfig.Shop.SELLER_SHOP_NAME)
+    private String sellerShopName;
+
+    @JsonProperty(ParameterNameConfig.Shop.CONSUMER_SHOP_NAME)
+    private String consumerShopName;
+
     @JsonProperty(ParameterNameConfig.Item.ID)
     private Long itemId;
 
@@ -68,6 +74,8 @@ public class ChatRoomResponseDto {
         this.consumerName = chatRoom.getConsumer().getNickname();
         this.sellerShopId = chatRoom.getSeller().getShop().getId();
         this.consumerShopId = chatRoom.getConsumer().getShop().getId();
+        this.sellerShopName = chatRoom.getSeller().getShop().getShopName();
+        this.consumerShopName = chatRoom.getConsumer().getShop().getShopName();
         this.itemId = item.getId();
         this.itemName = item.getName();
         this.itemPrice = item.getPrice();
@@ -83,6 +91,8 @@ public class ChatRoomResponseDto {
         this.sender = member.getNickname();
         this.sellerShopId = chatRoom.getSeller().getShop().getId();
         this.consumerShopId = chatRoom.getConsumer().getShop().getId();
+        this.sellerShopName = chatRoom.getSeller().getShop().getShopName();
+        this.consumerShopName = chatRoom.getConsumer().getShop().getShopName();
         this.itemId = chatRoom.getItem().getId();
         this.itemName = chatRoom.getItem().getName();
         this.itemPrice = chatRoom.getItem().getPrice();

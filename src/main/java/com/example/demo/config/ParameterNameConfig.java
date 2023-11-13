@@ -52,6 +52,8 @@ public class ParameterNameConfig {
         public static final String INTRO = "shop_intro";
         public static final String SELLER_SHOP_ID = "seller_shop_id";
         public static final String CONSUMER_SHOP_ID = "consumer_shop_id";
+        public static final String SELLER_SHOP_NAME = "seller_shop_name";
+        public static final String CONSUMER_SHOP_NAME = "consumer_shop_name";
     }
 
     public static class Follow {

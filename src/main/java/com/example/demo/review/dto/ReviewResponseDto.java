@@ -5,6 +5,7 @@ import com.example.demo.config.ParameterNameConfig;
 import com.example.demo.item.entity.Item;
 import com.example.demo.member.entity.Member;
 import com.example.demo.review.entity.Review;
+import com.example.demo.shop.entity.Shop;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -32,6 +33,13 @@ public class ReviewResponseDto {
     @JsonProperty(ParameterNameConfig.Review.CREATED_AT)
     private LocalDateTime createdAt;
 
+    @Schema(description = "상품을 판매하는 상점 ID.", example = "1524")
+    @JsonProperty(ParameterNameConfig.Shop.ID)
+    private Long shopId;
+    @Schema(description = "상점 이름", example = "iksadnorth 상점")
+    @JsonProperty(ParameterNameConfig.Shop.NAME)
+    private String shopName;
+
     @Schema(description = "리뷰한 상품 ID", example = "1423")
     @JsonProperty(ParameterNameConfig.Item.ID)
     private Long itemId;
@@ -51,7 +59,9 @@ public class ReviewResponseDto {
     @Schema(description = "리뷰어 프로필 이미지", example = "https://cdn.pixabay.com/photo/2023/10/14/09/20/mountains-8314422_1280.png")
     @JsonProperty(ParameterNameConfig.Member.IMAGE)
     private String reviewerProfile;
-
+    @Schema(description = "리뷰어 상점 이름", example = "iksadnorth")
+    @JsonProperty(ParameterNameConfig.Shop.CONSUMER_SHOP_NAME)
+    private String reviewerShopName;
     @Schema(description = "리뷰 점수", example = "3.5463")
     @JsonProperty(ParameterNameConfig.Review.RATING)
     private Double reviewRating;
@@ -60,6 +70,10 @@ public class ReviewResponseDto {
         this.id = review.getId();
         this.comment = review.getComment();
         this.createdAt = review.getCreatedAt();
+
+        Optional<Shop> shop = Optional.of(review).map(Review::getShop);
+        this.shopId = shop.map(Shop::getId).orElse(null);
+        this.shopName = shop.map(Shop::getShopName).orElse(null);
 
         Optional<Item> item = Optional.of(review).map(Review::getItem);
         this.itemId = item.map(Item::getId).orElse(null);
@@ -75,7 +89,7 @@ public class ReviewResponseDto {
         this.reviewerId = member.map(Member::getId).orElse(null);
         this.reviewerName = member.map(Member::getNickname).orElse(null);
         this.reviewerProfile = member.map(Member::getImage).map(URL::toString).orElse(null);
-
+        this.reviewerShopName = member.map(Member::getShop).map(Shop::getShopName).orElse(null);
         this.reviewRating = review.getRating();
     }
 

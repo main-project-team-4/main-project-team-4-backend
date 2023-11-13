@@ -33,7 +33,7 @@ public class WishService {
 
         Member receiver = itemEntity.getShop().getMember();
 
-        String content = member.getNickname() + "님이 " + itemEntity.getName() + " 상품을 찜하였습니다.";
+        String content = member.getShop().getShopName() + "님이 " + itemEntity.getName() + " 상품을 찜하였습니다.";
         String url = "/api/items/"+itemId+"/wishes";
         notificationService.send(receiver, NotificationType.WISH, content, url);
     }
